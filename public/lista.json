@@ -1,0 +1,25 @@
+{
+	"limpieza":[
+		{"hoja":[
+			{"precio":"148","producto":"Cloro"},
+			{"precio":"79","producto":"Salvo"},
+			{"precio":"79","producto":"Maestro Limpio"},
+			{"precio":"79","producto":"Blanqueador"},
+			{"precio":"","producto":""}
+		]},
+		{"hoja":[
+			{"precio":"148","producto":"Desinfectante"},
+			{"precio":"178","producto":"Jabon"},
+			{"precio":"225","producto":"Pino"},
+			{"precio":"79","producto":"Cepillo"},
+			{"precio":"208","producto":"Escoba"}
+		]},
+		{"hoja":[
+			{"precio":"2","producto":"Recogedor"},
+			{"precio":"148","producto":"Bolsas para la basura"},
+			{"precio":"79","producto":"Cesto de basura"},
+			{"precio":"79","producto":"Jergas"},
+			{"precio":"","producto":""}
+		]}
+	]
+}
