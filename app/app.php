@@ -10,7 +10,7 @@ class App
         // echo "<p>Nueva App</p>";
 
         $this->url = isset($_GET['url']) ? $_GET['url'] : null;
-        $this->url = trim($this->url, "/");
+        $this->url = trim($this->url ?? '', "/");
         $this->url = explode("/", $this->url);
         // Cuando se ingresa sin definir el controlador
         if (isset($_SESSION['id_usuario-' . constant('Sistema')]) && !empty($_SESSION['id_usuario-' . constant('Sistema')])) {
