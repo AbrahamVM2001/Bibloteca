@@ -23,6 +23,68 @@ class Admin extends ControllerBase
             $this->recargar();
         }
     }
+    function eventos(){
+        try {
+            $eventos = AdminModel::eventos();
+            echo json_encode($eventos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function guardarEvento(){
+        try {
+            $resp = AdminModel::guardarEvento($_POST);
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Carpeta creada',
+                    'respuesta' => 'Se creo correctamente la carpeta.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Carpeta no creadas',
+                    'respuesta' => 'No se pudo crear correctamente la carpeta.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+            return;
+        }
+        echo json_encode($data);
+    }
+    function programas($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->evento = $param[0];
+            $this->view->render("admin/programas");
+        } else {
+            $this->recargar();
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Metodos anteriores */
     function revistas()
     {
         try {

@@ -48,11 +48,11 @@ $(function () {
     async function cardsDocumentos() {
         console.log("Entras");
         try {
-            let peticion = await fetch(servidor + `admin/infoDocumentos/${atob(atob(rev))}`);
+            let peticion = await fetch(servidor + `admin/infoDocumentos/${atob(atob(evento))}`);
             let response = await peticion.json();
             console.log(response);
             if (response.length == 0) {
-                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin documentos disponibles</h3>`).appendTo("#container-documentos").addClass('text-danger');
+                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin documentos disponibles</h3>`).appendTo("#container-programas").addClass('text-danger');
                 return false;
             }
             response.forEach((item, index) => {
@@ -82,7 +82,7 @@ $(function () {
                             </div>
                         </div>
                     </div>
-                `).appendTo("#container-documentos");
+                `).appendTo("#container-programas");
             });
         } catch (error) {
             if (error.name == 'AbortError') { } else { throw error; }
@@ -97,7 +97,7 @@ $(function () {
         $('.btn-save').attr('data-tipo','nuevo').text('Guardar');
         $('#exampleModalToggleLabel').text('Agregar documento');
     });
-    $('#container-documentos').on('click', '.edit-document', async function () {
+    $('#container-programas').on('click', '.edit-document', async function () {
         $('#documento').attr('required', false);
         let peticion = await fetch(servidor + `admin/getDocumento/${$(this).data('doc')}`);
         let response = await peticion.json();

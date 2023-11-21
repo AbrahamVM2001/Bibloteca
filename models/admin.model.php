@@ -10,6 +10,56 @@ class AdminModel extends ModelBase
     {
         parent::__construct();
     }
+    public static function eventos(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_eventos WHERE estatus_evento = 1");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model revistas: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function guardarEvento($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_eventos (nombre_evento,descripcion_evento,fecha_inicio_evento,fecha_fin_evento,creado_por) VALUES (:nombreEvento,:descripcionEvento,:fechaInicio,:fechaFin,:creadoPor)");
+            $query->execute([
+                
+                ':nombreEvento' => $datos['nombre_evento'],
+                ':descripcionEvento' => $datos['descripcion_evento'],
+                ':fechaInicio' => $datos['fecha_inicio'],
+                ':fechaFin' => $datos['fecha_fin'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarEvento: " . $e->getMessage();
+            return false;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* Metodos anteriores */
     public static function revistas()
     {
         try {

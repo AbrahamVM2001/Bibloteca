@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 30-09-2023 a las 00:18:38
--- Versión del servidor: 10.4.21-MariaDB
--- Versión de PHP: 7.4.29
+-- Tiempo de generación: 22-11-2023 a las 00:52:20
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,8 +18,31 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `mat_sup_aom_cmo`
+-- Base de datos: `programa_academico`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cat_eventos`
+--
+
+CREATE TABLE `cat_eventos` (
+  `id_evento` int(11) NOT NULL,
+  `nombre_evento` text NOT NULL,
+  `descripcion_evento` text DEFAULT NULL,
+  `fecha_inicio_evento` date NOT NULL,
+  `fecha_fin_evento` date NOT NULL,
+  `creado_por` int(11) NOT NULL,
+  `estatus_evento` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_eventos`
+--
+
+INSERT INTO `cat_eventos` (`id_evento`, `nombre_evento`, `descripcion_evento`, `fecha_inicio_evento`, `fecha_fin_evento`, `creado_por`, `estatus_evento`) VALUES
+(1, 'Evento inicial de prueba', 'Descripción opcional del evento', '2023-11-21', '2023-11-30', 0, 1);
 
 -- --------------------------------------------------------
 
@@ -36,7 +59,7 @@ CREATE TABLE `cat_menu` (
   `icono_menu` varchar(150) DEFAULT NULL,
   `tipo_usuario` tinyint(1) NOT NULL COMMENT '1=Admin;2=Usuario;3=General',
   `estatus_menu` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `cat_menu`
@@ -46,6 +69,40 @@ INSERT INTO `cat_menu` (`id_menu`, `nombre_menu`, `descripcion_menu`, `referenci
 (1, 'Inicio', 'Página de inicio', NULL, 1, '<i class=\"fa-solid fa-house\"></i>', 3, 1),
 (2, 'Salir', 'Salir del sistema', 'login/salir', 100, '<i class=\"fa-solid fa-right-from-bracket\"></i>', 3, 1),
 (3, 'Estadísticas', 'Sección de estadísticas de rastro de documentos', 'admin/estadisticas', 2, '<i class=\"fa-solid fa-chart-column\"></i>', 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cat_programas`
+--
+
+CREATE TABLE `cat_programas` (
+  `id_programa` int(11) NOT NULL,
+  `fk_id_evento` int(11) NOT NULL,
+  `nombre_programa` text NOT NULL,
+  `descripcion_programa` text DEFAULT NULL,
+  `estatus_programa` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=SinAcceso;1=ConAcceso'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cat_roles`
+--
+
+CREATE TABLE `cat_roles` (
+  `id_rol_usuario` int(11) NOT NULL,
+  `nombre_rol` text NOT NULL,
+  `estatus_rol` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_roles`
+--
+
+INSERT INTO `cat_roles` (`id_rol_usuario`, `nombre_rol`, `estatus_rol`) VALUES
+(1, 'Administrador', 1),
+(2, 'Profesor', 1);
 
 -- --------------------------------------------------------
 
@@ -60,7 +117,7 @@ CREATE TABLE `cat_submenu` (
   `descripcion_submenu` varchar(100) NOT NULL,
   `referencia_submenu` varchar(100) DEFAULT NULL,
   `estatus_submenu` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
 
@@ -75,7 +132,7 @@ CREATE TABLE `cat_usuarios` (
   `password_usuario` text NOT NULL,
   `tipo_usuario` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=Administrador;0=Visual',
   `estatus_usuario` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `cat_usuarios`
@@ -104,14 +161,14 @@ CREATE TABLE `configuracion` (
   `ruta_icono` varchar(150) DEFAULT NULL,
   `dominio_sociedad` varchar(150) DEFAULT NULL,
   `estatus_sociedad` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `configuracion`
 --
 
 INSERT INTO `configuracion` (`id_sociedad`, `nombre_sociedad`, `nombre_sistema`, `descripcion_sistema`, `servidor_correo`, `puerto_servidor_correo`, `correo_soporte`, `password_correo`, `correo_institucional`, `ruta_logotipo`, `ruta_icono`, `dominio_sociedad`, `estatus_sociedad`) VALUES
-(1, 'Colegio Mexicano de Ortopedia', 'CMO-SISTEMA', 'Sistema para generar qr acorde a documentos cargados', 'mail.grupolahe.com', '465', 'francisco.arenal@grupolahe.com', 'fag1912...', NULL, 'public/img/logo_lahe.png', 'public/img/logo_lahe.png', 'http://localhost/material.suplementario.aom.colegiocmo.com.mx/', 1);
+(1, 'Colegio Mexicano de Ortopedia', 'CMO-SPA', 'Sistema para sistematizar el programa académico acorde al evento en curso.', 'mail.grupolahe.com', '465', 'francisco.arenal@grupolahe.com', 'fag1912...', NULL, 'public/img/logo_lahe.png', 'public/img/logo_lahe.png', 'http://localhost/programa.academico/', 1);
 
 -- --------------------------------------------------------
 
@@ -129,7 +186,7 @@ CREATE TABLE `documentos` (
   `token_documento` text DEFAULT NULL,
   `creado_por` int(11) NOT NULL,
   `estatus_documento` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `documentos`
@@ -150,7 +207,7 @@ CREATE TABLE `rastreo` (
   `fk_token_documento` text NOT NULL,
   `tipo_rastreo` tinyint(1) NOT NULL COMMENT '0=QR;1=Link',
   `fecha_hora_rastreo` datetime NOT NULL DEFAULT current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `rastreo`
@@ -173,7 +230,7 @@ CREATE TABLE `revistas` (
   `autor_revista` text NOT NULL,
   `creado_por` int(11) DEFAULT NULL,
   `estatus_revista` tinyint(1) NOT NULL DEFAULT 1
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 --
 -- Volcado de datos para la tabla `revistas`
@@ -187,10 +244,30 @@ INSERT INTO `revistas` (`id_revista`, `anio_revista`, `autor_revista`, `creado_p
 --
 
 --
+-- Indices de la tabla `cat_eventos`
+--
+ALTER TABLE `cat_eventos`
+  ADD PRIMARY KEY (`id_evento`),
+  ADD KEY `creado_por` (`creado_por`);
+
+--
 -- Indices de la tabla `cat_menu`
 --
 ALTER TABLE `cat_menu`
   ADD PRIMARY KEY (`id_menu`);
+
+--
+-- Indices de la tabla `cat_programas`
+--
+ALTER TABLE `cat_programas`
+  ADD PRIMARY KEY (`id_programa`),
+  ADD KEY `fk_id_evento` (`fk_id_evento`);
+
+--
+-- Indices de la tabla `cat_roles`
+--
+ALTER TABLE `cat_roles`
+  ADD PRIMARY KEY (`id_rol_usuario`);
 
 --
 -- Indices de la tabla `cat_submenu`
@@ -237,10 +314,28 @@ ALTER TABLE `revistas`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `cat_eventos`
+--
+ALTER TABLE `cat_eventos`
+  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `cat_menu`
 --
 ALTER TABLE `cat_menu`
   MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `cat_programas`
+--
+ALTER TABLE `cat_programas`
+  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT de la tabla `cat_roles`
+--
+ALTER TABLE `cat_roles`
+  MODIFY `id_rol_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`

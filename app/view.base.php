@@ -9,6 +9,7 @@ class ViewBase{
   public $nombresistema;
   public $descripcionsistema;
   public $correosoporte;
+  public $evento;
   function __construct(){
     // echo "<p>Vista base</p>";
     
