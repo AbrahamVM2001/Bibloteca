@@ -3,12 +3,12 @@
   <div class="card">
     <div class="card-header d-flex justify-content-between">
     <button class="btn btn-info" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
-      <h3>Salones</h3>
+      <h3>Capitulos</h3>
       <button id="add-document" class="btn btn-success" data-bs-target="#modalNuevoSalon"
         data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">
-      <div class="row" id="container-salones"></div>
+      <div class="row" id="container-capitulos"></div>
     </div>
   </div>
 </div>
@@ -16,42 +16,44 @@
 <script>
 let fechas = '<?= $this->idfecha; ?>';
 let programa = '<?= $this->idprograma; ?>';
+let salon = '<?= $this->idsalon; ?>';
 </script>
-<script src="<?= constant('URL') ?>public/js/paginas/home.salones.js"></script>
+<script src="<?= constant('URL') ?>public/js/paginas/home.capitulos.js"></script>
 <div class="modal fade" id="modalNuevoSalon" aria-hidden="true" aria-labelledby="modalNuevoSalonLabel"
   tabindex="-1">
   <div class="modal-dialog modal-lg">
-    <form id="form-salones" action="javascript:;" class="needs-validation" novalidate method="post">
+    <form id="form-capitulos" action="javascript:;" class="needs-validation" novalidate method="post">
       <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
       <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
+      <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalNuevoSalonLabel">Agregar nuevo salón</h1>
+          <h1 class="modal-title fs-5" id="modalNuevoSalonLabel">Agregar nuevo capitulo</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
           <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Salón</label>
-              <select class="form-control" name="asignar_salon" id="asignar_salon" required>
+              <label for="">Capitulo</label>
+              <select class="form-control" name="asignar_capitulo" id="asignar_capitulo" required>
               </select>
               <div class="invalid-feedback">
                 Seleccione una opción, por favor.
               </div>
             </div>
             <div id="contenedor-agregar" class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-none">
-              <label for="">Salón</label>
-              <input type="text" class="form-control" name="nuevo_salon" id="nuevo_salon" disabled="true">
+              <label for="">Capitulo</label>
+              <input type="text" class="form-control" name="nuevo_capitulo" id="nuevo_capitulo" disabled="true">
               <div class="invalid-feedback">
-                Ingrese un nombre de salón, por favor.
+                Ingrese un nombre de capitulo, por favor.
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button data-formulario="form-salones" data-tipo="nuevo" type="button"
-            class="btn btn-success btn-save-salones">Guardar</button>
+          <button data-formulario="form-capitulos" data-tipo="nuevo" type="button"
+            class="btn btn-success btn-save-capitulos">Guardar</button>
         </div>
       </div>
     </form>

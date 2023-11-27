@@ -2,6 +2,7 @@
 <div class="container">
   <div class="card">
     <div class="card-header d-flex justify-content-between">
+    <button class="btn btn-info" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
       <h3>Programas</h3>
       <button id="add-document" class="btn btn-success" data-bs-target="#modalNuevoPrograma"
         data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>

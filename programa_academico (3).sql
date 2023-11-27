@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 27-11-2023 a las 06:43:50
+-- Tiempo de generación: 28-11-2023 a las 00:59:04
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -20,6 +20,55 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `programa_academico`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `asignacion_actividades_programa`
+--
+
+CREATE TABLE `asignacion_actividades_programa` (
+  `id_asignacion_actividad` int(11) NOT NULL,
+  `fk_id_capitulo` int(11) NOT NULL,
+  `fk_id_salon` int(11) NOT NULL,
+  `fk_id_fechas` int(11) NOT NULL,
+  `fk_id_programa` int(11) NOT NULL,
+  `fk_id_actividad` int(11) NOT NULL,
+  `creado_por` int(11) NOT NULL,
+  `estatus_asignacion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `asignacion_actividades_programa`
+--
+
+INSERT INTO `asignacion_actividades_programa` (`id_asignacion_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `creado_por`, `estatus_asignacion`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1),
+(2, 2, 2, 2, 1, 2, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `asignacion_capitulos_programa`
+--
+
+CREATE TABLE `asignacion_capitulos_programa` (
+  `id_asignacion_capitulo` int(11) NOT NULL,
+  `fk_id_salon` int(11) NOT NULL,
+  `fk_id_fechas` int(11) NOT NULL,
+  `fk_id_programa` int(11) NOT NULL,
+  `fk_id_capitulo` int(11) NOT NULL,
+  `creado_por` int(11) NOT NULL,
+  `estatus_asignacion` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `asignacion_capitulos_programa`
+--
+
+INSERT INTO `asignacion_capitulos_programa` (`id_asignacion_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_capitulo`, `creado_por`, `estatus_asignacion`) VALUES
+(1, 1, 1, 1, 1, 1, 1),
+(2, 2, 2, 1, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -41,7 +90,57 @@ CREATE TABLE `asignacion_salones_programa` (
 --
 
 INSERT INTO `asignacion_salones_programa` (`id_asignacion_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_salon`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 1, 1, 1, 1);
+(1, 1, 1, 1, 1, 1),
+(2, 2, 1, 2, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cat_actividades`
+--
+
+CREATE TABLE `cat_actividades` (
+  `id_actividad` int(11) NOT NULL,
+  `fk_id_capitulo` int(11) NOT NULL,
+  `fk_id_salon` int(11) NOT NULL,
+  `fk_id_fechas` int(11) NOT NULL,
+  `fk_id_programa` int(11) NOT NULL,
+  `nombre_actividad` text NOT NULL,
+  `creado_por` int(11) NOT NULL,
+  `estatus_actividad` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_actividades`
+--
+
+INSERT INTO `cat_actividades` (`id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_actividad`, `creado_por`, `estatus_actividad`) VALUES
+(1, 1, 1, 1, 1, 'Actividad fecha 1', 1, 1),
+(2, 2, 2, 2, 1, 'Actividad fecha 2', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `cat_capitulos`
+--
+
+CREATE TABLE `cat_capitulos` (
+  `id_capitulo` int(11) NOT NULL,
+  `fk_id_salon` int(11) NOT NULL,
+  `fk_id_fechas` int(11) NOT NULL,
+  `fk_id_programa` int(11) NOT NULL,
+  `nombre_capitulo` text NOT NULL,
+  `creado_por` int(11) NOT NULL,
+  `estatus_capitulo` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_capitulos`
+--
+
+INSERT INTO `cat_capitulos` (`id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_capitulo`, `creado_por`, `estatus_capitulo`) VALUES
+(1, 1, 1, 1, 'Capítulo fecha 1', 1, 1),
+(2, 2, 2, 1, 'Capítulo fecha 2', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -85,7 +184,8 @@ CREATE TABLE `cat_fechas_programa` (
 --
 
 INSERT INTO `cat_fechas_programa` (`id_fecha_programa`, `fk_id_programa`, `fecha_programa`, `creado_por`, `estatus_fecha_programa`) VALUES
-(1, 1, '2023-11-25', 1, 1);
+(1, 1, '2023-11-27', 1, 1),
+(2, 1, '2023-11-28', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -174,7 +274,8 @@ CREATE TABLE `cat_salones` (
 --
 
 INSERT INTO `cat_salones` (`id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_salon`, `creado_por`, `estatus_salon`) VALUES
-(1, 1, 1, 'Prueba de salón con asignación test bueno', 1, 1);
+(1, 1, 1, 'Salón fecha 1', 1, 1),
+(2, 2, 1, 'Salón fecha 2', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -316,6 +417,29 @@ INSERT INTO `revistas` (`id_revista`, `anio_revista`, `autor_revista`, `creado_p
 --
 
 --
+-- Indices de la tabla `asignacion_actividades_programa`
+--
+ALTER TABLE `asignacion_actividades_programa`
+  ADD PRIMARY KEY (`id_asignacion_actividad`),
+  ADD KEY `fk_id_capitulo` (`fk_id_capitulo`),
+  ADD KEY `fk_id_salon` (`fk_id_salon`),
+  ADD KEY `fk_id_programa` (`fk_id_programa`),
+  ADD KEY `fk_id_actividad` (`fk_id_actividad`),
+  ADD KEY `creado_por` (`creado_por`),
+  ADD KEY `fk_id_fechas` (`fk_id_fechas`);
+
+--
+-- Indices de la tabla `asignacion_capitulos_programa`
+--
+ALTER TABLE `asignacion_capitulos_programa`
+  ADD PRIMARY KEY (`id_asignacion_capitulo`),
+  ADD KEY `fk_id_salon` (`fk_id_salon`),
+  ADD KEY `fk_id_fechas` (`fk_id_fechas`),
+  ADD KEY `fk_id_programa` (`fk_id_programa`),
+  ADD KEY `fk_id_capitulo` (`fk_id_capitulo`),
+  ADD KEY `creado_por` (`creado_por`);
+
+--
 -- Indices de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
@@ -324,6 +448,27 @@ ALTER TABLE `asignacion_salones_programa`
   ADD KEY `fk_id_salon` (`fk_id_salon`),
   ADD KEY `fk_id_programa` (`fk_id_programa`),
   ADD KEY `fk_id_fechas` (`fk_id_fechas`);
+
+--
+-- Indices de la tabla `cat_actividades`
+--
+ALTER TABLE `cat_actividades`
+  ADD PRIMARY KEY (`id_actividad`),
+  ADD KEY `fk_id_salon` (`fk_id_salon`),
+  ADD KEY `fk_id_fechas` (`fk_id_fechas`),
+  ADD KEY `fk_id_programa` (`fk_id_programa`),
+  ADD KEY `creado_por` (`creado_por`),
+  ADD KEY `fk_id_capitulo` (`fk_id_capitulo`);
+
+--
+-- Indices de la tabla `cat_capitulos`
+--
+ALTER TABLE `cat_capitulos`
+  ADD PRIMARY KEY (`id_capitulo`),
+  ADD KEY `fk_id_salon` (`fk_id_salon`),
+  ADD KEY `fk_id_fechas` (`fk_id_fechas`),
+  ADD KEY `fk_id_programa` (`fk_id_programa`),
+  ADD KEY `creado_por` (`creado_por`);
 
 --
 -- Indices de la tabla `cat_eventos`
@@ -414,10 +559,34 @@ ALTER TABLE `revistas`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `asignacion_actividades_programa`
+--
+ALTER TABLE `asignacion_actividades_programa`
+  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `asignacion_capitulos_programa`
+--
+ALTER TABLE `asignacion_capitulos_programa`
+  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
 -- AUTO_INCREMENT de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
-  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `cat_actividades`
+--
+ALTER TABLE `cat_actividades`
+  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `cat_capitulos`
+--
+ALTER TABLE `cat_capitulos`
+  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_eventos`
@@ -429,7 +598,7 @@ ALTER TABLE `cat_eventos`
 -- AUTO_INCREMENT de la tabla `cat_fechas_programa`
 --
 ALTER TABLE `cat_fechas_programa`
-  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_menu`
@@ -453,7 +622,7 @@ ALTER TABLE `cat_roles`
 -- AUTO_INCREMENT de la tabla `cat_salones`
 --
 ALTER TABLE `cat_salones`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`

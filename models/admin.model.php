@@ -150,21 +150,21 @@ class AdminModel extends ModelBase
     public static function cat_salones($idfecha,$idprograma){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
+            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha))
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {
-            echo "Error recopilado model infoSalones: " . $e->getMessage();
+            echo "Error recopilado model cat_salones: " . $e->getMessage();
             return;
         }
     }
     public static function infoSalones($modulo){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE fk_id_fechas = :idFecha AND estatus_salon = 1");
+            $query = $con->pdo->prepare("SELECT cs.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($modulo))
             ]);
@@ -174,7 +174,228 @@ class AdminModel extends ModelBase
             return;
         }
     }
-
+    /* Capitulos */
+    public static function guardarCapitulos($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_capitulos (fk_id_salon,fk_id_fechas,fk_id_programa,nombre_capitulo,creado_por) VALUES (:fkSalon,:fkFechas,:fkPrograma,:nombreCapitulo,:creadoPor)");
+            $query->execute([
+                
+                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
+                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
+                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
+                ':nombreCapitulo' => $datos['nuevo_capitulo'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $idcapitulo_resp = $con->pdo->lastInsertId();
+            $con->pdo->commit();
+            return $idcapitulo_resp;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarSalones: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function asignarCapituloPrograma($idsalon,$idfecha,$idprograma,$idcapitulo){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO asignacion_capitulos_programa (fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_capitulo,creado_por) VALUES (:fkSalon,:fkFechas,:fkPrograma,:idCapitulo,:creadoPor)");
+            $query->execute([
+                
+                ':fkSalon' => base64_decode(base64_decode($idsalon)),
+                ':fkFechas' => base64_decode(base64_decode($idfecha)),
+                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idCapitulo' => $idcapitulo,
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model asignarSalonPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function cat_capitulos($idsalon,$idfecha,$idprograma){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_capitulo = cp.id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idFechas' => base64_decode(base64_decode($idfecha))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model cat_salones: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function infoCapitulos($idfecha,$idsalon){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1;");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($idfecha)),
+                ':idSalon' => base64_decode(base64_decode($idsalon))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoSalones: " . $e->getMessage();
+            return;
+        }
+    }
+    /* Actividades */
+    public static function guardarActividades($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_actividades (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreActividad,:creadoPor)");
+            $query->execute([
+                
+                ':fkCapitulo' => base64_decode(base64_decode($datos['idcapitulo'])),
+                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
+                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
+                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
+                ':nombreActividad' => $datos['nueva_actividad'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $idactividad_resp = $con->pdo->lastInsertId();
+            $con->pdo->commit();
+            return $idactividad_resp;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarSalones: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function asignarActividadPrograma($idcapitulo,$idsalon,$idfecha,$idprograma,$idactividad){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO asignacion_actividades_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:idActividad,:creadoPor)");
+            $query->execute([
+                
+                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
+                ':fkSalon' => base64_decode(base64_decode($idsalon)),
+                ':fkFechas' => base64_decode(base64_decode($idfecha)),
+                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idActividad' => $idactividad,
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model asignarActividadPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function cat_actividades($idsalon,$idfecha,$idprograma,$idcapitulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1;");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idFechas' => base64_decode(base64_decode($idfecha))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function infoActividades($idfecha,$idsalon,$idcapitulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($idfecha)),
+                ':idSalon' => base64_decode(base64_decode($idsalon)),
+                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoActividades: " . $e->getMessage();
+            return;
+        }
+    }
+    /* Temas */
+    public static function guardarTemas($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_actividades (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreActividad,:creadoPor)");
+            $query->execute([
+                
+                ':fkCapitulo' => base64_decode(base64_decode($datos['idcapitulo'])),
+                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
+                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
+                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
+                ':nombreActividad' => $datos['nueva_actividad'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $idactividad_resp = $con->pdo->lastInsertId();
+            $con->pdo->commit();
+            return $idactividad_resp;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarSalones: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function asignarTemaPrograma($idcapitulo,$idsalon,$idfecha,$idprograma,$idactividad){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO asignacion_actividades_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:idActividad,:creadoPor)");
+            $query->execute([
+                
+                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
+                ':fkSalon' => base64_decode(base64_decode($idsalon)),
+                ':fkFechas' => base64_decode(base64_decode($idfecha)),
+                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idActividad' => $idactividad,
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model asignarActividadPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function cat_temas($idsalon,$idfecha,$idprograma,$idcapitulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1;");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idFechas' => base64_decode(base64_decode($idfecha))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function infoTemas($idfecha,$idsalon,$idcapitulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($idfecha)),
+                ':idSalon' => base64_decode(base64_decode($idsalon)),
+                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoActividades: " . $e->getMessage();
+            return;
+        }
+    }
 
 
 

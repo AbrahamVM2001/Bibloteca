@@ -160,7 +160,6 @@ class Admin extends ControllerBase
                 $resp2 = AdminModel::asignarSalonPrograma($_POST['idfecha'],$_POST['idprograma'],$resp);
                 $tipo = "crear";
             }else{
-                echo "Asignar salón";
                 $resp = AdminModel::asignarSalonPrograma($_POST['idfecha'],$_POST['idprograma'],$_POST['asignar_salon']);
                 $tipo = "asignar";
             }
@@ -206,8 +205,197 @@ class Admin extends ControllerBase
             return;
         }
     }
-
-
+    /* Capitulos */
+    function capitulos($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->idfecha = $param[0];
+            $this->view->idprograma = $param[1];
+            $this->view->idsalon = $param[2];
+            $this->view->render("admin/capitulos");
+        } else {
+            $this->recargar();
+        }
+    }
+    function guardarCapitulos(){
+        try {
+            if (!empty($_POST['nuevo_capitulo'])) {
+                $resp = AdminModel::guardarCapitulos($_POST);
+                $resp2 = AdminModel::asignarCapituloPrograma($_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$resp);
+                $tipo = "crear";
+            }else{
+                $resp = AdminModel::asignarCapituloPrograma($_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$_POST['asignar_capitulo']);
+                $tipo = "asignar";
+            }
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => ($tipo == "crear")?'Capitulo creado':'Capitulo asignado',
+                    'respuesta' => ($tipo == "crear")?'Se creo correctamente el capitulo.':'Se asignó correctamente el capitulo.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => ($tipo == "crear")?'Capitulo no creado':'Capitulo no asignado',
+                    'respuesta' => ($tipo == "crear")?'No se pudo crear correctamente el capitulo.':'No se pudo asignar correctamente el capitulo.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            /* echo "respuesta:".$th->getMessage() */
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+        }
+        
+        echo json_encode($data);
+    }
+    function cat_capitulos($param = null){
+        try {
+            $salones = AdminModel::cat_capitulos($param[0],$param[1],$param[2]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function infoCapitulos($param = null){
+        try {
+            $salones = AdminModel::infoCapitulos($param[0],$param[1]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Actividades */
+    function actividades($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->idfecha = $param[0];
+            $this->view->idprograma = $param[1];
+            $this->view->idsalon = $param[2];
+            $this->view->idcapitulo = $param[3];
+            $this->view->render("admin/actividades");
+        } else {
+            $this->recargar();
+        }
+    }
+    function guardarActividades(){
+        try {
+            if (!empty($_POST['nueva_actividad'])) {
+                $resp = AdminModel::guardarActividades($_POST);
+                $resp2 = AdminModel::asignarActividadPrograma($_POST['idcapitulo'],$_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$resp);
+                $tipo = "crear";
+            }else{
+                $resp = AdminModel::asignarActividadPrograma($_POST['idcapitulo'],$_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$_POST['asignar_actividad']);
+                $tipo = "asignar";
+            }
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => ($tipo == "crear")?'Actividad creada':'Actividad asignada',
+                    'respuesta' => ($tipo == "crear")?'Se creo correctamente la actividad.':'Se asignó correctamente la actividad.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => ($tipo == "crear")?'Actividad no creada':'Actividad no asignada',
+                    'respuesta' => ($tipo == "crear")?'No se pudo crear correctamente la actividad.':'No se pudo asignar correctamente la actividad.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            /* echo "respuesta:".$th->getMessage() */
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+        }
+        
+        echo json_encode($data);
+    }
+    function cat_actividades($param = null){
+        try {
+            $salones = AdminModel::cat_actividades($param[0],$param[1],$param[2],$param[3]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_actividades: " . $th->getMessage();
+            return;
+        }
+    }
+    function infoActividades($param = null){
+        try {
+            $salones = AdminModel::infoActividades($param[0],$param[1],$param[2]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoActividades: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Temas */
+    function temas($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->idfecha = $param[0];
+            $this->view->idprograma = $param[1];
+            $this->view->idsalon = $param[2];
+            $this->view->idcapitulo = $param[3];
+            $this->view->render("admin/actividades");
+        } else {
+            $this->recargar();
+        }
+    }
+    function guardarTemas(){
+        try {
+            if (!empty($_POST['nueva_actividad'])) {
+                $resp = AdminModel::guardarTemas($_POST);
+                $resp2 = AdminModel::asignarTemaPrograma($_POST['idcapitulo'],$_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$resp);
+                $tipo = "crear";
+            }else{
+                $resp = AdminModel::asignarTemaPrograma($_POST['idcapitulo'],$_POST['idsalon'],$_POST['idfecha'],$_POST['idprograma'],$_POST['asignar_actividad']);
+                $tipo = "asignar";
+            }
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => ($tipo == "crear")?'Actividad creada':'Actividad asignada',
+                    'respuesta' => ($tipo == "crear")?'Se creo correctamente la actividad.':'Se asignó correctamente la actividad.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => ($tipo == "crear")?'Actividad no creada':'Actividad no asignada',
+                    'respuesta' => ($tipo == "crear")?'No se pudo crear correctamente la actividad.':'No se pudo asignar correctamente la actividad.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            /* echo "respuesta:".$th->getMessage() */
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+        }
+        
+        echo json_encode($data);
+    }
+    function cat_temas($param = null){
+        try {
+            $salones = AdminModel::cat_actividades($param[0],$param[1],$param[2],$param[3]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_actividades: " . $th->getMessage();
+            return;
+        }
+    }
+    function infoTemas($param = null){
+        try {
+            $salones = AdminModel::infoActividades($param[0],$param[1],$param[2]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoActividades: " . $th->getMessage();
+            return;
+        }
+    }
 
 
 
