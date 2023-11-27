@@ -66,6 +66,146 @@ class Admin extends ControllerBase
             $this->recargar();
         }
     }
+    function guardarPrograma(){
+        try {
+            $resp = AdminModel::guardarPrograma($_POST);
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Programa creado',
+                    'respuesta' => 'Se creo correctamente el programa.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Programa no creado',
+                    'respuesta' => 'No se pudo crear correctamente el programa.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+            return;
+        }
+        echo json_encode($data);
+    }
+    function infoProgramas($param = null){
+        try {
+            $eventos = AdminModel::infoProgramas($param[0]);
+            echo json_encode($eventos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function fechas($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->fechas = $param[0];
+            $this->view->render("admin/fechas");
+        } else {
+            $this->recargar();
+        }
+    }
+    function guardarFechas(){
+        try {
+            $resp = AdminModel::guardarFechas($_POST);
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Fecha creada',
+                    'respuesta' => 'Se creo correctamente la fecha.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Fecha no creada',
+                    'respuesta' => 'No se pudo crear correctamente la fecha.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+            return;
+        }
+        echo json_encode($data);
+    }
+    function infoFechas($param = null){
+        try {
+            $eventos = AdminModel::infoFechas($param[0]);
+            echo json_encode($eventos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function salones($param = null){
+        if ($this->verificarAdmin()) {
+            $this->view->idfecha = $param[0];
+            $this->view->idprograma = $param[1];
+            $this->view->render("admin/salones");
+        } else {
+            $this->recargar();
+        }
+    }
+    function guardarSalones(){
+        try {
+            if (!empty($_POST['nuevo_salon'])) {
+                $resp = AdminModel::guardarSalones($_POST);
+                $resp2 = AdminModel::asignarSalonPrograma($_POST['idfecha'],$_POST['idprograma'],$resp);
+                $tipo = "crear";
+            }else{
+                echo "Asignar salón";
+                $resp = AdminModel::asignarSalonPrograma($_POST['idfecha'],$_POST['idprograma'],$_POST['asignar_salon']);
+                $tipo = "asignar";
+            }
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => ($tipo == "crear")?'Salón creado':'Salón creado',
+                    'respuesta' => ($tipo == "crear")?'Se creo correctamente el salón.':'Se asignó correctamente el salón.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => ($tipo == "crear")?'Salón no creado':'Salón no asignado',
+                    'respuesta' => ($tipo == "crear")?'No se pudo crear correctamente el salón.':'No se pudo asignar correctamente el salón.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            /* echo "respuesta:".$th->getMessage() */
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+        }
+        
+        echo json_encode($data);
+    }
+    function cat_salones($param = null){
+        try {
+            $salones = AdminModel::cat_salones($param[0],$param[1]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function infoSalones($param = null){
+        try {
+            $salones = AdminModel::infoSalones($param[0]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
 
 
 

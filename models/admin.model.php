@@ -42,6 +42,138 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    public static function guardarPrograma($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_programa (fk_id_evento,nombre_programa,creado_por) VALUES (:fkEvento,:nombrePrograma,:creadoPor)");
+            $query->execute([
+                
+                ':fkEvento' => base64_decode(base64_decode($datos['evento'])),
+                ':nombrePrograma' => $datos['nombre_programa'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function infoProgramas($evento){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_programa WHERE fk_id_evento = :idEvento AND estatus_programa = 1");
+            $query->execute([
+                ':idEvento' => base64_decode(base64_decode($evento))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model revistas: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function guardarFechas($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_fechas_programa (fk_id_programa,fecha_programa,creado_por) VALUES (:fkPrograma,:fechaPrograma,:creadoPor)");
+            $query->execute([
+                
+                ':fkPrograma' => base64_decode(base64_decode($datos['programa'])),
+                ':fechaPrograma' => $datos['fecha'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarFechas: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function infoFechas($modulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_fechas_programa WHERE fk_id_programa = :idPrograma AND estatus_fecha_programa = 1");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($modulo))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoFechas: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function guardarSalones($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_salones (fk_id_fechas,fk_id_programa,nombre_salon,creado_por) VALUES (:fkFechas,:fkPrograma,:nombreSalon,:creadoPor)");
+            $query->execute([
+                
+                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
+                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
+                ':nombreSalon' => $datos['nuevo_salon'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $idsalon_resp = $con->pdo->lastInsertId();
+            $con->pdo->commit();
+            return $idsalon_resp;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarSalones: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function asignarSalonPrograma($idfecha,$idprograma,$idsalon){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO asignacion_salones_programa (fk_id_fechas,fk_id_programa,fk_id_salon,creado_por) VALUES (:fkFechas,:fkPrograma,:idSalon,:creadoPor)");
+            $query->execute([
+                
+                ':fkFechas' => base64_decode(base64_decode($idfecha)),
+                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idSalon' => $idsalon,
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model asignarSalonPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function cat_salones($idfecha,$idprograma){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma)),
+                ':idFechas' => base64_decode(base64_decode($idfecha))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoSalones: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function infoSalones($modulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE fk_id_fechas = :idFecha AND estatus_salon = 1");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($modulo))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoSalones: " . $e->getMessage();
+            return;
+        }
+    }
 
 
 

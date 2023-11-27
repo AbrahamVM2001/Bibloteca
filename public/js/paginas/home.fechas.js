@@ -1,8 +1,8 @@
 $(function () {
-    $(".btn-save-programa").on("click", function () {
+    $(".btn-save-fechas").on("click", function () {
         let form = $("#" + $(this).data("formulario"));
         let tipo_form = $(this).data("tipo");
-        let url = (tipo_form == 'nuevo') ? 'guardarPrograma' : 'actualizarDocumento';
+        let url = (tipo_form == 'nuevo') ? 'guardarFechas' : 'actualizarDocumento';
         if (form[0].checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
@@ -45,33 +45,32 @@ $(function () {
         }
         form.addClass("was-validated");
     });
-    async function cardsProgramas() {
+    async function cardsFechas() {
         console.log("Entras");
         try {
-            let peticion = await fetch(servidor + `admin/infoProgramas/${evento}`);
+            let peticion = await fetch(servidor + `admin/infoFechas/${fechas}`);
             let response = await peticion.json();
             console.log(response);
             if (response.length == 0) {
-                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin programas disponibles</h3>`).appendTo("#container-programas").addClass('text-danger');
+                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin fechas asignadas</h3>`).appendTo("#container-fechas").addClass('text-danger');
                 return false;
             }
             response.forEach((item, index) => {
                 jQuery(`
-                    <a href="${servidor}admin/fechas/${btoa(btoa(item.id_programa))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
+                    <a href="${servidor}admin/salones/${btoa(btoa(item.id_fecha_programa))}/${btoa(btoa(item.fk_id_programa))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
                         <div class="h-100 card card-profile card-plain move-on-hover border border-dark">
                             <div class="card-body text-center bg-white shadow border-radius-lg p-3">
-                            <img class="w-100 border-radius-md" src="${servidor}public/img/libro.gif">
-                                <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.nombre_programa}</p>
+                                <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.fecha_programa}</p>
                             </div>
                         </div>
                     </a>
-                `).appendTo("#container-programas");
+                `).appendTo("#container-fechas");
             });
         } catch (error) {
             if (error.name == 'AbortError') { } else { throw error; }
         }
     }
-    cardsProgramas();
+    cardsFechas();
     $('#add-document').click(function () {
         $('#documento').attr('required', true);
         $('#nombre_documento').val('');
@@ -80,7 +79,7 @@ $(function () {
         $('.btn-save').attr('data-tipo','nuevo').text('Guardar');
         $('#exampleModalToggleLabel').text('Agregar documento');
     });
-    $('#container-programas').on('click', '.edit-document', async function () {
+    $('#container-fechas').on('click', '.edit-document', async function () {
         $('#documento').attr('required', false);
         let peticion = await fetch(servidor + `admin/getDocumento/${$(this).data('doc')}`);
         let response = await peticion.json();

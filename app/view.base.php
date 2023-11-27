@@ -1,8 +1,10 @@
 <?php
+
 /**
  *
  */
-class ViewBase{
+class ViewBase
+{
   public $icono;
   public $logotipo;
   public $sociedad;
@@ -10,14 +12,17 @@ class ViewBase{
   public $descripcionsistema;
   public $correosoporte;
   public $evento;
-  function __construct(){
+  public $fechas;
+  public $idfecha;
+  public $idprograma;
+  function __construct()
+  {
     // echo "<p>Vista base</p>";
-    
+
   }
 
-  function render($vista){
-      require("views/".$vista.".view.php");
+  function render($vista)
+  {
+    require("views/" . $vista . ".view.php");
   }
 }
-
- ?>

@@ -1,8 +1,8 @@
 $(function () {
-    $(".btn-save-programa").on("click", function () {
+    $(".btn-save-salones").on("click", function () {
         let form = $("#" + $(this).data("formulario"));
         let tipo_form = $(this).data("tipo");
-        let url = (tipo_form == 'nuevo') ? 'guardarPrograma' : 'actualizarDocumento';
+        let url = (tipo_form == 'nuevo') ? 'guardarSalones' : 'actualizarDocumento';
         if (form[0].checkValidity() === false) {
             event.preventDefault();
             event.stopPropagation();
@@ -45,33 +45,80 @@ $(function () {
         }
         form.addClass("was-validated");
     });
-    async function cardsProgramas() {
+    async function cardsSalones() {
         console.log("Entras");
         try {
-            let peticion = await fetch(servidor + `admin/infoProgramas/${evento}`);
+            let peticion = await fetch(servidor + `admin/infoSalones/${fechas}`);
             let response = await peticion.json();
             console.log(response);
             if (response.length == 0) {
-                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin programas disponibles</h3>`).appendTo("#container-programas").addClass('text-danger');
+                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`).appendTo("#container-salones").addClass('text-danger');
                 return false;
             }
             response.forEach((item, index) => {
                 jQuery(`
-                    <a href="${servidor}admin/fechas/${btoa(btoa(item.id_programa))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
+                    <a href="${servidor}admin/salones/${btoa(btoa(item.id_salon))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
                         <div class="h-100 card card-profile card-plain move-on-hover border border-dark">
                             <div class="card-body text-center bg-white shadow border-radius-lg p-3">
-                            <img class="w-100 border-radius-md" src="${servidor}public/img/libro.gif">
-                                <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.nombre_programa}</p>
+                            <img class="w-100 border-radius-md" src="${servidor}public/img/salon.gif">
+                                <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.nombre_salon}</p>
                             </div>
                         </div>
                     </a>
-                `).appendTo("#container-programas");
+                `).appendTo("#container-salones");
             });
         } catch (error) {
             if (error.name == 'AbortError') { } else { throw error; }
         }
     }
-    cardsProgramas();
+    cardsSalones();
+    $('#asignar_salon').change(function(){
+        if ($(this).val() == "agregar_salon") {
+            $('#contenedor-agregar').removeClass('d-none');
+            $('#nuevo_salon').attr('disabled',false);
+            $('#nuevo_salon').attr('required',true);
+        }else{
+            $('#contenedor-agregar').addClass('d-none');
+            $('#nuevo_salon').val("");
+            $('#nuevo_salon').attr('disabled',true);
+            $('#nuevo_salon').attr('required',false);
+        }
+    });
+    async function salones(identificador) {
+        try {
+            $(identificador).empty();
+            let peticion = await fetch(servidor + `admin/cat_salones/${fechas}/${programa}`);
+            let response = await peticion.json();
+            let option_select = document.createElement("option")
+            option_select.value = '';
+            option_select.text = 'Seleccionar salón...';
+            let option_select2 = document.createElement("option")
+            option_select2.value = 'agregar_salon';
+            option_select2.text = 'Crear nuevo salón';
+            $(identificador).append(option_select);
+            $(identificador).append(option_select2);
+            for (let item of response) {
+                let option = document.createElement("option")
+                option.value = item.id_salon;
+                option.text = item.nombre_salon
+                console.log(item.asignado);
+                if (item.asignado == 1) {
+                    option.disabled = true;
+                }
+                $(identificador).append(option)
+            }
+            console.log('cargando regimen ...');
+        } catch (err) {
+            if (err.name == 'AbortError') { } else { throw err; }
+        }
+    }
+    salones('#asignar_salon');
+
+
+
+
+
+
     $('#add-document').click(function () {
         $('#documento').attr('required', true);
         $('#nombre_documento').val('');
@@ -80,7 +127,7 @@ $(function () {
         $('.btn-save').attr('data-tipo','nuevo').text('Guardar');
         $('#exampleModalToggleLabel').text('Agregar documento');
     });
-    $('#container-programas').on('click', '.edit-document', async function () {
+    $('#container-salones').on('click', '.edit-document', async function () {
         $('#documento').attr('required', false);
         let peticion = await fetch(servidor + `admin/getDocumento/${$(this).data('doc')}`);
         let response = await peticion.json();
