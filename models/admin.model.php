@@ -326,37 +326,43 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_actividades (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreActividad,:creadoPor)");
+            $query = $con->pdo->prepare("INSERT INTO cat_temas (fk_id_actividad,fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_tema,creado_por) VALUES (:fkActividad,:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreTema,:creadoPor)");
             $query->execute([
                 
+                ':fkActividad' => base64_decode(base64_decode($datos['idactividad'])),
                 ':fkCapitulo' => base64_decode(base64_decode($datos['idcapitulo'])),
                 ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
                 ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
                 ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
-                ':nombreActividad' => $datos['nueva_actividad'],
+                ':nombreTema' => $datos['nuevo_tema'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
             ]);
-            $idactividad_resp = $con->pdo->lastInsertId();
+            $idtema_resp = $con->pdo->lastInsertId();
             $con->pdo->commit();
-            return $idactividad_resp;
+            return $idtema_resp;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model guardarSalones: " . $e->getMessage();
+            echo "Error recopilado model guardarTemas: " . $e->getMessage();
             return false;
         }
     }
-    public static function asignarTemaPrograma($idcapitulo,$idsalon,$idfecha,$idprograma,$idactividad){
+    public static function asignarTemaPrograma($idcapitulo,$idsalon,$idfecha,$idprograma,$idactividad,$idtema,$datos){
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO asignacion_actividades_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:idActividad,:creadoPor)");
+            $query = $con->pdo->prepare("INSERT INTO asignacion_temas_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,fk_id_tema,hora_inicial,hora_final,fk_id_profesor,fk_id_modalidad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:fkActividad,:idTema,:horaInicial,:horaFinal,:fkProfesor,:fkModalidad,:creadoPor)");
             $query->execute([
                 
                 ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
                 ':fkSalon' => base64_decode(base64_decode($idsalon)),
                 ':fkFechas' => base64_decode(base64_decode($idfecha)),
                 ':fkPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idActividad' => $idactividad,
+                ':fkActividad' => base64_decode(base64_decode($idactividad)),
+                ':idTema' => $idtema,
+                ':horaInicial' => $datos['hora_inicial'],
+                ':horaFinal' => $datos['hora_final'],
+                ':fkProfesor' => $datos['profesor'],
+                ':fkModalidad' => $datos['modalidad'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
             ]);
             $con->pdo->commit();
@@ -367,13 +373,14 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function cat_temas($idsalon,$idfecha,$idprograma,$idcapitulo){
+    public static function cat_temas($idfecha,$idsalon,$idcapitulo,$idactividad,$idprograma){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND fk_id_fechas = :idFechas AND fk_id_capitulo = :idCapitulo AND estatus_tema = 1;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha))
+                ':idFechas' => base64_decode(base64_decode($idfecha)),
+                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {
@@ -381,14 +388,37 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function infoTemas($idfecha,$idsalon,$idcapitulo){
+    public static function cat_profesores(){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cpa.pais,ce.nombre_estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN cat_paises cpa ON cpa.id_pais = cp.fk_id_pais INNER JOIN cat_estado ce ON ce.id_edo = cp.fk_id_estado WHERE cp.estatus_profesor = 1;");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function cat_modalidades(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_modalida WHERE estatus_modalidad = 1 ;");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function infoTemas($idfecha,$idsalon,$idcapitulo,$idactividad){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT ct.nombre_tema,atp.*,concat_ws(' ',cprr.nombre_prefijo,cpr.nombre_profesor,cpr.apellidop_profesor,cpr.apellidom_profesor) AS nombreprofesor,cm.nombre_modalidad FROM asignacion_temas_programa atp INNER JOIN cat_temas ct ON ct.id_tema = atp.fk_id_tema INNER JOIN cat_profesores cpr ON cpr.id_profesor = atp.fk_id_profesor INNER JOIN cat_modalida cm ON cm.id_modalidad = atp.fk_id_modalidad INNER JOIN cat_prefijos cprr ON cprr.id_prefijo = cpr.fk_id_prefijo WHERE atp.fk_id_fechas = :idFecha AND atp.fk_id_salon = :idSalon AND atp.fk_id_capitulo = :idCapitulo AND atp.fk_id_actividad = :idActividad AND ct.estatus_tema =1;");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($idfecha)),
                 ':idSalon' => base64_decode(base64_decode($idsalon)),
-                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
+                ':idCapitulo' => base64_decode(base64_decode($idcapitulo)),
+                ':idActividad' => base64_decode(base64_decode($idactividad))
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {

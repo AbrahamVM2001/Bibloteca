@@ -12,7 +12,7 @@
                 <li class="breadcrumb-item text-sm text-dark active" aria-current="page"><a  href="javascript:;"><?=$value?></a></li>
               <?php }else{ ?>
                 <!-- $activo = 'opacity-5 text-dark'; -->
-                <li class="breadcrumb-item text-sm opacity-5 text-dark" aria-current="page"><?=str_replace("_"," ",$value)?></li>
+                <!-- <li class="breadcrumb-item text-sm opacity-5 text-dark" aria-current="page"><?=str_replace("_"," ",$value)?></li> -->
               <?php }
               endforeach;?>
           </ol>

@@ -17,6 +17,7 @@ class ViewBase
   public $idprograma;
   public $idsalon;
   public $idcapitulo;
+  public $idactividad;
   function __construct()
   {
     // echo "<p>Vista base</p>";
