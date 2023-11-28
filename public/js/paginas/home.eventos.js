@@ -48,7 +48,7 @@ $(function () {
             let peticion = await fetch(servidor + `admin/eventos`);
             let response = await peticion.json();
             if (response.length == 0) {
-                jQuery(`<h3 class="mt-4 text-center text-uppercase"></h3>`).appendTo("#container-eventos").addClass('text-danger');
+                jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin eventos asignados</h3>`).appendTo("#container-eventos").addClass('text-danger');
                 return false;
             }
             response.forEach((item, index) => {
