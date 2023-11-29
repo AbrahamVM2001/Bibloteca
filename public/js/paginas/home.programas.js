@@ -72,40 +72,4 @@ $(function () {
         }
     }
     cardsProgramas();
-    $('#add-document').click(function () {
-        $('#documento').attr('required', true);
-        $('#nombre_documento').val('');
-        $('#id_documento').val('');
-        $('#documento_ant').val('');
-        $('.btn-save').attr('data-tipo','nuevo').text('Guardar');
-        $('#exampleModalToggleLabel').text('Agregar documento');
-    });
-    $('#container-programas').on('click', '.edit-document', async function () {
-        $('#documento').attr('required', false);
-        let peticion = await fetch(servidor + `admin/getDocumento/${$(this).data('doc')}`);
-        let response = await peticion.json();
-        console.log(response);
-        $('#nombre_documento').val(response.nombre_documento);
-        $('#id_documento').val(response.id_documento);
-        $('#documento_ant').val(response.ruta_documento);
-        $('.btn-save').attr('data-tipo','editar').text('Actualizar');
-        $('#exampleModalToggleLabel').text('Editar documento');
-    });
-
-
-
-    /* Copiar al portapapeles */
-    var clipboard = new Clipboard('.copy');
-    clipboard.on('success', function (e) {
-        console.log(e);
-        console.log(e.trigger.id);
-        $('#copiado-' + e.trigger.id).removeClass('d-none').fadeOut(1600);
-        setTimeout(() => {
-            $('#copiado-' + e.trigger.id).addClass('d-none');
-            $('#copiado-' + e.trigger.id).attr('style', '');
-        }, 1700);
-    });
-    clipboard.on('error', function (e) {
-        /* console.log(e); */
-    });
 });
