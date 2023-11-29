@@ -60,10 +60,12 @@ class Admin extends ControllerBase
         }
         echo json_encode($data);
     }
+    /* Programas */
     function programas($param = null)
     {
         if ($this->verificarAdmin()) {
             $this->view->evento = $param[0];
+            $_SESSION['evento_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/programas");
         } else {
             $this->recargar();
@@ -106,10 +108,12 @@ class Admin extends ControllerBase
             return;
         }
     }
+    /* Fechas */
     function fechas($param = null)
     {
         if ($this->verificarAdmin()) {
             $this->view->fechas = $param[0];
+            $_SESSION['programa_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/fechas");
         } else {
             $this->recargar();
@@ -152,11 +156,13 @@ class Admin extends ControllerBase
             return;
         }
     }
+    /* Salones */
     function salones($param = null)
     {
         if ($this->verificarAdmin()) {
             $this->view->idfecha = $param[0];
             $this->view->idprograma = $param[1];
+            $_SESSION['fecha_seleccionado'] = mb_convert_encoding(base64_decode($param[2]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/salones");
         } else {
             $this->recargar();
@@ -224,6 +230,7 @@ class Admin extends ControllerBase
             $this->view->idfecha = $param[0];
             $this->view->idprograma = $param[1];
             $this->view->idsalon = $param[2];
+            $_SESSION['salon_seleccionado'] = mb_convert_encoding(base64_decode($param[3]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/capitulos");
         } else {
             $this->recargar();
@@ -292,6 +299,7 @@ class Admin extends ControllerBase
             $this->view->idprograma = $param[1];
             $this->view->idsalon = $param[2];
             $this->view->idcapitulo = $param[3];
+            $_SESSION['capitulo_seleccionado'] = mb_convert_encoding(base64_decode($param[4]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/actividades");
         } else {
             $this->recargar();
@@ -361,6 +369,7 @@ class Admin extends ControllerBase
             $this->view->idsalon = $param[2];
             $this->view->idcapitulo = $param[3];
             $this->view->idactividad = $param[4];
+            $_SESSION['actividad_seleccionado'] = mb_convert_encoding(base64_decode($param[5]), 'UTF-8','ISO-8859-1');
             $this->view->render("admin/temas");
         } else {
             $this->recargar();

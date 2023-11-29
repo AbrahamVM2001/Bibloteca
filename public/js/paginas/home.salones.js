@@ -57,7 +57,7 @@ $(function () {
             }
             response.forEach((item, index) => {
                 jQuery(`
-                    <a href="${servidor}admin/capitulos/${btoa(btoa(item.fk_id_fechas))}/${btoa(btoa(item.fk_id_programa))}/${btoa(btoa(item.id_salon))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
+                    <a href="${servidor}admin/capitulos/${btoa(btoa(item.fk_id_fechas))}/${btoa(btoa(item.fk_id_programa))}/${btoa(btoa(item.id_salon))}/${btoa(item.nombre_salon)}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
                         <div class="h-100 card card-profile card-plain move-on-hover border border-dark">
                             <div class="card-body text-center bg-white shadow border-radius-lg p-3">
                             <img class="w-100 border-radius-md" src="${servidor}public/img/salon.gif">

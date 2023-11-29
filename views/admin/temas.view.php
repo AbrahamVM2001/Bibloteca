@@ -1,10 +1,22 @@
 <?php require('views/headervertical.view.php'); ?>
 <div class="container-fluid">
   <div class="card">
-    <div class="card-header d-flex justify-content-between">
-    <button class="btn btn-info" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
-      <h3>Temas</h3>
-      <button id="add-document" class="btn btn-success" data-bs-target="#modalNuevoTema"
+  <div class="card card-body blur shadow-blur mx-2 mt-n4 overflow-hidden" style="background-color: #e9ecef !important;">
+      <div class="row gx-4">
+      <h5 class="text-center"><?= $_SESSION['evento_seleccionado'] ?></h5>
+      <small class="text-center">
+          <?= $_SESSION['programa_seleccionado'] ?> |
+          <?= $_SESSION['fecha_seleccionado'] ?> |
+          <?= $_SESSION['salon_seleccionado'] ?> |
+          <?= $_SESSION['capitulo_seleccionado'] ?> |
+          <?= $_SESSION['actividad_seleccionado'] ?>
+        </small>
+      </div>
+    </div>
+    <div class="card-header d-flex justify-content-between flex-wrap">
+    <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i> Regresar</button>
+      <h3 class="mx-auto">Temas</h3>
+      <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoTema"
         data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">

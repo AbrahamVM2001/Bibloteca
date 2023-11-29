@@ -53,9 +53,9 @@ $(function () {
             }
             response.forEach((item, index) => {
                 jQuery(`
-                    <a href="${servidor}admin/programas/${btoa(btoa(item.id_evento))}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
+                    <a href="${servidor}admin/programas/${btoa(btoa(item.id_evento))}/${btoa(item.nombre_evento)}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
                         <div class="h-100 card card-profile card-plain move-on-hover border border-dark">
-                            <div class="card-body text-center bg-white shadow border-radius-lg p-3">
+                            <div class="card-body text-center bg-white shadow border-radius-lg p-3 h-100">
                                     <img class="w-100 border-radius-md" src="${servidor}public/img/calendario.gif">
                                 <h5 class="mt-3 mb-1 d-md-block ">${item.nombre_evento}</h5>
                                 <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.descripcion_evento}</p>

@@ -9,7 +9,9 @@
             <?php foreach ($page as $key => $value) :
               ?>
               <?php if (end($page) != $value) { ?>
+                <?php if($key == 0 || $key == 1):?>
                 <li class="breadcrumb-item text-sm text-dark active" aria-current="page"><a  href="javascript:;"><?=$value?></a></li>
+                <?php endif;?>
               <?php }else{ ?>
                 <!-- $activo = 'opacity-5 text-dark'; -->
                 <!-- <li class="breadcrumb-item text-sm opacity-5 text-dark" aria-current="page"><?=str_replace("_"," ",$value)?></li> -->

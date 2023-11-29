@@ -10,6 +10,7 @@ class AdminModel extends ModelBase
     {
         parent::__construct();
     }
+    /* Eventos */
     public static function eventos()
     {
         try {
@@ -44,6 +45,7 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    /* Programas */
     public static function guardarPrograma($datos)
     {
         try {
@@ -78,6 +80,7 @@ class AdminModel extends ModelBase
             return;
         }
     }
+    /* Fechas */
     public static function guardarFechas($datos)
     {
         try {
@@ -112,6 +115,7 @@ class AdminModel extends ModelBase
             return;
         }
     }
+    /* Salones */
     public static function guardarSalones($datos)
     {
         try {
@@ -174,7 +178,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1");
+            $query = $con->pdo->prepare("SELECT cs.id_salon,cs.nombre_salon,asp.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($modulo))
             ]);
@@ -249,7 +253,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1;");
+            $query = $con->pdo->prepare("SELECT cp.id_capitulo,cp.nombre_capitulo,acp.* FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1;");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($idfecha)),
                 ':idSalon' => base64_decode(base64_decode($idsalon))
@@ -327,7 +331,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
+            $query = $con->pdo->prepare("SELECT ca.id_actividad,ca.nombre_actividad,aap.* FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($idfecha)),
                 ':idSalon' => base64_decode(base64_decode($idsalon)),
@@ -354,34 +358,6 @@ class AdminModel extends ModelBase
                 ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
                 ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
                 ':nombreTema' => $datos['nuevo_tema'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idtema_resp = $con->pdo->lastInsertId();
-            $con->pdo->commit();
-            return $idtema_resp;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarTemas: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function guardarProfesor($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_profesores (fk_id_prefijo,nombre_profesor,apellidop_profesor,apellidom_profesor,fk_id_pais,fk_id_estado,fk_id_lada,telefono_profesor,correo_profesor,creado_por) VALUES (:prefijo,:nombre,:apellidop,:apellidom,:pais,:estado,:lada,:telefono,:correo,:creadoPor)");
-            $query->execute([
-
-                ':prefijo' => $datos['prefijo'],
-                ':nombre' => $datos['nombre_profesor'],
-                ':apellidop' => $datos['apellidop_profesor'],
-                ':apellidom' => $datos['apellidom_profesor'],
-                ':pais' => $datos['pais'],
-                ':estado' => $datos['estado'],
-                ':lada' => (empty($datos['lada']))?'310':$datos['lada'],
-                ':telefono' => $datos['telefono_profesor'],
-                ':correo' => $datos['correo_profesor'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
             ]);
             $idtema_resp = $con->pdo->lastInsertId();
@@ -435,6 +411,52 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model cat_actividades: " . $e->getMessage();
             return;
+        }
+    }
+    public static function infoTemas($idfecha, $idsalon, $idcapitulo, $idactividad)
+    {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT ct.id_tema,ct.nombre_tema,atp.*,concat_ws(' ',cprr.siglas_prefijo,cpr.nombre_profesor,cpr.apellidop_profesor,cpr.apellidom_profesor) AS nombreprofesor,cm.nombre_modalidad FROM asignacion_temas_programa atp INNER JOIN cat_temas ct ON ct.id_tema = atp.fk_id_tema INNER JOIN cat_profesores cpr ON cpr.id_profesor = atp.fk_id_profesor INNER JOIN cat_modalida cm ON cm.id_modalidad = atp.fk_id_modalidad INNER JOIN cat_prefijos cprr ON cprr.id_prefijo = cpr.fk_id_prefijo WHERE atp.fk_id_fechas = :idFecha AND atp.fk_id_salon = :idSalon AND atp.fk_id_capitulo = :idCapitulo AND atp.fk_id_actividad = :idActividad AND ct.estatus_tema =1;");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($idfecha)),
+                ':idSalon' => base64_decode(base64_decode($idsalon)),
+                ':idCapitulo' => base64_decode(base64_decode($idcapitulo)),
+                ':idActividad' => base64_decode(base64_decode($idactividad))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoActividades: " . $e->getMessage();
+            return;
+        }
+    }
+    /* Catalogos Generales*/
+    public static function guardarProfesor($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO cat_profesores (fk_id_prefijo,nombre_profesor,apellidop_profesor,apellidom_profesor,fk_id_pais,fk_id_estado,fk_id_lada,telefono_profesor,correo_profesor,creado_por) VALUES (:prefijo,:nombre,:apellidop,:apellidom,:pais,:estado,:lada,:telefono,:correo,:creadoPor)");
+            $query->execute([
+
+                ':prefijo' => $datos['prefijo'],
+                ':nombre' => $datos['nombre_profesor'],
+                ':apellidop' => $datos['apellidop_profesor'],
+                ':apellidom' => $datos['apellidom_profesor'],
+                ':pais' => $datos['pais'],
+                ':estado' => $datos['estado'],
+                ':lada' => (empty($datos['lada']))?'310':$datos['lada'],
+                ':telefono' => $datos['telefono_profesor'],
+                ':correo' => $datos['correo_profesor'],
+                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $idtema_resp = $con->pdo->lastInsertId();
+            $con->pdo->commit();
+            return $idtema_resp;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarTemas: " . $e->getMessage();
+            return false;
         }
     }
     public static function cat_profesores()
@@ -508,23 +530,6 @@ class AdminModel extends ModelBase
             return $query->fetchAll();
         } catch (PDOException $e) {
             echo "Error recopilado model cat_estados: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function infoTemas($idfecha, $idsalon, $idcapitulo, $idactividad)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT ct.nombre_tema,atp.*,concat_ws(' ',cprr.siglas_prefijo,cpr.nombre_profesor,cpr.apellidop_profesor,cpr.apellidom_profesor) AS nombreprofesor,cm.nombre_modalidad FROM asignacion_temas_programa atp INNER JOIN cat_temas ct ON ct.id_tema = atp.fk_id_tema INNER JOIN cat_profesores cpr ON cpr.id_profesor = atp.fk_id_profesor INNER JOIN cat_modalida cm ON cm.id_modalidad = atp.fk_id_modalidad INNER JOIN cat_prefijos cprr ON cprr.id_prefijo = cpr.fk_id_prefijo WHERE atp.fk_id_fechas = :idFecha AND atp.fk_id_salon = :idSalon AND atp.fk_id_capitulo = :idCapitulo AND atp.fk_id_actividad = :idActividad AND ct.estatus_tema =1;");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($idfecha)),
-                ':idSalon' => base64_decode(base64_decode($idsalon)),
-                ':idCapitulo' => base64_decode(base64_decode($idcapitulo)),
-                ':idActividad' => base64_decode(base64_decode($idactividad))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoActividades: " . $e->getMessage();
             return;
         }
     }

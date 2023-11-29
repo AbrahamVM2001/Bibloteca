@@ -1,18 +1,22 @@
 <?php require('views/headervertical.view.php'); ?>
 <div class="container">
   <div class="card">
-    <div class="card-header d-flex justify-content-between flex-wrap">
-      <h3>Eventos</h3>
-      <button class="btn btn-success " data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Agregar <i
-          class="fa-solid fa-circle-plus"></i></button>
+  <div class="card card-body blur shadow-blur mx-2 mt-n4 overflow-hidden" style="background-color: #e9ecef !important;">
+      <div class="row gx-4">
+      <h5 class="text-center"><?= $_SESSION['evento_carta_seleccionado'] ?></h5>
+      <small class="text-center"><?=$_SESSION['programa_carta_seleccionado']?></small>
+      </div>
+    </div>
+    <div class="card-header d-flex justify-content-center flex-wrap">
+      <h3>Concentrado</h3>
     </div>
     <div class="card-body">
-      <div class="row" id="container-eventos"></div>
+      <div class="row" id="container-concentrado"></div>
     </div>
   </div>
 </div>
 <?php require('views/footer.view.php'); ?>
-<script src="<?= constant('URL') ?>public/js/paginas/home.eventos.js"></script>
+<script src="<?= constant('URL') ?>public/js/paginas/cartas.concentrado.js"></script>
 <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">

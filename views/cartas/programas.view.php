@@ -9,9 +9,7 @@
     <div class="card-header d-flex justify-content-between flex-wrap">
       <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i>
         Regresar</button>
-        <h3 class="mx-auto">Programas</h3>
-      <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoPrograma"
-        data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
+        <h3 class="mx-auto">Cartas | Programas</h3>
     </div>
     <div class="card-body">
       <div class="row" id="container-programas"></div>

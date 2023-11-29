@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 29-11-2023 a las 04:30:48
+-- Tiempo de generación: 30-11-2023 a las 00:58:45
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -38,6 +38,14 @@ CREATE TABLE `asignacion_actividades_programa` (
   `estatus_asignacion` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `asignacion_actividades_programa`
+--
+
+INSERT INTO `asignacion_actividades_programa` (`id_asignacion_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `creado_por`, `estatus_asignacion`) VALUES
+(1, 1, 1, 1, 1, 1, 1, 1),
+(2, 1, 1, 2, 1, 1, 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -54,6 +62,14 @@ CREATE TABLE `asignacion_capitulos_programa` (
   `estatus_asignacion` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `asignacion_capitulos_programa`
+--
+
+INSERT INTO `asignacion_capitulos_programa` (`id_asignacion_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_capitulo`, `creado_por`, `estatus_asignacion`) VALUES
+(1, 1, 1, 1, 1, 1, 1),
+(2, 1, 2, 1, 1, 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -68,6 +84,14 @@ CREATE TABLE `asignacion_salones_programa` (
   `creado_por` int(11) NOT NULL,
   `estatus_asignacion` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `asignacion_salones_programa`
+--
+
+INSERT INTO `asignacion_salones_programa` (`id_asignacion_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_salon`, `creado_por`, `estatus_asignacion`) VALUES
+(1, 1, 1, 1, 1, 1),
+(2, 2, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -108,6 +132,13 @@ CREATE TABLE `cat_actividades` (
   `estatus_actividad` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `cat_actividades`
+--
+
+INSERT INTO `cat_actividades` (`id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_actividad`, `creado_por`, `estatus_actividad`) VALUES
+(1, 1, 1, 1, 1, 'Actividad fecha 1', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -123,6 +154,13 @@ CREATE TABLE `cat_capitulos` (
   `creado_por` int(11) NOT NULL,
   `estatus_capitulo` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_capitulos`
+--
+
+INSERT INTO `cat_capitulos` (`id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_capitulo`, `creado_por`, `estatus_capitulo`) VALUES
+(1, 1, 1, 1, 'Capitulo fecha 1', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -140,6 +178,14 @@ CREATE TABLE `cat_eventos` (
   `estatus_evento` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `cat_eventos`
+--
+
+INSERT INTO `cat_eventos` (`id_evento`, `nombre_evento`, `descripcion_evento`, `fecha_inicio_evento`, `fecha_fin_evento`, `creado_por`, `estatus_evento`) VALUES
+(1, 'Prueba de evento Brandon', 'Descripción visual ejemplo', '2023-11-29', '2023-12-01', 1, 1),
+(2, 'LXIX Congreso Nacional de Ortopedia', '', '2023-12-01', '2023-12-10', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -153,6 +199,14 @@ CREATE TABLE `cat_fechas_programa` (
   `creado_por` int(11) NOT NULL,
   `estatus_fecha_programa` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_fechas_programa`
+--
+
+INSERT INTO `cat_fechas_programa` (`id_fecha_programa`, `fk_id_programa`, `fecha_programa`, `creado_por`, `estatus_fecha_programa`) VALUES
+(1, 1, '2023-11-29', 1, 1),
+(2, 1, '2023-11-30', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -506,8 +560,9 @@ CREATE TABLE `cat_menu` (
 INSERT INTO `cat_menu` (`id_menu`, `nombre_menu`, `descripcion_menu`, `referencia_menu`, `posicion_menu`, `icono_menu`, `tipo_usuario`, `estatus_menu`) VALUES
 (1, 'Inicio', 'Página de inicio', NULL, 1, '<i class=\"fa-solid fa-house\"></i>', 3, 1),
 (2, 'Salir', 'Salir del sistema', 'login/salir', 100, '<i class=\"fa-solid fa-right-from-bracket\"></i>', 3, 1),
-(3, 'Estadísticas', 'Sección de estadísticas de rastro de documentos', 'admin/estadisticas', 3, '<i class=\"fa-solid fa-chart-column\"></i>', 3, 1),
-(4, 'Catálogos', 'Sección de catálogos', 'admin/catalogos', 2, '<i class=\"fa-solid fa-list\"></i>', 3, 1);
+(3, 'Estadísticas', 'Sección de estadísticas de rastro de documentos', 'admin/estadisticas', 99, '<i class=\"fa-solid fa-chart-column\"></i>', 3, 0),
+(4, 'Catálogos', 'Sección de catálogos', 'admin/catalogos', 2, '<i class=\"fa-solid fa-list\"></i>', 3, 0),
+(5, 'Cartas', 'Sección de cartas de invitación de profesores', 'cartas/', 3, '<i class=\"fa-solid fa-envelope-open-text\"></i>', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -576,6 +631,13 @@ CREATE TABLE `cat_profesores` (
   `estatus_profesor` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
+--
+-- Volcado de datos para la tabla `cat_profesores`
+--
+
+INSERT INTO `cat_profesores` (`id_profesor`, `fk_id_prefijo`, `nombre_profesor`, `apellidop_profesor`, `apellidom_profesor`, `fk_id_pais`, `fk_id_estado`, `hospedaje`, `transporte_aereo`, `transporte_terrestre`, `miembro_cmot`, `miembro_cmo`, `fk_id_lada`, `telefono_profesor`, `correo_profesor`, `creado_por`, `estatus_profesor`) VALUES
+(1, 1, 'Brandon', 'Díaz', 'Castillo', 156, 2551, 0, 0, 0, 0, 0, 23, '5562492483', 'brandon062900@gmail.com', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -589,6 +651,13 @@ CREATE TABLE `cat_programa` (
   `creado_por` int(11) NOT NULL,
   `estatus_programa` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_programa`
+--
+
+INSERT INTO `cat_programa` (`id_programa`, `fk_id_evento`, `nombre_programa`, `creado_por`, `estatus_programa`) VALUES
+(1, 1, 'Programa Brandón', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -624,6 +693,13 @@ CREATE TABLE `cat_salones` (
   `creado_por` int(11) NOT NULL,
   `estatus_salon` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+--
+-- Volcado de datos para la tabla `cat_salones`
+--
+
+INSERT INTO `cat_salones` (`id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_salon`, `creado_por`, `estatus_salon`) VALUES
+(1, 1, 1, 'Salón fecha 1', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -5427,19 +5503,19 @@ ALTER TABLE `paises`
 -- AUTO_INCREMENT de la tabla `asignacion_actividades_programa`
 --
 ALTER TABLE `asignacion_actividades_programa`
-  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_capitulos_programa`
 --
 ALTER TABLE `asignacion_capitulos_programa`
-  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
-  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_temas_programa`
@@ -5451,25 +5527,25 @@ ALTER TABLE `asignacion_temas_programa`
 -- AUTO_INCREMENT de la tabla `cat_actividades`
 --
 ALTER TABLE `cat_actividades`
-  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_capitulos`
 --
 ALTER TABLE `cat_capitulos`
-  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_eventos`
 --
 ALTER TABLE `cat_eventos`
-  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_evento` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_fechas_programa`
 --
 ALTER TABLE `cat_fechas_programa`
-  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_ladas`
@@ -5481,7 +5557,7 @@ ALTER TABLE `cat_ladas`
 -- AUTO_INCREMENT de la tabla `cat_menu`
 --
 ALTER TABLE `cat_menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_modalida`
@@ -5499,13 +5575,13 @@ ALTER TABLE `cat_prefijos`
 -- AUTO_INCREMENT de la tabla `cat_profesores`
 --
 ALTER TABLE `cat_profesores`
-  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_programa`
 --
 ALTER TABLE `cat_programa`
-  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_roles`
@@ -5517,7 +5593,7 @@ ALTER TABLE `cat_roles`
 -- AUTO_INCREMENT de la tabla `cat_salones`
 --
 ALTER TABLE `cat_salones`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`
