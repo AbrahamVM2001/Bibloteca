@@ -45,6 +45,51 @@ $(function () {
         }
         form.addClass("was-validated");
     });
+    $(".btn-save-profesores").on("click", function () {
+        let form = $("#" + $(this).data("formulario"));
+        let tipo_form = $(this).data("tipo");
+        let url = (tipo_form == 'nuevo') ? 'guardarProfesor' : 'actualizarDocumento';
+        if (form[0].checkValidity() === false) {
+            event.preventDefault();
+            event.stopPropagation();
+        } else {
+            $.ajax({
+                type: "POST",
+                url: servidor + "admin/" + url,
+                dataType: "json",
+                data: new FormData(form.get(0)),
+                contentType: false,
+                cache: false,
+                processData: false,
+                beforeSend: function () {
+                    // setting a timeout
+                    $("#loading").addClass("loading");
+                },
+                success: function (data) {
+                    console.log(data);
+                    Swal.fire({
+                        position: "top-end",
+                        icon: data.estatus,
+                        title: data.titulo,
+                        text: data.respuesta,
+                        showConfirmButton: false,
+                        timer: 2000,
+                    });
+                    profesores('#profesor');
+                    $('#modalNuevoProfesor').modal('hide')
+                },
+                error: function (data) {
+                    console.log("Error ajax");
+                    console.log(data);
+                    /* console.log(data.log); */
+                },
+                complete: function () {
+                    $("#loading").removeClass("loading");
+                },
+            });
+        }
+        form.addClass("was-validated");
+    });
     async function tablaTemas() {
         try {
             let peticion = await fetch(servidor + `admin/infoTemas/${fechas}/${salon}/${capitulo}/${actividad}`);
@@ -118,16 +163,23 @@ $(function () {
         }
     } */
     //cardsActividades();
-    $('#asignar_tema').change(function(){
+    $('#asignar_tema').change(function () {
         if ($(this).val() == "agregar_tema") {
             $('#contenedor-agregar').removeClass('d-none');
-            $('#nuevo_tema').attr('disabled',false);
-            $('#nuevo_tema').attr('required',true);
-        }else{
+            $('#nuevo_tema').attr('disabled', false);
+            $('#nuevo_tema').attr('required', true);
+        } else {
             $('#contenedor-agregar').addClass('d-none');
             $('#nuevo_tema').val("");
-            $('#nuevo_tema').attr('disabled',true);
-            $('#nuevo_tema').attr('required',false);
+            $('#nuevo_tema').attr('disabled', true);
+            $('#nuevo_tema').attr('required', false);
+        }
+    });
+    $('#profesor').change(function () {
+        if ($(this).val() == "agregar_profesor") {
+            $('#modalNuevoProfesor').modal('show')
+        } else {
+            $('#modalNuevoProfesor').modal('hide')
         }
     });
     async function temas(identificador) {
@@ -135,7 +187,6 @@ $(function () {
             $(identificador).empty();
             let peticion = await fetch(servidor + `admin/cat_temas/${fechas}/${salon}/${capitulo}/${actividad}/${programa}`);
             let response = await peticion.json();
-            console.log(response);
             let option_select = document.createElement("option")
             option_select.value = '';
             option_select.text = 'Seleccionar actividad...';
@@ -146,12 +197,8 @@ $(function () {
             $(identificador).append(option_select2);
             for (let item of response) {
                 let option = document.createElement("option")
-                option.value = item.id_actividad;
-                option.text = item.nombre_actividad
-                console.log(item.asignado);
-                if (item.asignado == 1) {
-                    option.disabled = true;
-                }
+                option.value = item.id_tema;
+                option.text = item.nombre_tema
                 $(identificador).append(option)
             }
             console.log('cargando temas ...');
@@ -177,7 +224,7 @@ $(function () {
             for (let item of response) {
                 let option = document.createElement("option")
                 option.value = item.id_profesor;
-                option.text = item.profesor + ' - (' + item.pais + '/' + item.nombre_estado + ')'
+                option.text = item.profesor + ' - (' + item.pais + '/' + item.estado + ')'
                 $(identificador).append(option)
             }
             console.log('cargando profesores ...');
@@ -191,7 +238,6 @@ $(function () {
             $(identificador).empty();
             let peticion = await fetch(servidor + `admin/cat_modalidades`);
             let response = await peticion.json();
-            console.log(response);
             let option_select = document.createElement("option")
             option_select.value = '';
             option_select.text = 'Seleccionar modalidad...';
@@ -208,45 +254,97 @@ $(function () {
         }
     }
     modalidades('#modalidad');
-
-
-
-
-
-    $('#add-document').click(function () {
-        $('#documento').attr('required', true);
-        $('#nombre_documento').val('');
-        $('#id_documento').val('');
-        $('#documento_ant').val('');
-        $('.btn-save').attr('data-tipo','nuevo').text('Guardar');
-        $('#exampleModalToggleLabel').text('Agregar documento');
-    });
-    $('#container-actividades').on('click', '.edit-document', async function () {
-        $('#documento').attr('required', false);
-        let peticion = await fetch(servidor + `admin/getDocumento/${$(this).data('doc')}`);
-        let response = await peticion.json();
-        console.log(response);
-        $('#nombre_documento').val(response.nombre_documento);
-        $('#id_documento').val(response.id_documento);
-        $('#documento_ant').val(response.ruta_documento);
-        $('.btn-save').attr('data-tipo','editar').text('Actualizar');
-        $('#exampleModalToggleLabel').text('Editar documento');
-    });
-
-
-
-    /* Copiar al portapapeles */
-    var clipboard = new Clipboard('.copy');
-    clipboard.on('success', function (e) {
-        console.log(e);
-        console.log(e.trigger.id);
-        $('#copiado-' + e.trigger.id).removeClass('d-none').fadeOut(1600);
-        setTimeout(() => {
-            $('#copiado-' + e.trigger.id).addClass('d-none');
-            $('#copiado-' + e.trigger.id).attr('style', '');
-        }, 1700);
-    });
-    clipboard.on('error', function (e) {
-        /* console.log(e); */
-    });
+    async function prefijos(identificador) {
+        try {
+            $(identificador).empty();
+            let peticion = await fetch(servidor + `admin/cat_prefijos`);
+            let response = await peticion.json();
+            let option_select = document.createElement("option")
+            option_select.value = '';
+            option_select.text = 'Seleccionar prefijo...';
+            $(identificador).append(option_select);
+            for (let item of response) {
+                let option = document.createElement("option")
+                option.value = item.id_prefijo;
+                option.text = item.siglas_prefijo + ' - ' + item.nombre_prefijo
+                $(identificador).append(option)
+            }
+            console.log('cargando profesores ...');
+        } catch (err) {
+            if (err.name == 'AbortError') { } else { throw err; }
+        }
+    }
+    prefijos('#prefijo');
+    async function ladas(identificador) {
+        try {
+            $(identificador).empty();
+            let peticion = await fetch(servidor + `admin/cat_ladas`);
+            let response = await peticion.json();
+            let option_select = document.createElement("option")
+            option_select.value = '';
+            option_select.text = 'Seleccionar lada...';
+            $(identificador).append(option_select);
+            for (let item of response) {
+                let option = document.createElement("option")
+                option.value = item.id_lada;
+                option.text = item.numero_lada + ' - ' + item.nombre_lada
+                $(identificador).append(option)
+            }
+            console.log('cargando ladas ...');
+        } catch (err) {
+            if (err.name == 'AbortError') { } else { throw err; }
+        }
+    }
+    ladas('#lada');
+    async function cat_paises(identificador) {
+        try {
+          $("#" + identificador).empty();
+          let peticion = await fetch(servidor + `admin/cat_paises`);
+          let response = await peticion.json();
+          let option_select = document.createElement("option");
+          option_select.value = "";
+          option_select.text = "Seleccionar País...";
+          $("#" + identificador).append(option_select);
+          for (let item of response) {
+            let option = document.createElement("option");
+            option.value = item.id_pais;
+            option.text = item.pais;
+            $("#" + identificador).append(option);
+          }
+          console.log("cargando países ...");
+        } catch (err) {
+          if (err.name == "AbortError") {
+          } else {
+            throw err;
+          }
+        }
+      }
+      cat_paises('pais');
+      async function cat_estados(identificador, bus = null) {
+        try {
+          $("#" + identificador).empty();
+          let peticion = await fetch(servidor + `admin/cat_estados/${bus}`);
+          let response = await peticion.json();
+          /* console.log(response); */
+          let option_select = document.createElement("option");
+          option_select.value = "";
+          option_select.text = "Seleccionar estado...";
+          $("#" + identificador).append(option_select);
+          for (let item of response) {
+            let option = document.createElement("option");
+            option.value = item.id_estado;
+            option.text = item.estado;
+            $("#" + identificador).append(option);
+          }
+          console.log("cargando estados ...");
+        } catch (err) {
+          if (err.name == "AbortError") {
+          } else {
+            throw err;
+          }
+        }
+      }
+    $('#pais').change(function () {
+        cat_estados('estado', $(this).val());
+    })
 });

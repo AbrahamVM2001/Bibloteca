@@ -401,6 +401,33 @@ class Admin extends ControllerBase
 
         echo json_encode($data);
     }
+    function guardarProfesor(){
+        try {
+                $resp = AdminModel::guardarProfesor($_POST);
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Profesor creado',
+                    'respuesta' => 'Se creo correctamente el profesor.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Profesor no creado',
+                    'respuesta' => 'No se pudo crear correctamente el profesor.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            /* echo "respuesta:".$th->getMessage() */
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+        }
+
+        echo json_encode($data);
+    }
     function cat_temas($param = null)
     {
         try {
@@ -416,6 +443,42 @@ class Admin extends ControllerBase
         try {
             $profesores = AdminModel::cat_profesores();
             echo json_encode($profesores);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
+            return;
+        }
+    }
+    function cat_prefijos(){
+        try {
+            $prefijos = AdminModel::cat_prefijos();
+            echo json_encode($prefijos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
+            return;
+        }
+    }
+    function cat_ladas(){
+        try {
+            $prefijos = AdminModel::cat_ladas();
+            echo json_encode($prefijos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
+            return;
+        }
+    }
+    function cat_paises(){
+        try {
+            $prefijos = AdminModel::cat_paises();
+            echo json_encode($prefijos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
+            return;
+        }
+    }
+    function cat_estados($param = null){
+        try {
+            $prefijos = AdminModel::cat_estados($param[0]);
+            echo json_encode($prefijos);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
             return;

@@ -96,10 +96,10 @@ let actividad = '<?= $this->idactividad; ?>';
   </div>
 </div>
 <!-- Nuevo profesor -->
-<div class="modal fade" id="modalNuevoTema" aria-hidden="true" aria-labelledby="modalNuevoTemaLabel"
+<div class="modal fade" id="modalNuevoProfesor" aria-hidden="true" aria-labelledby="modalNuevoProfesorLabel"
   tabindex="-1">
   <div class="modal-dialog modal-lg">
-    <form id="form-temas" action="javascript:;" class="needs-validation" novalidate method="post">
+    <form id="form-profesor-nuevo" action="javascript:;" class="needs-validation" novalidate method="post">
       <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
       <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
       <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
@@ -107,64 +107,87 @@ let actividad = '<?= $this->idactividad; ?>';
       <input type="hidden" name="idactividad" id="idactividad" value="<?= $this->idactividad; ?>" readonly>
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalNuevoTemaLabel">Agregar nuevo tema</h1>
+          <h1 class="modal-title fs-5" id="modalNuevoProfesorLabel">Agregar nuevo profesor</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Nombre</label>
-              <select class="form-control" name="asignar_tema" id="asignar_tema" required>
+          <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
+              <label for="">Prefijo <small class="text-danger">*</small></label>
+              <select class="form-control" name="prefijo" id="prefijo" required>
               </select>
               <div class="invalid-feedback">
                 Seleccione una opción, por favor.
               </div>
             </div>
-            <div id="contenedor-agregar" class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-none">
-              <label for="">Apellido paterno</label>
-              <input type="text" class="form-control" name="nuevo_tema" id="nuevo_tema" disabled="true">
+          <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
+              <label for="">Nombre <small class="text-danger">*</small></label>
+              <input class="form-control" type="text" name="nombre_profesor" id="nombre_profesor" required>
               <div class="invalid-feedback">
-                Ingrese un nombre de tema, por favor.
+                Ingrese un nombre, por favor.
               </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 contenedor-asignacion">
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">Apellido paterno <small class="text-danger">*</small></label>
+              <input type="text" class="form-control" name="apellidop_profesor" id="apellidop_profesor" required>
+              <div class="invalid-feedback">
+                Ingrese un apellido paterno, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
               <label for="">Apellido materno</label>
-              <input type="time" class="form-control campos-asignacion" name="hora_inicial" id="hora_inicial" required>
+              <input type="text" class="form-control" name="apellidom_profesor" id="apellidom_profesor">
               <div class="invalid-feedback">
-                Ingrese una hora inicial, por favor.
+                Ingrese un apellido materno, por favor.
               </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 contenedor-asignacion">
-              <label for="">Hora final</label>
-              <input type="time" class="form-control campos-asignacion" name="hora_final" id="hora_final" required>
-              <div class="invalid-feedback">
-                Ingrese una hora final, por favor.
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 contenedor-asignacion">
-              <label for="">Profesor</label>
-              <select class="form-control campos-asignacion" name="profesor" id="profesor" required>
-                <option value="">Seleccionar profesor...</option>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">País <small class="text-danger">*</small></label>
+              <select class="form-control" name="pais" id="pais" required>
+                <option value="">Seleccionar país...</option>
               </select>
               <div class="invalid-feedback">
                 Seleccione una opción, por favor.
               </div>
             </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6 contenedor-asignacion">
-              <label for="">Modalidad</label>
-              <select class="form-control campos-asignacion" name="modalidad" id="modalidad" required>
-                <option value="">Seleccionar modalidad...</option>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">Estado <small class="text-danger">*</small></label>
+              <select class="form-control" name="estado" id="estado" required>
+                <option value="">Seleccionar estado...</option>
               </select>
               <div class="invalid-feedback">
                 Seleccione una opción, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">Lada</label>
+              <select class="form-control" name="lada" id="lada">
+                <option value="">Seleccionar lada...</option>
+              </select>
+              <div class="invalid-feedback">
+                Seleccione una opción, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">Teléfono</label>
+              <input class="form-control" type="tel" name="telefono_profesor" id="telefono_profesor">
+              <div class="invalid-feedback">
+                Ingrese un teléfono, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Correo <small class="text-danger">*</small></label>
+              <input class="form-control" type="email" name="correo_profesor" id="correo_profesor" required>
+              <div class="invalid-feedback">
+                Ingrese un correo, por favor.
               </div>
             </div>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button data-formulario="form-temas" data-tipo="nuevo" type="button"
-            class="btn btn-success btn-save-temas">Guardar</button>
+          <button data-formulario="form-profesor-nuevo" data-tipo="nuevo" type="button"
+            class="btn btn-success btn-save-profesores">Guardar</button>
         </div>
       </div>
     </form>
