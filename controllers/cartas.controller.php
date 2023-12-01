@@ -43,6 +43,15 @@ class Cartas extends ControllerBase
             $this->recargar();
         }
     }
+    function infoProgramas($param = null){
+        try {
+            $eventos = CartasModel::infoProgramas($param[0]);
+            echo json_encode($eventos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
     function concentrado($param = null){
         if ($this->verificarAdmin()) {
             $this->view->idprograma = $param[0];
@@ -52,7 +61,25 @@ class Cartas extends ControllerBase
             $this->recargar();
         }
     }
-    function concentradoPrograma(){
+    function temasAsignadosProfesores($param = null){
+        try {
+            $asignacion = CartasModel::temasAsignadosProfesores($param[0]);
+            echo json_encode($asignacion);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function buscarTemasAsignados($param = null){
+        try {
+            $temas = CartasModel::buscarTemasAsignados($param[0],$param[1]);
+            echo json_encode($temas);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    /* function concentradoPrograma(){
         try {
             $eventos = CartasModel::eventos();
             echo json_encode($eventos);
@@ -60,5 +87,5 @@ class Cartas extends ControllerBase
             echo "Error recopilado controlador eventos: " . $th->getMessage();
             return;
         }
-    }
+    } */
 }

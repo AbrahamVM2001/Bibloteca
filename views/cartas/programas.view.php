@@ -18,7 +18,8 @@
 </div>
 <?php require('views/footer.view.php'); ?>
 <script>let evento = '<?= $this->evento; ?>';</script>
-<script src="<?= constant('URL') ?>public/js/paginas/home.programas.js"></script>
+<script src="<?= constant('URL') ?>public/js/paginas/cartas.programas.js"></script>
+
 <div class="modal fade" id="modalNuevoPrograma" aria-hidden="true" aria-labelledby="modalNuevoProgramaLabel"
   tabindex="-1">
   <div class="modal-dialog modal-lg">

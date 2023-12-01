@@ -48,7 +48,7 @@ $(function () {
     async function cardsProgramas() {
         console.log("Entras");
         try {
-            let peticion = await fetch(servidor + `admin/infoProgramas/${evento}`);
+            let peticion = await fetch(servidor + `cartas/infoProgramas/${evento}`);
             let response = await peticion.json();
             console.log(response);
             if (response.length == 0) {
