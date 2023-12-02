@@ -22,6 +22,7 @@
 <script src="<?= constant('URL') ?>public/js/soft-ui-dashboard.min.js?v=1.0.5"></script>
 <script src="<?= constant('URL') ?>public/js/fontawesome-4f9827e774.js"></script>
 <script src="<?= constant('URL') ?>public/js/sweetalert.min.js"></script>
+<script src="<?= constant('URL') ?>public/plugins/moment/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/clipboard.js/1.5.3/clipboard.min.js"></script>
 
 

@@ -40,14 +40,14 @@ class Admin extends ControllerBase
             if ($resp != false) {
                 $data = [
                     'estatus' => 'success',
-                    'titulo' => 'Carpeta creada',
-                    'respuesta' => 'Se creo correctamente la carpeta.'
+                    'titulo' => 'Evento creado',
+                    'respuesta' => 'Se creo correctamente el evento.'
                 ];
             } else {
                 $data = [
                     'estatus' => 'warning',
-                    'titulo' => 'Carpeta no creadas',
-                    'respuesta' => 'No se pudo crear correctamente la carpeta.'
+                    'titulo' => 'Evento no creado',
+                    'respuesta' => 'No se pudo crear correctamente el evento.'
                 ];
             }
         } catch (\Throwable $th) {

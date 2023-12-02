@@ -33,9 +33,12 @@
               </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Descripción evento <small>(opcional)</small></label>
+              <label for="">Lugar del evento</label>
               <input type="text" class="form-control" name="descripcion_evento" id="descripcion_evento"
-                placeholder="Descripción...">
+                placeholder="Lugar..." required>
+                <div class="invalid-feedback">
+                Ingrese dónde será el evento, por favor.
+              </div>
             </div>
             <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
               <label for="">Fecha inicial</label>

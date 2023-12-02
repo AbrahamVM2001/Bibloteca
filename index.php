@@ -2,6 +2,7 @@
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 date_default_timezone_set('America/Mexico_City');
+require_once('public/fpdf/fpdf.php');
 require_once("app/encrypt_decrypt.php");
 require_once("app/database.php");
 require_once("app/menu.php");
