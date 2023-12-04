@@ -43,7 +43,7 @@ $(function () {
                             botones = `<div class="col-sm-12 col-md-12 col-lg-12 col-<xl-12 d-flex justify-content-between align-items-center" >
                                 <button data-id="${btoa(btoa(data.id_profesor))}" data-prof="${data.profesor}" data-programa="${btoa(btoa(data.fk_id_programa))}" data-bs-toggle="tooltip" title="Temas asignados" type="button" class="btn btn-info temas-asignados"><i class="fa-solid fa-list"></i></button>
                                 <a href="${servidor}cartas/previewCartas/${btoa(btoa(data.id_profesor))}/${btoa(btoa(data.fk_id_programa))}" target="_blank" data-bs-toggle="tooltip" title="Previsualizar Cartas" type="button" class="btn btn-secondary visualizar-cartas"><i class="fa-solid fa-magnifying-glass"></i></a>
-                                <button data-id="${btoa(btoa(data.id_profesor))}" data-prof="${data.profesor}" data-programa="${btoa(btoa(data.fk_id_programa))}" data-bs-toggle="tooltip" title="Enviar cartas" type="button" class="btn btn-success enviar-cartas"><i class="fa-solid fa-envelope-open-text"></i></button>
+                                <a href="${servidor}cartas/sendCartas/${btoa(btoa(data.id_profesor))}/${btoa(btoa(data.fk_id_programa))}" target="_blank" data-bs-toggle="tooltip" title="Enviar cartas" type="button" class="btn btn-success enviar-cartas"><i class="fa-solid fa-envelope-open-text"></i></a>
                                 </div>`;
                             return botones;
                         },
@@ -122,11 +122,17 @@ $(function () {
         buscarTemasAsignados($(this).data('id'),$(this).data('programa'));
     })
     $('#container-concentrado').on('click', '.visualizar-cartas', function () {
-        console.log("Click Preview de carta");
+        verificarBloqueadorVentanasEmergentes();
+        /* console.log("Click Preview de carta"); */
     })
     $('#container-concentrado').on('click', '.enviar-cartas', function () {
         console.log("Click Enviar cartas");
     })
+    function verificarBloqueadorVentanasEmergentes() {
+        var ventanaEmergente = window.open('', '', 'width=1,height=1');
+        var bloqueadorActivo = ventanaEmergente === null || typeof ventanaEmergente === 'undefined';
+        ventanaEmergente.close();
+      }
     /*$('.visualizar-cartas').click(function () {
         console.log("Click Preview de carta");
     })

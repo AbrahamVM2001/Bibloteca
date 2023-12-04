@@ -126,7 +126,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
+                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cp.correo_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
             ");
             $query->execute([
                 ':idProfesor' => base64_decode(base64_decode($idprofesor))
