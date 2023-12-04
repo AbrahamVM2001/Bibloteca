@@ -164,7 +164,7 @@ class Cartas extends ControllerBase
             if ($espacioRestante > 70) {
                 // Añade más contenido
                 $texto_dia = "<br>Día: <b>" . $tema['fecha_programa'] . "</b>";
-                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - ".$tema['hora_final']."</b>";
+                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
                 $texto_salon = "<br>Salón: <b>" . $tema['nombre_salon'] . "</b>";
                 $texto_tema = "<br>Tema: <b>" . $tema['nombre_tema'] . "</b>";
                 $texto_actividad = "<br>Actividad: <b>" . $tema['nombre_actividad'] . "</b>";
@@ -188,7 +188,7 @@ class Cartas extends ControllerBase
                 $pdf->SetFont('Arial', 'B', 11);
                 $pdf->MultiCell(140, 10, mb_convert_encoding("Ciudad de México, " . $this->fechaEs(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
                 $texto_dia = "<br>Día: <b>" . $tema['fecha_programa'] . "</b>";
-                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - ".$tema['hora_final']."</b>";
+                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
                 $texto_salon = "<br>Salón: <b>" . $tema['nombre_salon'] . "</b>";
                 $texto_tema = "<br>Tema: <b>" . $tema['nombre_tema'] . "</b>";
                 $texto_actividad = "<br>Actividad: <b>" . $tema['nombre_actividad'] . "</b>";
@@ -394,9 +394,13 @@ class Cartas extends ControllerBase
             echo '</script>'; */
         } catch (\Throwable $th) {
             echo "Error recopilado: " . $th->getMessage();
+        } finally {
+            echo '<script language="javascript">';
+            echo 'window.close();'; // Cierra la ventana actual
+            echo '</script>';
         }
     }
-    function enviarCartaPresencial($profesor,$temas,$evento)
+    function enviarCartaPresencial($profesor, $temas, $evento)
     {
         /* $temas = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
@@ -444,7 +448,7 @@ class Cartas extends ControllerBase
             if ($espacioRestante > 70) {
                 // Añade más contenido
                 $texto_dia = "<br>Día: <b>" . $tema['fecha_programa'] . "</b>";
-                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - ".$tema['hora_final']."</b>";
+                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
                 $texto_salon = "<br>Salón: <b>" . $tema['nombre_salon'] . "</b>";
                 $texto_tema = "<br>Tema: <b>" . $tema['nombre_tema'] . "</b>";
                 $texto_actividad = "<br>Actividad: <b>" . $tema['nombre_actividad'] . "</b>";
@@ -468,7 +472,7 @@ class Cartas extends ControllerBase
                 $pdf->SetFont('Arial', 'B', 11);
                 $pdf->MultiCell(140, 10, mb_convert_encoding("Ciudad de México, " . $this->fechaEs(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
                 $texto_dia = "<br>Día: <b>" . $tema['fecha_programa'] . "</b>";
-                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - ".$tema['hora_final']."</b>";
+                $texto_horario = "<br>Horario: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
                 $texto_salon = "<br>Salón: <b>" . $tema['nombre_salon'] . "</b>";
                 $texto_tema = "<br>Tema: <b>" . $tema['nombre_tema'] . "</b>";
                 $texto_actividad = "<br>Actividad: <b>" . $tema['nombre_actividad'] . "</b>";
@@ -523,8 +527,8 @@ class Cartas extends ControllerBase
             $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
         }
 
-        $nombe_archivo = $profesor['profesor'].".pdf";
-        $nombre_carpeta = "public/cartas/".$evento['nombre_evento']."/presenciales/";
+        $nombe_archivo = $profesor['profesor'] . ".pdf";
+        $nombre_carpeta = "public/cartas/" . $evento['nombre_evento'] . "/presenciales/";
         $pdf->Output('F', $nombe_archivo);
         if (!file_exists($nombre_carpeta)) {
             mkdir($nombre_carpeta, 0777, true);
@@ -532,18 +536,19 @@ class Cartas extends ControllerBase
         $nuevaRuta = $nombre_carpeta . '/' . $nombe_archivo;
         if (rename($nombe_archivo, $nuevaRuta)) {
             //echo "El archivo se ha movido exitosamente a la carpeta '$carpeta'.";
-            $this->enviarCartaIndividual($profesor,$evento,$nuevaRuta,'Presencial');
+            $this->enviarCartaIndividual($profesor, $evento, $nuevaRuta, 'Presencial');
         } else {
-            echo "Error al mover la carta presencial:".$nombe_archivo;
+            echo "Error al mover la carta presencial:" . $nombe_archivo;
         }
     }
-    function enviarCartaVirtual($profesor,$temas,$evento)
+    function enviarCartaVirtual($profesor, $temas, $evento)
     {
         /* $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
         $evento = CartasModel::buscarEvento($param[1]); */
         /* var_dump($temas);
         exit; */
+        $programa = '';
         header('Content-Type: text/html; charset=utf-8');
         $pdf = new FPDF('P', 'mm', 'A4');
         $pdf->AddPage();
@@ -651,20 +656,21 @@ class Cartas extends ControllerBase
             $pdf->SetY(($pdf->GetY() + 50));
             $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
         }
-        $nombe_archivo = $profesor['profesor'].".pdf";
-        $nombre_carpeta = "public/cartas/".$evento['nombre_evento']."/virtuales/";
+        $nombe_archivo = $profesor['profesor'] . ".pdf";
+        $nombre_carpeta = "public/cartas/" . $evento['nombre_evento'] . "/virtuales/";
         $pdf->Output('F', $nombe_archivo);
         if (!file_exists($nombre_carpeta)) {
             mkdir($nombre_carpeta, 0777, true);
         }
         $nuevaRuta = $nombre_carpeta . '/' . $nombe_archivo;
         if (rename($nombe_archivo, $nuevaRuta)) {
-            $this->enviarCartaIndividual($profesor,$evento,$nuevaRuta,'Virtual');
+            $this->enviarCartaIndividual($profesor, $evento, $nuevaRuta, 'Virtual');
         } else {
-            echo "Error al mover la carta virtual de:".$nombe_archivo;
+            echo "Error al mover la carta virtual de:" . $nombe_archivo;
         }
     }
-    function enviarCartaIndividual($profesor,$evento,$archivo,$modalidad){
+    function enviarCartaIndividual($profesor, $evento, $archivo, $modalidad)
+    {
         $mail = new PHPMailer(true); // defaults to using php "mail()"
         $html = '
         <!DOCTYPE html>
@@ -738,7 +744,7 @@ class Cartas extends ControllerBase
         <body>
         <div class="container">
             <br>
-            <img src="' . constant("URL").'public/img/cintillo-correo.jpeg" alt="Cabezera del Correo">
+            <img src="' . constant("URL") . 'public/img/cintillo-correo.jpeg" alt="Cabezera del Correo">
             <br>
             <br>
             <div class="event-info">
@@ -772,27 +778,27 @@ class Cartas extends ControllerBase
 
             $mail->AddAddress(trim($profesor['correo_profesor'])); //Correo del receptor
             $mail->AddAttachment($archivo); //Adds an attachment from a path on the filesystem
-            $mail->Subject = 'Carta de asignación de temas - '.$modalidad; //Asunto del correo
+            $mail->Subject = 'Carta de asignación de temas - ' . $modalidad; //Asunto del correo
             $mail->Body = $html;
             $mail->AltBody = $html;
             $mail->CharSet = 'UTF-8';
             $mail->Encoding = 'base64';
             /* if($datosDestinatario['archivo_constancia'] != "" && $datosDestinatario['archivo_constancia'] != null){ */
-                if ($mail->Send()) {
-                    /* $resp = AdminModel::actualizarCorreoEnviado($datosDestinatario['id_detalle_lista'], $datosCampania['id_campania'], 1); */
-                    return true;
-                } else {
-                    /* $resp = AdminModel::actualizarCorreoEnviado($datosDestinatario['id_detalle_lista'], $datosCampania['id_campania'], 0); */
-                    return false;
-                }
+            if ($mail->Send()) {
+                /* $resp = CartasModel::actualizarCorreoEnviado($profesor['id_profesor'], 'programa','cartapresencial','cartavirtual'); */
+                return true;
+            } else {
+                /* $resp = AdminModel::actualizarCorreoEnviado($datosDestinatario['id_detalle_lista'], $datosCampania['id_campania'], 0); */
+                return false;
+            }
             /* }else{
                 return false;
             } */
-            
+
         } catch (phpmailerException $e) {
-            echo "Error phpmailerexception:".$e->errorMessage(); //Pretty error messages from PHPMailer
+            echo "Error phpmailerexception:" . $e->errorMessage(); //Pretty error messages from PHPMailer
         } catch (Exception $e) {
-            echo "Error Exception:".$e->getMessage(); //Boring error messages from anything else!
+            echo "Error Exception:" . $e->getMessage(); //Boring error messages from anything else!
         }
     }
     function fechaEs($fecha)

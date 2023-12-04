@@ -78,7 +78,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad 
+                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad,atp.fk_id_programa 
                 FROM asignacion_temas_programa atp 
                 INNER JOIN cat_temas cm ON cm.id_tema = atp.fk_id_tema 
                 INNER JOIN cat_actividades ca ON ca.id_actividad = atp.fk_id_actividad 
@@ -102,7 +102,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad 
+                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad,atp.fk_id_programa 
                 FROM asignacion_temas_programa atp 
                 INNER JOIN cat_temas cm ON cm.id_tema = atp.fk_id_tema 
                 INNER JOIN cat_actividades ca ON ca.id_actividad = atp.fk_id_actividad 
@@ -126,7 +126,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cp.correo_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
+                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cp.correo_profesor,cp.id_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
             ");
             $query->execute([
                 ':idProfesor' => base64_decode(base64_decode($idprofesor))
@@ -150,6 +150,26 @@ class CartasModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model revistas: " . $e->getMessage();
             return;
+        }
+    }
+    public static function actualizarCorreoEnviado($profesor,$programa,$cartapresencial,$cartavirtual){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("INSERT INTO log_correos (fk_id_profesor,fk_id_programa,carta_presencial,carta_virtual,enviado_por) VALUES (:fkProfesor,:fkPrograma,:cartaPresencial,:cartaVirtual,:enviadoPor)");
+            $query->execute([
+                ':fkProfesor' => $profesor,
+                ':fkPrograma' => $programa,
+                ':cartaPresencial' => (!empty($cartapresencial))?$cartapresencial:'null',
+                ':cartaVirtual' => (!empty($cartavirtual))?$cartavirtual:'null',
+                ':enviadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
+            return false;
         }
     }
 }
