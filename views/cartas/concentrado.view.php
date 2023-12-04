@@ -26,7 +26,7 @@
   let programa = '<?= $this->idprograma; ?>'
 </script>
 <div class="modal fade" id="modalListaTemas" aria-hidden="true" aria-labelledby="modalListaTemasLabel" tabindex="-1">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-fullscreen">
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="modalListaTemasLabel">Lista de temas asignados</h1>

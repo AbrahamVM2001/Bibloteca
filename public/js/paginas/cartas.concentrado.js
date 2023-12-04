@@ -74,6 +74,7 @@ $(function () {
         <th class="text-uppercase">Capítulo</th>
         <th class="text-uppercase">Actividad</th>
         <th class="text-uppercase">Tema</th>
+        <th class="text-uppercase">Modalidad</th>
         </tr></thead>
         </table>`).appendTo("#container-table-temas").removeClass('text-danger');
 
@@ -110,6 +111,7 @@ $(function () {
                 { "data": "nombre_capitulo", className: 'text-vertical text-center' },
                 { "data": "nombre_actividad", className: 'text-vertical text-center' },
                 { "data": "nombre_tema", className: 'text-vertical text-center' },
+                { "data": "nombre_modalidad", className: 'text-vertical text-center' },
                 
             ]
         });
