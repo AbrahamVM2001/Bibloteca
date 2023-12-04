@@ -49,11 +49,11 @@
                                 class='text-start needs-validation' novalidate>
                                 <div class="mb-3">
                                     <input name="user-login-masivos" type="text" class="form-control"
-                                        placeholder="Usuario..." aria-label="Usuario" value="francisco">
+                                        placeholder="Usuario..." aria-label="Usuario" value="">
                                 </div>
                                 <div class="mb-3">
                                     <input name="password-login-masivos" type="password" class="form-control"
-                                        placeholder="Contraseña..." aria-label="Password" value="admin">
+                                        placeholder="Contraseña..." aria-label="Password" value="">
                                 </div>
                                 <div class="text-center">
                                     <button id="btn-login" type="button"
