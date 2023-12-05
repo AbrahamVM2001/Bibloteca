@@ -135,7 +135,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] . " - Presencial", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -264,7 +264,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] . " - Virtual", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -419,7 +419,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] . " - Presencial", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -561,7 +561,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] . " - Virtual", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
