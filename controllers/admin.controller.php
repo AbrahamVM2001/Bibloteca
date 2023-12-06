@@ -378,25 +378,37 @@ class Admin extends ControllerBase
     function guardarTemas()
     {
         try {
-            if (!empty($_POST['nuevo_tema'])) {
-                $resp = AdminModel::guardarTemas($_POST);
-                $resp2 = AdminModel::asignarTemaPrograma($_POST['idcapitulo'], $_POST['idsalon'], $_POST['idfecha'], $_POST['idprograma'], $_POST['idactividad'], $resp, $_POST);
-                $tipo = "crear";
-            } else {
-                $resp = AdminModel::asignarTemaPrograma($_POST['idcapitulo'], $_POST['idsalon'], $_POST['idfecha'], $_POST['idprograma'], $_POST['idactividad'], $_POST['asignar_tema'], $_POST);
-                $tipo = "asignar";
-            }
-            if ($resp != false) {
-                $data = [
-                    'estatus' => 'success',
-                    'titulo' => ($tipo == "crear") ? 'Tema creado' : 'Tema asignado',
-                    'respuesta' => ($tipo == "crear") ? 'Se creo correctamente el tema.' : 'Se asignó correctamente el tema.'
-                ];
+            $horarios_encimados = $this->verificarAsignacion($_POST['profesor'],$_POST['idfecha'],$_POST['idprograma'],$_POST['hora_inicial'],$_POST['hora_final']);
+            if ($horarios_encimados == true) {
+                if (!empty($_POST['nuevo_tema'])) {
+                    $resp = AdminModel::guardarTemas($_POST);
+                    $resp2 = AdminModel::asignarTemaPrograma($_POST['idcapitulo'], $_POST['idsalon'], $_POST['idfecha'], $_POST['idprograma'], $_POST['idactividad'], $resp, $_POST);
+                    $tipo = "crear";
+                } else {
+                    $resp = AdminModel::asignarTemaPrograma($_POST['idcapitulo'], $_POST['idsalon'], $_POST['idfecha'], $_POST['idprograma'], $_POST['idactividad'], $_POST['asignar_tema'], $_POST);
+                    $tipo = "asignar";
+                }
+                if ($resp != false) {
+                    $data = [
+                        'estatus' => 'success',
+                        'titulo' => ($tipo == "crear") ? 'Tema creado' : 'Tema asignado',
+                        'respuesta' => ($tipo == "crear") ? 'Se creo correctamente el tema.' : 'Se asignó correctamente el tema.',
+                        'tipo_resp' => ''
+                    ];
+                } else {
+                    $data = [
+                        'estatus' => 'warning',
+                        'titulo' => ($tipo == "crear") ? 'Tema no creado' : 'Tema no asignado',
+                        'respuesta' => ($tipo == "crear") ? 'No se pudo crear correctamente el tema.' : 'No se pudo asignar correctamente el tema.',
+                        'tipo_resp' => ''
+                    ];
+                }
             } else {
                 $data = [
                     'estatus' => 'warning',
-                    'titulo' => ($tipo == "crear") ? 'Tema no creado' : 'Tema no asignado',
-                    'respuesta' => ($tipo == "crear") ? 'No se pudo crear correctamente el tema.' : 'No se pudo asignar correctamente el tema.'
+                    'titulo' => 'Horarios encimados',
+                    'respuesta' => 'No se puede asignar el tema porque se enciman los horarios con otra ponencia.',
+                    'tipo_resp' => 'horarios'
                 ];
             }
         } catch (\Throwable $th) {
@@ -409,6 +421,18 @@ class Admin extends ControllerBase
         }
 
         echo json_encode($data);
+    }
+    function verificarAsignacion($idprofesor,$idfechas,$idprograma,$horainicial,$hora_final){
+        try {
+            $resp = AdminModel::verificarAsignacion($idprofesor,$idfechas,$idprograma,$horainicial,$hora_final);
+            if (count($resp) > 0) {
+                return false;
+            }else{
+                return true;
+            }
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
     }
     function guardarProfesor(){
         try {

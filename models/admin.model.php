@@ -369,6 +369,21 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    public static function verificarAsignacion($idprofesor,$idfechas,$idprograma,$horainicial,$horafinal){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa WHERE fk_id_profesor = :fkProfesor AND fk_id_fechas = :fkFechas AND fk_id_programa = :fkPrograma AND ((hora_inicial BETWEEN '$horainicial' AND '$horafinal') OR (hora_final > '$horainicial'))");
+            $query->execute([
+                ':fkProfesor' => $idprofesor,
+                ':fkFechas' => base64_decode(base64_decode($idfechas)),
+                ':fkPrograma' => base64_decode(base64_decode($idprograma))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model verificarAsignacion: " . $e->getMessage();
+            return;
+        }
+    }
     public static function asignarTemaPrograma($idcapitulo, $idsalon, $idfecha, $idprograma, $idactividad, $idtema, $datos)
     {
         try {

@@ -27,11 +27,13 @@ $(function () {
                         title: data.titulo,
                         text: data.respuesta,
                         showConfirmButton: false,
-                        timer: 2000,
+                        timer: 4000,
                     });
-                    setTimeout(() => {
-                        location.reload();
-                    }, 2000);
+                    if (data.tipo_resp != 'horarios') {
+                        setTimeout(() => {
+                            location.reload();
+                        }, 2000);
+                    }
                 },
                 error: function (data) {
                     console.log("Error ajax");
