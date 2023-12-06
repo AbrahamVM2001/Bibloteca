@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 02-12-2023 a las 01:02:00
+-- Tiempo de generación: 06-12-2023 a las 07:33:10
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -43,7 +43,8 @@ CREATE TABLE `asignacion_actividades_programa` (
 --
 
 INSERT INTO `asignacion_actividades_programa` (`id_asignacion_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 1, 1, 1, 1, 1, 1);
+(2, 2, 2, 2, 1, 2, 1, 1),
+(3, 2, 2, 2, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -66,7 +67,8 @@ CREATE TABLE `asignacion_capitulos_programa` (
 --
 
 INSERT INTO `asignacion_capitulos_programa` (`id_asignacion_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_capitulo`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 1, 1, 1, 1, 1);
+(2, 2, 2, 1, 2, 1, 1),
+(3, 2, 2, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -88,7 +90,8 @@ CREATE TABLE `asignacion_salones_programa` (
 --
 
 INSERT INTO `asignacion_salones_programa` (`id_asignacion_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_salon`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 1, 1, 1, 1);
+(2, 2, 1, 2, 1, 1),
+(3, 2, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -117,15 +120,8 @@ CREATE TABLE `asignacion_temas_programa` (
 --
 
 INSERT INTO `asignacion_temas_programa` (`id_asignacion_tema`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `fk_id_tema`, `hora_inicial`, `hora_final`, `fk_id_profesor`, `fk_id_modalidad`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(13, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(14, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(15, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(16, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(17, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(18, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(19, 1, 1, 1, 1, 1, 1, '08:05:00', '08:20:00', 1, 2, 1, 1),
-(20, 1, 1, 1, 1, 1, 2, '21:38:00', '21:50:00', 2, 2, 1, 1);
+(2, 2, 2, 2, 1, 2, 2, '01:34:00', '02:34:00', 2, 2, 1, 1),
+(3, 2, 2, 2, 1, 2, 1, '04:38:00', '05:38:00', 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -149,7 +145,8 @@ CREATE TABLE `cat_actividades` (
 --
 
 INSERT INTO `cat_actividades` (`id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_actividad`, `creado_por`, `estatus_actividad`) VALUES
-(1, 1, 1, 1, 1, 'Ortopedia geriátrica: Generalidades', 1, 1);
+(1, 1, 1, 1, 1, 'Actividad fecha 5-12-2023', 1, 1),
+(2, 2, 2, 2, 1, 'Actividad fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -172,7 +169,8 @@ CREATE TABLE `cat_capitulos` (
 --
 
 INSERT INTO `cat_capitulos` (`id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_capitulo`, `creado_por`, `estatus_capitulo`) VALUES
-(1, 1, 1, 1, 'Artroscopia y Ortopedia del Deporte', 1, 1);
+(1, 1, 1, 1, 'Capitulo de fecha 5-12-2023', 1, 1),
+(2, 2, 2, 1, 'Capitulo de fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -195,7 +193,7 @@ CREATE TABLE `cat_eventos` (
 --
 
 INSERT INTO `cat_eventos` (`id_evento`, `nombre_evento`, `descripcion_evento`, `fecha_inicio_evento`, `fecha_fin_evento`, `creado_por`, `estatus_evento`) VALUES
-(1, 'LXIX Congreso Nacional de Ortopedia', 'World Trade Center Ciudad de México', '2024-04-27', '2024-05-01', 1, 1);
+(1, 'LXIX Congreso Nacional de Ortopedia', 'World Tarde Center Cuidad de México', '2023-12-05', '2023-12-10', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -216,7 +214,7 @@ CREATE TABLE `cat_fechas_programa` (
 --
 
 INSERT INTO `cat_fechas_programa` (`id_fecha_programa`, `fk_id_programa`, `fecha_programa`, `creado_por`, `estatus_fecha_programa`) VALUES
-(1, 1, '2024-04-28', 1, 1);
+(2, 1, '2023-12-06', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -646,8 +644,8 @@ CREATE TABLE `cat_profesores` (
 --
 
 INSERT INTO `cat_profesores` (`id_profesor`, `fk_id_prefijo`, `nombre_profesor`, `apellidop_profesor`, `apellidom_profesor`, `fk_id_pais`, `fk_id_estado`, `hospedaje`, `transporte_aereo`, `transporte_terrestre`, `miembro_cmot`, `miembro_cmo`, `fk_id_lada`, `telefono_profesor`, `correo_profesor`, `creado_por`, `estatus_profesor`) VALUES
-(1, 1, 'Francisco', 'Arenal', 'Guerrero', 156, 2545, 0, 0, 0, 0, 0, 23, '5548653103', 'francisco.arenal.guerrero@gmail.com', 1, 1),
-(2, 2, 'Cecilia', 'Soto', 'Rodríguez', 156, 2545, 0, 0, 0, 0, 0, 310, '', 'cecilia.soto@grupolahe.com', 1, 1);
+(1, 1, 'Francisco', 'Arenal', '', 156, 2545, 0, 0, 0, 0, 0, 310, '', 'francisco.arenal.guerrero@gmail.com', 1, 1),
+(2, 1, 'Jesús Gerardo', 'Arenal', 'Rodriguez', 156, 2540, 0, 0, 0, 0, 0, 310, '', 'jesus@mail.com', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -668,7 +666,7 @@ CREATE TABLE `cat_programa` (
 --
 
 INSERT INTO `cat_programa` (`id_programa`, `fk_id_evento`, `nombre_programa`, `creado_por`, `estatus_programa`) VALUES
-(1, 1, 'Programa académico', 1, 1);
+(1, 1, 'Programa Académico Congreso Relaciones', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -710,7 +708,8 @@ CREATE TABLE `cat_salones` (
 --
 
 INSERT INTO `cat_salones` (`id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_salon`, `creado_por`, `estatus_salon`) VALUES
-(1, 1, 1, 'Playa Caleta', 1, 1);
+(1, 1, 1, 'Salón de fecha 5-12-2023', 1, 1),
+(2, 2, 1, 'Salón de fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -750,8 +749,8 @@ CREATE TABLE `cat_temas` (
 --
 
 INSERT INTO `cat_temas` (`id_tema`, `fk_id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_tema`, `creado_por`, `estatus_tema`) VALUES
-(1, 1, 1, 1, 1, 1, 'Mesa Redonda: Manejo de la luxación de cadera en niño espástico. Manejo Ortopédico-Rehabilitador y aplicación de toxina botulínica', 1, 1),
-(2, 1, 1, 1, 1, 1, 'Tema demostrativo Cecilia', 1, 1);
+(1, 1, 1, 1, 1, 1, 'Tema de fecha 5-12-2023', 1, 1),
+(2, 2, 2, 2, 2, 1, 'Tema de fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -773,7 +772,8 @@ CREATE TABLE `cat_usuarios` (
 --
 
 INSERT INTO `cat_usuarios` (`id_usuario`, `nombre_usuario`, `usuario`, `password_usuario`, `tipo_usuario`, `estatus_usuario`) VALUES
-(1, 'Francisco Arenal', 'francisco', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1);
+(1, 'Francisco Arenal', 'francisco', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1),
+(2, 'Cecilia Soto', 'cecilia.soto', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -5118,6 +5118,22 @@ INSERT INTO `estados` (`id_estado`, `estado`, `id_pais`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `log_correos`
+--
+
+CREATE TABLE `log_correos` (
+  `id_log` int(11) NOT NULL,
+  `fk_id_profesor` int(11) NOT NULL,
+  `fk_id_programa` int(11) NOT NULL,
+  `carta_presencial` text NOT NULL,
+  `carta_virtual` text NOT NULL,
+  `enviado_por` int(11) NOT NULL,
+  `estatus_log` tinyint(1) NOT NULL DEFAULT 1
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `paises`
 --
 
@@ -5509,6 +5525,14 @@ ALTER TABLE `estados`
   ADD PRIMARY KEY (`id_estado`);
 
 --
+-- Indices de la tabla `log_correos`
+--
+ALTER TABLE `log_correos`
+  ADD KEY `fk_id_profesor` (`fk_id_profesor`),
+  ADD KEY `enviado_por` (`enviado_por`),
+  ADD KEY `fk_id_programa` (`fk_id_programa`);
+
+--
 -- Indices de la tabla `paises`
 --
 ALTER TABLE `paises`
@@ -5522,37 +5546,37 @@ ALTER TABLE `paises`
 -- AUTO_INCREMENT de la tabla `asignacion_actividades_programa`
 --
 ALTER TABLE `asignacion_actividades_programa`
-  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_capitulos_programa`
 --
 ALTER TABLE `asignacion_capitulos_programa`
-  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
-  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_temas_programa`
 --
 ALTER TABLE `asignacion_temas_programa`
-  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_actividades`
 --
 ALTER TABLE `cat_actividades`
-  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_capitulos`
 --
 ALTER TABLE `cat_capitulos`
-  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_eventos`
@@ -5564,7 +5588,7 @@ ALTER TABLE `cat_eventos`
 -- AUTO_INCREMENT de la tabla `cat_fechas_programa`
 --
 ALTER TABLE `cat_fechas_programa`
-  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_ladas`
@@ -5612,7 +5636,7 @@ ALTER TABLE `cat_roles`
 -- AUTO_INCREMENT de la tabla `cat_salones`
 --
 ALTER TABLE `cat_salones`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`
@@ -5630,7 +5654,7 @@ ALTER TABLE `cat_temas`
 -- AUTO_INCREMENT de la tabla `cat_usuarios`
 --
 ALTER TABLE `cat_usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion`
@@ -5655,10 +5679,116 @@ ALTER TABLE `paises`
 --
 
 --
+-- Filtros para la tabla `asignacion_actividades_programa`
+--
+ALTER TABLE `asignacion_actividades_programa`
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_5` FOREIGN KEY (`fk_id_actividad`) REFERENCES `cat_actividades` (`id_actividad`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_6` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_7` FOREIGN KEY (`fk_id_salon`) REFERENCES `asignacion_capitulos_programa` (`fk_id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_8` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `asignacion_capitulos_programa` (`fk_id_capitulo`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_actividades_programa_ibfk_9` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asignacion_capitulos_programa`
+--
+ALTER TABLE `asignacion_capitulos_programa`
+  ADD CONSTRAINT `asignacion_capitulos_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_capitulos_programa_ibfk_5` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_capitulos_programa_ibfk_6` FOREIGN KEY (`fk_id_salon`) REFERENCES `asignacion_salones_programa` (`fk_id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_capitulos_programa_ibfk_7` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `cat_capitulos` (`id_capitulo`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_capitulos_programa_ibfk_8` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asignacion_salones_programa`
+--
+ALTER TABLE `asignacion_salones_programa`
+  ADD CONSTRAINT `asignacion_salones_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_salones_programa_ibfk_3` FOREIGN KEY (`fk_id_salon`) REFERENCES `cat_salones` (`id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_salones_programa_ibfk_4` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_salones_programa_ibfk_5` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `asignacion_temas_programa`
+--
+ALTER TABLE `asignacion_temas_programa`
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_10` FOREIGN KEY (`fk_id_salon`) REFERENCES `asignacion_actividades_programa` (`fk_id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_12` FOREIGN KEY (`fk_id_actividad`) REFERENCES `asignacion_actividades_programa` (`fk_id_actividad`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_13` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_14` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `asignacion_actividades_programa` (`fk_id_capitulo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_6` FOREIGN KEY (`fk_id_tema`) REFERENCES `cat_temas` (`id_tema`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_7` FOREIGN KEY (`fk_id_profesor`) REFERENCES `cat_profesores` (`id_profesor`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_8` FOREIGN KEY (`fk_id_modalidad`) REFERENCES `cat_modalida` (`id_modalidad`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_9` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_actividades`
+--
+ALTER TABLE `cat_actividades`
+  ADD CONSTRAINT `cat_actividades_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_actividades_ibfk_3` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_actividades_ibfk_4` FOREIGN KEY (`fk_id_salon`) REFERENCES `cat_salones` (`id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_actividades_ibfk_5` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `cat_capitulos` (`id_capitulo`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_capitulos`
+--
+ALTER TABLE `cat_capitulos`
+  ADD CONSTRAINT `cat_capitulos_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_capitulos_ibfk_3` FOREIGN KEY (`fk_id_salon`) REFERENCES `cat_salones` (`id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_capitulos_ibfk_4` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_eventos`
+--
+ALTER TABLE `cat_eventos`
+  ADD CONSTRAINT `cat_eventos_ibfk_1` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_fechas_programa`
+--
+ALTER TABLE `cat_fechas_programa`
+  ADD CONSTRAINT `cat_fechas_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_fechas_programa_ibfk_2` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_profesores`
+--
+ALTER TABLE `cat_profesores`
+  ADD CONSTRAINT `cat_profesores_ibfk_1` FOREIGN KEY (`fk_id_pais`) REFERENCES `paises` (`id_pais`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_profesores_ibfk_2` FOREIGN KEY (`fk_id_estado`) REFERENCES `estados` (`id_estado`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_profesores_ibfk_3` FOREIGN KEY (`fk_id_prefijo`) REFERENCES `cat_prefijos` (`id_prefijo`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_profesores_ibfk_4` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_programa`
+--
+ALTER TABLE `cat_programa`
+  ADD CONSTRAINT `cat_programa_ibfk_1` FOREIGN KEY (`fk_id_evento`) REFERENCES `cat_eventos` (`id_evento`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_programa_ibfk_2` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_salones`
+--
+ALTER TABLE `cat_salones`
+  ADD CONSTRAINT `cat_salones_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE;
+
+--
 -- Filtros para la tabla `cat_submenu`
 --
 ALTER TABLE `cat_submenu`
   ADD CONSTRAINT `cat_submenu_ibfk_1` FOREIGN KEY (`fk_id_menu`) REFERENCES `cat_menu` (`id_menu`) ON UPDATE CASCADE;
+
+--
+-- Filtros para la tabla `cat_temas`
+--
+ALTER TABLE `cat_temas`
+  ADD CONSTRAINT `cat_temas_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_temas_ibfk_4` FOREIGN KEY (`fk_id_salon`) REFERENCES `cat_salones` (`id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_temas_ibfk_5` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `cat_capitulos` (`id_capitulo`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_temas_ibfk_6` FOREIGN KEY (`creado_por`) REFERENCES `cat_usuarios` (`id_usuario`) ON DELETE NO ACTION ON UPDATE CASCADE,
+  ADD CONSTRAINT `cat_temas_ibfk_7` FOREIGN KEY (`fk_id_actividad`) REFERENCES `cat_actividades` (`id_actividad`) ON DELETE NO ACTION ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
