@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: localhost
--- Tiempo de generación: 06-12-2023 a las 07:33:10
+-- Tiempo de generación: 07-12-2023 a las 00:57:53
 -- Versión del servidor: 10.4.28-MariaDB
 -- Versión de PHP: 8.2.4
 
@@ -43,8 +43,8 @@ CREATE TABLE `asignacion_actividades_programa` (
 --
 
 INSERT INTO `asignacion_actividades_programa` (`id_asignacion_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `creado_por`, `estatus_asignacion`) VALUES
-(2, 2, 2, 2, 1, 2, 1, 1),
-(3, 2, 2, 2, 1, 1, 1, 1);
+(1, 1, 3, 1, 1, 1, 1, 1),
+(2, 1, 3, 1, 1, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -67,8 +67,7 @@ CREATE TABLE `asignacion_capitulos_programa` (
 --
 
 INSERT INTO `asignacion_capitulos_programa` (`id_asignacion_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_capitulo`, `creado_por`, `estatus_asignacion`) VALUES
-(2, 2, 2, 1, 2, 1, 1),
-(3, 2, 2, 1, 1, 1, 1);
+(3, 3, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -90,8 +89,8 @@ CREATE TABLE `asignacion_salones_programa` (
 --
 
 INSERT INTO `asignacion_salones_programa` (`id_asignacion_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_salon`, `creado_por`, `estatus_asignacion`) VALUES
-(2, 2, 1, 2, 1, 1),
-(3, 2, 1, 1, 1, 1);
+(10, 1, 1, 3, 1, 1),
+(11, 1, 1, 1, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -120,8 +119,8 @@ CREATE TABLE `asignacion_temas_programa` (
 --
 
 INSERT INTO `asignacion_temas_programa` (`id_asignacion_tema`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `fk_id_tema`, `hora_inicial`, `hora_final`, `fk_id_profesor`, `fk_id_modalidad`, `creado_por`, `estatus_asignacion`) VALUES
-(2, 2, 2, 2, 1, 2, 2, '01:34:00', '02:34:00', 2, 2, 1, 1),
-(3, 2, 2, 2, 1, 2, 1, '04:38:00', '05:38:00', 1, 1, 1, 1);
+(1, 1, 3, 1, 1, 1, 1, '12:07:00', '14:06:00', 1, 2, 1, 1),
+(2, 1, 3, 1, 1, 2, 2, '13:07:00', '15:07:00', 2, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -145,8 +144,8 @@ CREATE TABLE `cat_actividades` (
 --
 
 INSERT INTO `cat_actividades` (`id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_actividad`, `creado_por`, `estatus_actividad`) VALUES
-(1, 1, 1, 1, 1, 'Actividad fecha 5-12-2023', 1, 1),
-(2, 2, 2, 2, 1, 'Actividad fecha 6-12-2023', 1, 1);
+(1, 1, 2, 1, 1, 'Actividad fecha 7-12-2023', 1, 1),
+(2, 2, 1, 1, 1, 'Actividad fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -169,8 +168,8 @@ CREATE TABLE `cat_capitulos` (
 --
 
 INSERT INTO `cat_capitulos` (`id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_capitulo`, `creado_por`, `estatus_capitulo`) VALUES
-(1, 1, 1, 1, 'Capitulo de fecha 5-12-2023', 1, 1),
-(2, 2, 2, 1, 'Capitulo de fecha 6-12-2023', 1, 1);
+(1, 2, 1, 1, 'Capitulo fecha 7-12-2023', 1, 1),
+(2, 1, 1, 1, 'Capitulo fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -193,7 +192,7 @@ CREATE TABLE `cat_eventos` (
 --
 
 INSERT INTO `cat_eventos` (`id_evento`, `nombre_evento`, `descripcion_evento`, `fecha_inicio_evento`, `fecha_fin_evento`, `creado_por`, `estatus_evento`) VALUES
-(1, 'LXIX Congreso Nacional de Ortopedia', 'World Tarde Center Cuidad de México', '2023-12-05', '2023-12-10', 1, 1);
+(1, 'LXIX Congreso Nacional de Ortopedia', 'World Tarde Center Cuidad de México', '2023-12-06', '2023-12-10', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -214,7 +213,7 @@ CREATE TABLE `cat_fechas_programa` (
 --
 
 INSERT INTO `cat_fechas_programa` (`id_fecha_programa`, `fk_id_programa`, `fecha_programa`, `creado_por`, `estatus_fecha_programa`) VALUES
-(2, 1, '2023-12-06', 1, 1);
+(1, 1, '2023-12-06', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -570,7 +569,8 @@ INSERT INTO `cat_menu` (`id_menu`, `nombre_menu`, `descripcion_menu`, `referenci
 (2, 'Salir', 'Salir del sistema', 'login/salir', 100, '<i class=\"fa-solid fa-right-from-bracket\"></i>', 3, 1),
 (3, 'Estadísticas', 'Sección de estadísticas de rastro de documentos', 'admin/estadisticas', 99, '<i class=\"fa-solid fa-chart-column\"></i>', 3, 0),
 (4, 'Catálogos', 'Sección de catálogos', 'admin/catalogos', 2, '<i class=\"fa-solid fa-list\"></i>', 3, 0),
-(5, 'Cartas', 'Sección de cartas de invitación de profesores', 'cartas/', 3, '<i class=\"fa-solid fa-envelope-open-text\"></i>', 3, 1);
+(5, 'Cartas', 'Sección de cartas de invitación de profesores', 'cartas/', 3, '<i class=\"fa-solid fa-envelope-open-text\"></i>', 3, 1),
+(6, 'Reportes', 'Sección de reportes de los programas creados por eventos', 'reportes/', 4, '<i class=\"fa-solid fa-filter\"></i>', 3, 1);
 
 -- --------------------------------------------------------
 
@@ -666,7 +666,7 @@ CREATE TABLE `cat_programa` (
 --
 
 INSERT INTO `cat_programa` (`id_programa`, `fk_id_evento`, `nombre_programa`, `creado_por`, `estatus_programa`) VALUES
-(1, 1, 'Programa Académico Congreso Relaciones', 1, 1);
+(1, 1, 'Programa Académico Congreso', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -708,8 +708,9 @@ CREATE TABLE `cat_salones` (
 --
 
 INSERT INTO `cat_salones` (`id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_salon`, `creado_por`, `estatus_salon`) VALUES
-(1, 1, 1, 'Salón de fecha 5-12-2023', 1, 1),
-(2, 2, 1, 'Salón de fecha 6-12-2023', 1, 1);
+(1, 1, 1, 'Salon fecha 6-12-2023', 1, 1),
+(2, 1, 1, 'Salon fecha 7-12-2023', 1, 1),
+(3, 1, 1, 'sdfsdfsdafsd', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -749,8 +750,8 @@ CREATE TABLE `cat_temas` (
 --
 
 INSERT INTO `cat_temas` (`id_tema`, `fk_id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_tema`, `creado_por`, `estatus_tema`) VALUES
-(1, 1, 1, 1, 1, 1, 'Tema de fecha 5-12-2023', 1, 1),
-(2, 2, 2, 2, 2, 1, 'Tema de fecha 6-12-2023', 1, 1);
+(1, 1, 1, 2, 1, 1, 'Tema fecha 7-12-2023', 1, 1),
+(2, 2, 2, 1, 1, 1, 'Tema fecha 6-12-2023', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -5546,7 +5547,7 @@ ALTER TABLE `paises`
 -- AUTO_INCREMENT de la tabla `asignacion_actividades_programa`
 --
 ALTER TABLE `asignacion_actividades_programa`
-  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_capitulos_programa`
@@ -5558,13 +5559,13 @@ ALTER TABLE `asignacion_capitulos_programa`
 -- AUTO_INCREMENT de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
-  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_temas_programa`
 --
 ALTER TABLE `asignacion_temas_programa`
-  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_actividades`
@@ -5588,7 +5589,7 @@ ALTER TABLE `cat_eventos`
 -- AUTO_INCREMENT de la tabla `cat_fechas_programa`
 --
 ALTER TABLE `cat_fechas_programa`
-  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_ladas`
@@ -5600,7 +5601,7 @@ ALTER TABLE `cat_ladas`
 -- AUTO_INCREMENT de la tabla `cat_menu`
 --
 ALTER TABLE `cat_menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_modalida`
@@ -5636,7 +5637,7 @@ ALTER TABLE `cat_roles`
 -- AUTO_INCREMENT de la tabla `cat_salones`
 --
 ALTER TABLE `cat_salones`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`
@@ -5715,8 +5716,8 @@ ALTER TABLE `asignacion_temas_programa`
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_1` FOREIGN KEY (`fk_id_programa`) REFERENCES `cat_programa` (`id_programa`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_10` FOREIGN KEY (`fk_id_salon`) REFERENCES `asignacion_actividades_programa` (`fk_id_salon`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_12` FOREIGN KEY (`fk_id_actividad`) REFERENCES `asignacion_actividades_programa` (`fk_id_actividad`) ON DELETE NO ACTION ON UPDATE CASCADE,
-  ADD CONSTRAINT `asignacion_temas_programa_ibfk_13` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_14` FOREIGN KEY (`fk_id_capitulo`) REFERENCES `asignacion_actividades_programa` (`fk_id_capitulo`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `asignacion_temas_programa_ibfk_15` FOREIGN KEY (`fk_id_fechas`) REFERENCES `cat_fechas_programa` (`id_fecha_programa`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_6` FOREIGN KEY (`fk_id_tema`) REFERENCES `cat_temas` (`id_tema`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_7` FOREIGN KEY (`fk_id_profesor`) REFERENCES `cat_profesores` (`id_profesor`) ON DELETE NO ACTION ON UPDATE CASCADE,
   ADD CONSTRAINT `asignacion_temas_programa_ibfk_8` FOREIGN KEY (`fk_id_modalidad`) REFERENCES `cat_modalida` (`id_modalidad`) ON DELETE NO ACTION ON UPDATE CASCADE,

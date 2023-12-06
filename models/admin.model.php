@@ -225,6 +225,55 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    public static function reasignarSalon($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE asignacion_salones_programa SET fk_id_salon = :fkSalon, estatus_asignacion = 0 WHERE id_asignacion_salon = :idAsignacionSalon");
+            $query->execute([
+                ':fkSalon' => $datos['reasignar_salon'],
+                ':idAsignacionSalon' => base64_decode(base64_decode($datos['id_asignacion_salon']))
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarAsignacionSalon($idsalon){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_salones_programa WHERE fk_id_salon = :idSalon AND estatus_asignacion = 1");
+            $query->execute([
+                ':idSalon' => $idsalon
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function eliminarAsignacionesSalonesInactivas(){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
+            $check->execute();
+            $query = $con->pdo->prepare("DELETE FROM asignacion_salones_programa WHERE estatus_asignacion = 0");
+            $query->execute();
+            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
+            $check2->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminarAsignacionesInactivas: " . $e->getMessage();
+            return false;
+        }
+    }
     public static function buscarSalon($idsalon){
         try {
             $con = new Database;
@@ -263,7 +312,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
+            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon AND asp.estatus_asignacion = 1) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha))
@@ -278,7 +327,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.id_salon,cs.nombre_salon,asp.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1");
+            $query = $con->pdo->prepare("SELECT asp.id_asignacion_salon,cs.id_salon,cs.nombre_salon,asp.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1 AND asp.estatus_asignacion = 1");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($modulo))
             ]);
@@ -311,6 +360,54 @@ class AdminModel extends ModelBase
             echo "Error recopilado model guardarSalones: " . $e->getMessage();
             return false;
         }
+    }public static function reasignarCapitulo($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE asignacion_capitulos_programa SET fk_id_capitulo = :fkCapitulo, estatus_asignacion = 0 WHERE id_asignacion_capitulo = :idAsignacionCapitulo");
+            $query->execute([
+                ':fkCapitulo' => $datos['reasignar_capitulo'],
+                ':idAsignacionCapitulo' => base64_decode(base64_decode($datos['id_asignacion_capitulo']))
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarAsignacionCapitulo($idCapitulo){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_capitulos_programa WHERE fk_id_capitulo = :idCapitulo AND estatus_asignacion = 1");
+            $query->execute([
+                ':idCapitulo' => $idCapitulo
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function eliminarAsignacionesCapitulosInactivos(){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
+            $check->execute();
+            $query = $con->pdo->prepare("DELETE FROM asignacion_capitulos_programa WHERE estatus_asignacion = 0");
+            $query->execute();
+            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
+            $check2->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminarAsignacionesInactivas: " . $e->getMessage();
+            return false;
+        }
     }
     public static function asignarCapituloPrograma($idsalon, $idfecha, $idprograma, $idcapitulo)
     {
@@ -338,7 +435,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_capitulo = cp.id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
+            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha))
@@ -353,7 +450,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_capitulo,cp.nombre_capitulo,acp.* FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1;");
+            $query = $con->pdo->prepare("SELECT cp.id_capitulo,cp.nombre_capitulo,acp.* FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1 AND acp.estatus_asignacion = 1;");
             $query->execute([
                 ':idFecha' => base64_decode(base64_decode($idfecha)),
                 ':idSalon' => base64_decode(base64_decode($idsalon))

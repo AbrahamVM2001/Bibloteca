@@ -71,6 +71,43 @@
     </form>
   </div>
 </div>
+<!-- Modal de reasignación -->
+<div class="modal fade" id="modalReasignar" aria-hidden="true" aria-labelledby="modalReasignarLabel" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form id="form-salones-reasignacion" action="javascript:;" class="needs-validation" novalidate method="post">
+    <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
+      <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
+    <input type="hidden" name="tipo" id="tipo" value="reasignar">
+      <input type="hidden" name="id_asignacion_salon" id="id_asignacion_salon">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modalReasignarLabel">Reasignar salon</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <h3 class="text-center" id="salon_seleccionado">-</h3>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Salón a reasignar</label>
+              <select class="form-control" name="reasignar_salon" id="reasignar_salon" required>
+              </select>
+              <div class="invalid-feedback">
+                Seleccione una opción, por favor.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button data-formulario="form-salones-reasignacion" data-tipo="nuevo" type="button"
+            class="btn btn-success btn-save-salones">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 <!-- <i class="fa-solid fa-link"></i> LINK -->
 <!-- <i class="fa-solid fa-qrcode"></i> QR -->
 <!-- <i class="fa-solid fa-pen-to-square"></i> EDIT -->

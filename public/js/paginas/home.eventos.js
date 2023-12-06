@@ -60,10 +60,10 @@ $(function () {
                                 <h5 class="mt-3 mb-1 d-md-block ">${item.nombre_evento}</h5>
                                 <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.descripcion_evento}</p>
                                 <div class="row mt-3">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button data-id="${btoa(btoa(item.id_evento))}" class="btn btn-info form-control btn-edit-event"><i class="fa-solid fa-edit"></i> Editar</button>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <a href="${servidor}admin/programas/${btoa(btoa(item.id_evento))}/${btoa(item.nombre_evento)}" class="btn btn-dark form-control">Administrar <i class="fa-solid fa-gear"></i></a>
                                     </div>
                                 </div>

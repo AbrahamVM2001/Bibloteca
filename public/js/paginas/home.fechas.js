@@ -68,14 +68,14 @@ $(function () {
                                   item.fecha_programa
                                 }</h5>
                                 <div class="row mt-3">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <!--<div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button data-fecha="${
                                           item.fecha_programa
                                         }" data-id="${btoa(
           btoa(item.id_fecha_programa)
         )}" class="btn btn-danger form-control btn-delete-fecha"><i class="fa-solid fa-trash"></i> Eliminar</button>
-                                    </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    </div>-->
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <a href="${servidor}admin/salones/${btoa(
           btoa(item.id_fecha_programa)
         )}/${btoa(btoa(item.fk_id_programa))}/${btoa(

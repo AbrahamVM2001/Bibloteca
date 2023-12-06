@@ -46,11 +46,9 @@ $(function () {
         form.addClass("was-validated");
     });
     async function cardsSalones() {
-        console.log("Entras");
         try {
             let peticion = await fetch(servidor + `admin/infoSalones/${fechas}`);
             let response = await peticion.json();
-            console.log(response);
             if (response.length == 0) {
                 jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`).appendTo("#container-salones").addClass('text-danger');
                 return false;
@@ -63,10 +61,10 @@ $(function () {
                             <img class="w-100 border-radius-md" src="${servidor}public/img/salon.gif">
                                 <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.nombre_salon}</p>
                                 <div class="row mt-3">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <button data-id="${btoa(btoa(item.id_salon))}" class="btn btn-info form-control btn-edit-salon"><i class="fa-solid fa-edit"></i> Editar</button>
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <button data-idsalon="${btoa(btoa(item.id_salon))}" data-id="${btoa(btoa(item.id_asignacion_salon))}" data-salon="${item.nombre_salon}" class="btn btn-info form-control btn-reasignar-salon" ><i class="fa-solid fa-arrows-rotate"></i> Reasignar</button>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <a href="${servidor}admin/capitulos/${btoa(btoa(item.fk_id_fechas))}/${btoa(btoa(item.fk_id_programa))}/${btoa(btoa(item.id_salon))}/${btoa(item.nombre_salon)}" class="btn btn-dark form-control">Administrar <i class="fa-solid fa-gear"></i></a>
                                     </div>
                                 </div>
@@ -92,7 +90,7 @@ $(function () {
             $('#nuevo_salon').attr('required',false);
         }
     });
-    async function salones(identificador) {
+    async function salones(identificador,filtro = null,actual = null) {
         try {
             $(identificador).empty();
             let peticion = await fetch(servidor + `admin/cat_salones/${fechas}/${programa}`);
@@ -100,38 +98,38 @@ $(function () {
             let option_select = document.createElement("option")
             option_select.value = '';
             option_select.text = 'Seleccionar salón...';
-            let option_select2 = document.createElement("option")
+            $(identificador).append(option_select);
+            if (filtro == null) {
+                let option_select2 = document.createElement("option")
             option_select2.value = 'agregar_salon';
             option_select2.text = 'Crear nuevo salón';
-            $(identificador).append(option_select);
             $(identificador).append(option_select2);
+            }
             for (let item of response) {
                 let option = document.createElement("option")
                 option.value = item.id_salon;
                 option.text = item.nombre_salon
-                console.log(item.asignado);
-                if (item.asignado == 1) {
+                if (item.asignado == 1 && filtro == null) {
                     option.disabled = true;
+                }
+                if (actual != null) {
+                    if (item.id_salon == atob(atob(actual))) {
+                        option.disabled = true;
+                    }
                 }
                 $(identificador).append(option)
             }
-            console.log('cargando regimen ...');
+            console.log('cargando salones ...');
         } catch (err) {
             if (err.name == 'AbortError') { } else { throw err; }
         }
     }
     salones('#asignar_salon');
-    $('.btn-agregar-salon').click(function(){
-        $('#modalNuevoSalonLabel').text('Agregar nuevo salón');
-        $('#id_salon').val('')
-        $("#form-salones")[0].reset();
-        $('#tipo').val('nuevo');
-    });
-    $('#container-salones').on('click','.btn-edit-salon',function(){
-        $('#modalNuevoSalonLabel').text('Editar salón');
-        $("#form-salones")[0].reset();
-        $('#tipo').val('editar');
-        //editarSalon($(this).data('id'));
+    $('#container-salones').on('click','.btn-reasignar-salon',function(){
+        $('#salon_seleccionado').text($(this).data('salon'))
+        $('#modalReasignar').modal('show');
+        $('#id_asignacion_salon').val($(this).data('id'))
+        salones('#reasignar_salon','NoNulo',$(this).data('idsalon'));
     });
     async function editarSalon(idsalon){
         let peticion = await fetch(servidor + `admin/buscarSalon/${idsalon}`);
