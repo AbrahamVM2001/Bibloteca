@@ -3,15 +3,14 @@
   <div class="card">
     <div class="card card-body blur shadow-blur mx-2 mt-n4 overflow-hidden" style="background-color: #e9ecef !important;">
       <div class="row gx-4">
-      <h5 class="text-center"><?= $_SESSION['evento_seleccionado'] ?></h5>
+        <h5 class="text-center"><?= $_SESSION['evento_seleccionado'] ?></h5>
       </div>
     </div>
     <div class="card-header d-flex justify-content-between flex-wrap">
       <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i>
         Regresar</button>
-        <h3 class="mx-auto">Programas</h3>
-      <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoPrograma"
-        data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
+      <h3 class="mx-auto">Programas</h3>
+      <button id="add-document" class="btn btn-success mx-auto btn-agregar-programa" data-bs-target="#modalNuevoPrograma" data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">
       <div class="row" id="container-programas"></div>
@@ -19,13 +18,16 @@
   </div>
 </div>
 <?php require('views/footer.view.php'); ?>
-<script>let evento = '<?= $this->evento; ?>';</script>
+<script>
+  let evento = '<?= $this->evento; ?>';
+</script>
 <script src="<?= constant('URL') ?>public/js/paginas/home.programas.js"></script>
-<div class="modal fade" id="modalNuevoPrograma" aria-hidden="true" aria-labelledby="modalNuevoProgramaLabel"
-  tabindex="-1">
+<div class="modal fade" id="modalNuevoPrograma" aria-hidden="true" aria-labelledby="modalNuevoProgramaLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form id="form-programa" action="javascript:;" class="needs-validation" novalidate method="post">
       <input type="hidden" name="evento" id="evento" value="<?= $this->evento; ?>" readonly>
+      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="id_programa" id="id_programa">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modalNuevoProgramaLabel">Agregar nuevo programa</h1>
@@ -35,8 +37,7 @@
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Nombre programa</label>
-              <input type="text" class="form-control" name="nombre_programa" id="nombre_programa"
-                placeholder="Nombre del programa..." required>
+              <input type="text" class="form-control" name="nombre_programa" id="nombre_programa" placeholder="Nombre del programa..." required>
               <div class="invalid-feedback">
                 Ingrese un nombre de programa, por favor.
               </div>
@@ -45,8 +46,7 @@
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button data-formulario="form-programa" data-tipo="nuevo" type="button"
-            class="btn btn-success btn-save-programa">Guardar</button>
+          <button data-formulario="form-programa" data-tipo="nuevo" type="button" class="btn btn-success btn-save-programa">Guardar</button>
         </div>
       </div>
     </form>

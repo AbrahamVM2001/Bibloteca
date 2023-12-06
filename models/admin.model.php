@@ -19,7 +19,20 @@ class AdminModel extends ModelBase
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
-            echo "Error recopilado model revistas: " . $e->getMessage();
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function buscarEvento($idevento){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_eventos WHERE id_evento = :idEvento");
+            $query->execute([
+                ':idEvento' => base64_decode(base64_decode($idevento))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarEvento: " . $e->getMessage();
             return;
         }
     }
@@ -45,6 +58,28 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    public static function actualizarEvento($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE cat_eventos SET nombre_evento = :nombreEvento,descripcion_evento=:descripcionEvento,fecha_inicio_evento=:fechaInicio,fecha_fin_evento=:fechaFin  WHERE id_evento = :idEvento;");
+            $query->execute([
+
+                ':nombreEvento' => $datos['nombre_evento'],
+                ':descripcionEvento' => $datos['descripcion_evento'],
+                ':fechaInicio' => $datos['fecha_inicio'],
+                ':fechaFin' => $datos['fecha_fin'],
+                ':idEvento' => $datos['id_evento']
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model actualizarEvento: " . $e->getMessage();
+            return false;
+        }
+    }
     /* Programas */
     public static function guardarPrograma($datos)
     {
@@ -64,6 +99,38 @@ class AdminModel extends ModelBase
             $con->pdo->rollBack();
             echo "Error recopilado model guardarPrograma: " . $e->getMessage();
             return false;
+        }
+    }
+    public static function actualizarPrograma($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE cat_programa SET nombre_programa=:nombrePrograma WHERE id_programa = :idPrograma");
+            $query->execute([
+
+                ':idPrograma' => $datos['id_programa'],
+                ':nombrePrograma' => $datos['nombre_programa']
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarPrograma($idprograma){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_programa WHERE id_programa = :idPrograma");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            return;
         }
     }
     public static function infoProgramas($evento)
@@ -98,6 +165,26 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             $con->pdo->rollBack();
             echo "Error recopilado model guardarFechas: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function eliminarFecha($idfecha){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            /* $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
+            $check->execute(); */
+            $query = $con->pdo->prepare("DELETE FROM cat_fechas_programa WHERE id_fecha_programa = :idFecha;");
+            $query->execute([
+                ':idFecha' => base64_decode(base64_decode($idfecha))
+            ]);
+            /* $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
+            $check2->execute(); */
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminarFecha: " . $e->getMessage();
             return false;
         }
     }
@@ -136,6 +223,19 @@ class AdminModel extends ModelBase
             $con->pdo->rollBack();
             echo "Error recopilado model guardarSalones: " . $e->getMessage();
             return false;
+        }
+    }
+    public static function buscarSalon($idsalon){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE id_salon = :idSalon");
+            $query->execute([
+                ':idSalon' => base64_decode(base64_decode($idsalon))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            return;
         }
     }
     public static function asignarSalonPrograma($idfecha, $idprograma, $idsalon)
@@ -416,11 +516,9 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND fk_id_fechas = :idFechas AND fk_id_capitulo = :idCapitulo AND estatus_tema = 1;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND estatus_tema = 1;");
             $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha)),
-                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
+                ':idPrograma' => base64_decode(base64_decode($idprograma))
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {

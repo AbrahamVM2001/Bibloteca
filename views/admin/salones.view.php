@@ -17,7 +17,7 @@
       <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i>
         Regresar</button>
       <h3 class="mx-auto">Salones</h3>
-      <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoSalon" data-bs-toggle="modal">Agregar
+      <button id="add-document" class="btn btn-success mx-auto btn-agregar-salon" data-bs-target="#modalNuevoSalon" data-bs-toggle="modal">Agregar
         <i class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">
@@ -36,6 +36,8 @@
     <form id="form-salones" action="javascript:;" class="needs-validation" novalidate method="post">
       <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
       <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
+      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="id_salon" id="id_salon">
       <div class="modal-content">
         <div class="modal-header">
           <h1 class="modal-title fs-5" id="modalNuevoSalonLabel">Agregar nuevo salón</h1>

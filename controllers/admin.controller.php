@@ -36,18 +36,22 @@ class Admin extends ControllerBase
     function guardarEvento()
     {
         try {
-            $resp = AdminModel::guardarEvento($_POST);
+            if($_POST['tipo'] == 'nuevo'){
+                $resp = AdminModel::guardarEvento($_POST);
+            }else{
+                $resp = AdminModel::actualizarEvento($_POST);
+            }
             if ($resp != false) {
                 $data = [
                     'estatus' => 'success',
-                    'titulo' => 'Evento creado',
-                    'respuesta' => 'Se creo correctamente el evento.'
+                    'titulo' => ($_POST['tipo'] == 'nuevo')?'Evento creado':'Evento actualizado',
+                    'respuesta' => ($_POST['tipo'] == 'nuevo')?'Se creo correctamente el evento.':'Se actualizo correctamente el evento'
                 ];
             } else {
                 $data = [
                     'estatus' => 'warning',
-                    'titulo' => 'Evento no creado',
-                    'respuesta' => 'No se pudo crear correctamente el evento.'
+                    'titulo' => ($_POST['tipo'] == 'nuevo')?'Evento no creado':'Evento no actualizado',
+                    'respuesta' => ($_POST['tipo'] == 'nuevo')?'No se pudo crear correctamente el evento.':'No se pudo actualizar correctamente el evento'
                 ];
             }
         } catch (\Throwable $th) {
@@ -59,6 +63,15 @@ class Admin extends ControllerBase
             return;
         }
         echo json_encode($data);
+    }
+    function buscarEvento($param = null){
+        try {
+            $evento = AdminModel::buscarEvento($param[0]);
+            echo json_encode($evento);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarEvento: " . $th->getMessage();
+            return;
+        }
     }
     /* Programas */
     function programas($param = null)
@@ -74,18 +87,22 @@ class Admin extends ControllerBase
     function guardarPrograma()
     {
         try {
-            $resp = AdminModel::guardarPrograma($_POST);
+            if($_POST['tipo'] == 'nuevo'){
+                $resp = AdminModel::guardarPrograma($_POST);
+            }else{
+                $resp = AdminModel::actualizarPrograma($_POST);
+            }
             if ($resp != false) {
                 $data = [
                     'estatus' => 'success',
-                    'titulo' => 'Programa creado',
-                    'respuesta' => 'Se creo correctamente el programa.'
+                    'titulo' => ($_POST['tipo'] == 'nuevo')?'Programa creado':'Programa actualizado',
+                    'respuesta' => ($_POST['tipo'] == 'nuevo')?'Se creo correctamente el programa.':'Se actualizo correctamente el programa'
                 ];
             } else {
                 $data = [
                     'estatus' => 'warning',
-                    'titulo' => 'Programa no creado',
-                    'respuesta' => 'No se pudo crear correctamente el programa.'
+                    'titulo' => ($_POST['tipo'] == 'nuevo')?'Programa no creado':'Programa no actualizado',
+                    'respuesta' => ($_POST['tipo'] == 'nuevo')?'No se pudo crear correctamente el programa.':'No se pudo actualizar correctamente el programa'
                 ];
             }
         } catch (\Throwable $th) {
@@ -97,6 +114,15 @@ class Admin extends ControllerBase
             return;
         }
         echo json_encode($data);
+    }
+    function buscarPrograma($param = null){
+        try {
+            $programa = AdminModel::buscarPrograma($param[0]);
+            echo json_encode($programa);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarPrograma: " . $th->getMessage();
+            return;
+        }
     }
     function infoProgramas($param = null)
     {
@@ -134,6 +160,32 @@ class Admin extends ControllerBase
                     'estatus' => 'warning',
                     'titulo' => 'Fecha no creada',
                     'respuesta' => 'No se pudo crear correctamente la fecha.'
+                ];
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage()
+            ];
+            return;
+        }
+        echo json_encode($data);
+    }
+    function eliminarFecha($param = null){
+        try {
+            $resp = AdminModel::eliminarFecha($param[0]);
+            if ($resp != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Fecha eliminada',
+                    'respuesta' => 'Se elimino correctamente la fecha.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Fecha no eliminada',
+                    'respuesta' => 'No se pudo eliminar correctamente la fecha.'
                 ];
             }
         } catch (\Throwable $th) {
@@ -202,6 +254,15 @@ class Admin extends ControllerBase
         }
 
         echo json_encode($data);
+    }
+    function buscarSalon($param = null){
+        try {
+            $salon = AdminModel::buscarSalon($param[0]);
+            echo json_encode($salon);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarSalon: " . $th->getMessage();
+            return;
+        }
     }
     function cat_salones($param = null)
     {

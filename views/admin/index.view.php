@@ -3,7 +3,7 @@
   <div class="card">
     <div class="card-header d-flex justify-content-between flex-wrap">
       <h3>Eventos</h3>
-      <button class="btn btn-success " data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Agregar <i
+      <button class="btn btn-success btn-agregar-evento" data-bs-target="#modalEventos" data-bs-toggle="modal">Agregar <i
           class="fa-solid fa-circle-plus"></i></button>
     </div>
     <div class="card-body">
@@ -13,16 +13,18 @@
 </div>
 <?php require('views/footer.view.php'); ?>
 <script src="<?= constant('URL') ?>public/js/paginas/home.eventos.js"></script>
-<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
+<div class="modal fade" id="modalEventos" aria-hidden="true" aria-labelledby="modalEventosLabel"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalToggleLabel">Crear nuevo evento</h1>
+        <h1 class="modal-title fs-5" id="modalEventosLabel">Crear nuevo evento</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <form id="form-new-event" action="javascript:;" class="needs-validation" novalidate method="post">
+          <input type="hidden" name="tipo" id="tipo" value="nuevo">
+          <input type="hidden" name="id_evento" id="id_evento">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Nombre evento</label>

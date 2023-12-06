@@ -53,15 +53,23 @@ $(function () {
             }
             response.forEach((item, index) => {
                 jQuery(`
-                    <a href="${servidor}admin/programas/${btoa(btoa(item.id_evento))}/${btoa(item.nombre_evento)}" class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
+                    <div class="col-sm-12 col-md-12 col-lg-4 col-xl-4 mb-3">
                         <div class="h-100 card card-profile card-plain move-on-hover border border-dark">
                             <div class="card-body text-center bg-white shadow border-radius-lg p-3 h-100">
                                     <img class="w-100 border-radius-md" src="${servidor}public/img/calendario.gif">
                                 <h5 class="mt-3 mb-1 d-md-block ">${item.nombre_evento}</h5>
                                 <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.descripcion_evento}</p>
+                                <div class="row mt-3">
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <button data-id="${btoa(btoa(item.id_evento))}" class="btn btn-info form-control btn-edit-event"><i class="fa-solid fa-edit"></i> Editar</button>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <a href="${servidor}admin/programas/${btoa(btoa(item.id_evento))}/${btoa(item.nombre_evento)}" class="btn btn-dark form-control">Administrar <i class="fa-solid fa-gear"></i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 `).appendTo("#container-eventos");
             });
         } catch (error) {
@@ -69,4 +77,27 @@ $(function () {
         }
     }
     cardsEventos();
+    $('.btn-agregar-evento').click(function(){
+        $('#modalEventosLabel').text('Crear nuevo evento');
+        $('#id_evento').val('')
+        $("#form-new-event")[0].reset();
+        $('#tipo').val('nuevo');
+    });
+    $('#container-eventos').on('click','.btn-edit-event',function(){
+        $('#modalEventosLabel').text('Editar evento');
+        $("#form-new-event")[0].reset();
+        $('#tipo').val('editar');
+        editarEvento($(this).data('id'));
+    });
+    async function editarEvento(idevento){
+        let peticion = await fetch(servidor + `admin/buscarEvento/${idevento}`);
+        let response = await peticion.json();
+        console.log(response);
+        $('#nombre_evento').val(response['nombre_evento']);
+        $('#descripcion_evento').val(response['descripcion_evento']);
+        $('#fecha_inicio').val(response['fecha_inicio_evento']);
+        $('#fecha_fin').val(response['fecha_fin_evento']);
+        $('#id_evento').val(response['id_evento'])
+        $('#modalEventos').modal('show');
+    }
 });
