@@ -152,6 +152,21 @@ class CartasModel extends ModelBase
             return;
         }
     }
+    public static function buscarPrograma($idPrograma){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("
+                SELECT * FROM cat_programa WHERE id_programa = :idPrograma
+            ");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idPrograma))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model revistas: " . $e->getMessage();
+            return;
+        }
+    }
     public static function actualizarCorreoEnviado($profesor,$programa,$cartapresencial,$cartavirtual){
         try {
             $con = new Database;

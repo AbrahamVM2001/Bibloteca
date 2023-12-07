@@ -157,7 +157,7 @@ $(function () {
             $('#modalNuevoProfesor').modal('hide')
         }
     });
-    async function temas(identificador) {
+    async function temas(identificador, filtro = null, actual = null) {
         try {
             $(identificador).empty();
             let peticion = await fetch(servidor + `admin/cat_temas/${fechas}/${salon}/${capitulo}/${actividad}/${programa}`);
@@ -174,6 +174,11 @@ $(function () {
                 let option = document.createElement("option")
                 option.value = item.id_tema;
                 option.text = item.nombre_tema
+                if (actual != null) {
+                    if (item.id_tema == actual) {
+                        option.disabled = true;
+                    }
+                }
                 $(identificador).append(option)
             }
             console.log('cargando temas ...');
@@ -273,53 +278,84 @@ $(function () {
     ladas('#lada');
     async function cat_paises(identificador) {
         try {
-          $("#" + identificador).empty();
-          let peticion = await fetch(servidor + `admin/cat_paises`);
-          let response = await peticion.json();
-          let option_select = document.createElement("option");
-          option_select.value = "";
-          option_select.text = "Seleccionar País...";
-          $("#" + identificador).append(option_select);
-          for (let item of response) {
-            let option = document.createElement("option");
-            option.value = item.id_pais;
-            option.text = item.pais;
-            $("#" + identificador).append(option);
-          }
-          console.log("cargando países ...");
+            $("#" + identificador).empty();
+            let peticion = await fetch(servidor + `admin/cat_paises`);
+            let response = await peticion.json();
+            let option_select = document.createElement("option");
+            option_select.value = "";
+            option_select.text = "Seleccionar País...";
+            $("#" + identificador).append(option_select);
+            for (let item of response) {
+                let option = document.createElement("option");
+                option.value = item.id_pais;
+                option.text = item.pais;
+                $("#" + identificador).append(option);
+            }
+            console.log("cargando países ...");
         } catch (err) {
-          if (err.name == "AbortError") {
-          } else {
-            throw err;
-          }
+            if (err.name == "AbortError") {
+            } else {
+                throw err;
+            }
         }
-      }
-      cat_paises('pais');
-      async function cat_estados(identificador, bus = null) {
+    }
+    cat_paises('pais');
+    async function cat_estados(identificador, bus = null) {
         try {
-          $("#" + identificador).empty();
-          let peticion = await fetch(servidor + `admin/cat_estados/${bus}`);
-          let response = await peticion.json();
-          /* console.log(response); */
-          let option_select = document.createElement("option");
-          option_select.value = "";
-          option_select.text = "Seleccionar estado...";
-          $("#" + identificador).append(option_select);
-          for (let item of response) {
-            let option = document.createElement("option");
-            option.value = item.id_estado;
-            option.text = item.estado;
-            $("#" + identificador).append(option);
-          }
-          console.log("cargando estados ...");
+            $("#" + identificador).empty();
+            let peticion = await fetch(servidor + `admin/cat_estados/${bus}`);
+            let response = await peticion.json();
+            /* console.log(response); */
+            let option_select = document.createElement("option");
+            option_select.value = "";
+            option_select.text = "Seleccionar estado...";
+            $("#" + identificador).append(option_select);
+            for (let item of response) {
+                let option = document.createElement("option");
+                option.value = item.id_estado;
+                option.text = item.estado;
+                $("#" + identificador).append(option);
+            }
+            console.log("cargando estados ...");
         } catch (err) {
-          if (err.name == "AbortError") {
-          } else {
-            throw err;
-          }
+            if (err.name == "AbortError") {
+            } else {
+                throw err;
+            }
         }
-      }
+    }
     $('#pais').change(function () {
         cat_estados('estado', $(this).val());
     })
+
+
+    $('#add-document').click(function(){
+        $('#modalNuevoTemaLabel').text('Agregar/Asignar nuevo tema');
+        $("#form-temas")[0].reset();
+        $('#tipo').val('nuevo');
+        $('#id_asignacion_tema').val('')
+        $('#contenedor-agregar').addClass('d-none');
+        temas('#asignar_tema');
+    });
+    $('body').on('dblclick', '#info-table-result tbody tr', function () {
+        var data = $('#info-table-result').DataTable().row(this).data();
+        $('#modalNuevoTemaLabel').text('Editar tema asignado');
+        $("#form-temas")[0].reset();
+        $('#contenedor-agregar').addClass('d-none');
+        $('#tipo').val('editar');
+        $('#id_asignacion_tema').val(data['id_asignacion_tema'])
+        $('#modalNuevoTema').modal('show');
+        temas('#asignar_tema', 'NoNulo', data['fk_id_tema']);
+        editarTemaAsignado(data['id_asignacion_tema']);
+    });
+    async function editarTemaAsignado(idtemaasignado) {
+        let peticion = await fetch(servidor + `admin/buscarTema/${idtemaasignado}`);
+        let response = await peticion.json();
+        $('#asignar_tema').val(response['fk_id_tema']);
+        $('#hora_inicial').val(response['hora_inicial']);
+        $('#hora_final').val(response['hora_final']);
+        $('#profesor').val(response['fk_id_profesor']);
+        $('#modalidad').val(response['fk_id_modalidad'])
+        $('#modalEventos').modal('show');
+    }
 });

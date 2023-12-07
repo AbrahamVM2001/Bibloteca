@@ -42,9 +42,11 @@ let actividad = '<?= $this->idactividad; ?>';
       <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
       <input type="hidden" name="idcapitulo" id="idcapitulo" value="<?= $this->idcapitulo; ?>" readonly>
       <input type="hidden" name="idactividad" id="idactividad" value="<?= $this->idactividad; ?>" readonly>
+      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="id_asignacion_tema" id="id_asignacion_tema">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalNuevoTemaLabel">Agregar nuevo tema</h1>
+          <h1 class="modal-title fs-5" id="modalNuevoTemaLabel">Agregar/Asignar nuevo tema</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">

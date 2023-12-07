@@ -97,6 +97,8 @@ $(function () {
         let response = await peticion.json();
         console.log(response);
         $('#nombre_programa').val(response['nombre_programa']);
+        $('#responsable').val(response['responsable_programa']);
+        $('#correo_responsable').val(response['correo_responsable']);
         $('#id_programa').val(response['id_programa'])
         $('#modalNuevoPrograma').modal('show');
     }

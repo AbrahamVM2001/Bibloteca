@@ -23,7 +23,8 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function buscarEvento($idevento){
+    public static function buscarEvento($idevento)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_eventos WHERE id_evento = :idEvento");
@@ -86,11 +87,13 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_programa (fk_id_evento,nombre_programa,creado_por) VALUES (:fkEvento,:nombrePrograma,:creadoPor)");
+            $query = $con->pdo->prepare("INSERT INTO cat_programa (fk_id_evento,nombre_programa,creado_por,responsable_programa,correo_responsable) VALUES (:fkEvento,:nombrePrograma,:creadoPor,:responsable,:correoResp)");
             $query->execute([
 
                 ':fkEvento' => base64_decode(base64_decode($datos['evento'])),
                 ':nombrePrograma' => $datos['nombre_programa'],
+                ':responsable' => $datos['responsable'],
+                ':correoResp' => $datos['correo_responsable'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
             ]);
             $con->pdo->commit();
@@ -106,11 +109,13 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE cat_programa SET nombre_programa=:nombrePrograma WHERE id_programa = :idPrograma");
+            $query = $con->pdo->prepare("UPDATE cat_programa SET nombre_programa=:nombrePrograma,responsable_programa = :responsable,correo_responsable=:correoResp WHERE id_programa = :idPrograma");
             $query->execute([
 
                 ':idPrograma' => $datos['id_programa'],
-                ':nombrePrograma' => $datos['nombre_programa']
+                ':nombrePrograma' => $datos['nombre_programa'],
+                ':responsable' => $datos['responsable'],
+                ':correoResp' => $datos['correo_responsable']
             ]);
             $con->pdo->commit();
             return true;
@@ -120,7 +125,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function buscarPrograma($idprograma){
+    public static function buscarPrograma($idprograma)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_programa WHERE id_programa = :idPrograma");
@@ -168,7 +174,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function eliminarFecha($idfecha){
+    public static function eliminarFecha($idfecha)
+    {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
@@ -243,7 +250,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function buscarAsignacionSalon($idsalon){
+    public static function buscarAsignacionSalon($idsalon)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM asignacion_salones_programa WHERE fk_id_salon = :idSalon AND estatus_asignacion = 1");
@@ -256,7 +264,8 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function eliminarAsignacionesSalonesInactivas(){
+    public static function eliminarAsignacionesSalonesInactivas()
+    {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
@@ -274,7 +283,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function buscarSalon($idsalon){
+    public static function buscarSalon($idsalon)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE id_salon = :idSalon");
@@ -360,7 +370,8 @@ class AdminModel extends ModelBase
             echo "Error recopilado model guardarSalones: " . $e->getMessage();
             return false;
         }
-    }public static function reasignarCapitulo($datos)
+    }
+    public static function reasignarCapitulo($datos)
     {
         try {
             $con = new Database;
@@ -378,7 +389,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function buscarAsignacionCapitulo($idCapitulo){
+    public static function buscarAsignacionCapitulo($idCapitulo)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM asignacion_capitulos_programa WHERE fk_id_capitulo = :idCapitulo AND estatus_asignacion = 1");
@@ -391,7 +403,8 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function eliminarAsignacionesCapitulosInactivos(){
+    public static function eliminarAsignacionesCapitulosInactivos()
+    {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
@@ -486,6 +499,55 @@ class AdminModel extends ModelBase
             return false;
         }
     }
+    public static function reasignarActividad($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE asignacion_actividades_programa SET fk_id_actividad = :fkActividad, estatus_asignacion = 0 WHERE id_asignacion_actividad = :idAsignacionActividad");
+            $query->execute([
+                ':fkActividad' => $datos['reasignar_actividad'],
+                ':idAsignacionActividad' => base64_decode(base64_decode($datos['id_asignacion_actividad']))
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model reasignarActividad: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarAsignacionActividad($idActividad){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa WHERE fk_id_actividad = :idActividad AND estatus_asignacion = 1");
+            $query->execute([
+                ':idActividad' => $idActividad
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarAsignacionActividad: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function eliminarAsignacionesActividadesInactivas(){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
+            $check->execute();
+            $query = $con->pdo->prepare("DELETE FROM asignacion_actividades_programa WHERE estatus_asignacion = 0");
+            $query->execute();
+            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
+            $check2->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminarAsignacionesActividadesInactivas: " . $e->getMessage();
+            return false;
+        }
+    }
     public static function asignarActividadPrograma($idcapitulo, $idsalon, $idfecha, $idprograma, $idactividad)
     {
         try {
@@ -566,7 +628,22 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function verificarAsignacion($idprofesor,$idfechas,$idprograma,$horainicial,$horafinal){
+    public static function buscarTema($idtemaasignado)
+    {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa atp WHERE atp.id_asignacion_tema = :idAsignacionTema");
+            $query->execute([
+                ':idAsignacionTema' => $idtemaasignado
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $horafinal)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa WHERE fk_id_profesor = :fkProfesor AND fk_id_fechas = :fkFechas AND fk_id_programa = :fkPrograma AND ((hora_inicial BETWEEN '$horainicial' AND '$horafinal') OR (hora_final > '$horainicial'))");
@@ -655,7 +732,7 @@ class AdminModel extends ModelBase
                 ':apellidom' => $datos['apellidom_profesor'],
                 ':pais' => $datos['pais'],
                 ':estado' => $datos['estado'],
-                ':lada' => (empty($datos['lada']))?'310':$datos['lada'],
+                ':lada' => (empty($datos['lada'])) ? '310' : $datos['lada'],
                 ':telefono' => $datos['telefono_profesor'],
                 ':correo' => $datos['correo_profesor'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]

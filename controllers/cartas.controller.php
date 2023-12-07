@@ -88,6 +88,7 @@ class Cartas extends ControllerBase
         try {
             $resp_virtual = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
             $resp_presencial = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
+            
             /* if (count($resp_presencial) > 0 && count($resp_virtual) > 0) {
                 header('Location:' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1]);
                 header('Location:' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1]);
@@ -121,6 +122,7 @@ class Cartas extends ControllerBase
         $temas = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
         $evento = CartasModel::buscarEvento($param[1]);
+        $programa = CartasModel::buscarPrograma($param[1]);
         /* var_dump($temas);
         exit; */
         header('Content-Type: text/html; charset=utf-8');
@@ -212,7 +214,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -232,7 +234,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -250,6 +252,7 @@ class Cartas extends ControllerBase
         $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
         $evento = CartasModel::buscarEvento($param[1]);
+        $programa = CartasModel::buscarPrograma($param[1]);
         /* var_dump($temas);
         exit; */
         header('Content-Type: text/html; charset=utf-8');
@@ -329,7 +332,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -349,7 +352,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -368,6 +371,7 @@ class Cartas extends ControllerBase
             $resp_presencial = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
             $profesor = CartasModel::buscarProfesor($param[0]);
             $resp_evento = CartasModel::buscarEvento($param[1]);
+            $resp_programa = CartasModel::buscarPrograma($param[1]);
             /* if (count($resp_presencial) > 0 && count($resp_virtual) > 0) {
                 header('Location:' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1]);
                 header('Location:' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1]);
@@ -377,14 +381,14 @@ class Cartas extends ControllerBase
                 /* echo '<script>';
                 echo 'window.open("' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1] . "/CartaPresencial" . '", "_blank");';
                 echo '</script>'; */
-                $pdfPresencial = $this->enviarCartaPresencial($profesor, $resp_presencial, $resp_evento);
+                $pdfPresencial = $this->enviarCartaPresencial($profesor, $resp_presencial, $resp_evento,$resp_programa);
             }
             if (count($resp_virtual) > 0) {
 
                 /* echo '<script>';
                 echo 'window.open("' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1] . "/CartaVirtual" . '", "_blank");';
                 echo '</script>'; */
-                $pdfVirtual = $this->enviarCartaVirtual($profesor, $resp_virtual, $resp_evento);
+                $pdfVirtual = $this->enviarCartaVirtual($profesor, $resp_virtual, $resp_evento,$resp_programa);
             }
 
             /* echo '<script>';
@@ -400,7 +404,7 @@ class Cartas extends ControllerBase
             echo '</script>';
         }
     }
-    function enviarCartaPresencial($profesor, $temas, $evento)
+    function enviarCartaPresencial($profesor, $temas, $evento, $programa)
     {
         /* $temas = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
@@ -496,7 +500,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -516,7 +520,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -541,14 +545,13 @@ class Cartas extends ControllerBase
             echo "Error al mover la carta presencial:" . $nombe_archivo;
         }
     }
-    function enviarCartaVirtual($profesor, $temas, $evento)
+    function enviarCartaVirtual($profesor, $temas, $evento, $programa)
     {
         /* $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
         $profesor = CartasModel::buscarProfesor($param[0]);
         $evento = CartasModel::buscarEvento($param[1]); */
         /* var_dump($temas);
         exit; */
-        $programa = '';
         header('Content-Type: text/html; charset=utf-8');
         $pdf = new FPDF('P', 'mm', 'A4');
         $pdf->AddPage();
@@ -626,7 +629,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -646,7 +649,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con Claudia Velez al e-mail eventos@colegiocmo.com.mx";
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));

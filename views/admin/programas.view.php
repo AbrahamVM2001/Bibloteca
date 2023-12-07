@@ -42,6 +42,20 @@
                 Ingrese un nombre de programa, por favor.
               </div>
             </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Responsable</label>
+              <input type="text" class="form-control" name="responsable" id="responsable" placeholder="Nombre del responsable..." required>
+              <div class="invalid-feedback">
+                Ingrese un nombre, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Correo responsable</label>
+              <input type="email" class="form-control" name="correo_responsable" id="correo_responsable" placeholder="Correo responsable..." required>
+              <div class="invalid-feedback">
+                Ingrese un nombre correo, por favor.
+              </div>
+            </div>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">

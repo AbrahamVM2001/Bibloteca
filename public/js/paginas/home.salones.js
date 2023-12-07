@@ -78,19 +78,19 @@ $(function () {
         }
     }
     cardsSalones();
-    $('#asignar_salon').change(function(){
+    $('#asignar_salon').change(function () {
         if ($(this).val() == "agregar_salon") {
             $('#contenedor-agregar').removeClass('d-none');
-            $('#nuevo_salon').attr('disabled',false);
-            $('#nuevo_salon').attr('required',true);
-        }else{
+            $('#nuevo_salon').attr('disabled', false);
+            $('#nuevo_salon').attr('required', true);
+        } else {
             $('#contenedor-agregar').addClass('d-none');
             $('#nuevo_salon').val("");
-            $('#nuevo_salon').attr('disabled',true);
-            $('#nuevo_salon').attr('required',false);
+            $('#nuevo_salon').attr('disabled', true);
+            $('#nuevo_salon').attr('required', false);
         }
     });
-    async function salones(identificador,filtro = null,actual = null) {
+    async function salones(identificador, filtro = null, actual = null) {
         try {
             $(identificador).empty();
             let peticion = await fetch(servidor + `admin/cat_salones/${fechas}/${programa}`);
@@ -101,9 +101,9 @@ $(function () {
             $(identificador).append(option_select);
             if (filtro == null) {
                 let option_select2 = document.createElement("option")
-            option_select2.value = 'agregar_salon';
-            option_select2.text = 'Crear nuevo salón';
-            $(identificador).append(option_select2);
+                option_select2.value = 'agregar_salon';
+                option_select2.text = 'Crear nuevo salón';
+                $(identificador).append(option_select2);
             }
             for (let item of response) {
                 let option = document.createElement("option")
@@ -125,13 +125,13 @@ $(function () {
         }
     }
     salones('#asignar_salon');
-    $('#container-salones').on('click','.btn-reasignar-salon',function(){
+    $('#container-salones').on('click', '.btn-reasignar-salon', function () {
         $('#salon_seleccionado').text($(this).data('salon'))
         $('#modalReasignar').modal('show');
         $('#id_asignacion_salon').val($(this).data('id'))
-        salones('#reasignar_salon','NoNulo',$(this).data('idsalon'));
+        salones('#reasignar_salon', 'NoNulo', $(this).data('idsalon'));
     });
-    async function editarSalon(idsalon){
+    async function editarSalon(idsalon) {
         let peticion = await fetch(servidor + `admin/buscarSalon/${idsalon}`);
         let response = await peticion.json();
         console.log(response);
