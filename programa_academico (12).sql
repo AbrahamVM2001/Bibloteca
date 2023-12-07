@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 07-12-2023 a las 00:57:53
--- Versión del servidor: 10.4.28-MariaDB
--- Versión de PHP: 8.2.4
+-- Servidor: localhost:3306
+-- Tiempo de generación: 07-12-2023 a las 17:43:08
+-- Versión del servidor: 10.4.32-MariaDB-1:10.4.32+maria~ubu2004
+-- Versión de PHP: 8.2.11
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -43,8 +43,14 @@ CREATE TABLE `asignacion_actividades_programa` (
 --
 
 INSERT INTO `asignacion_actividades_programa` (`id_asignacion_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 3, 1, 1, 1, 1, 1),
-(2, 1, 3, 1, 1, 2, 1, 1);
+(1, 1, 1, 1, 1, 1, 2, 1),
+(2, 12, 2, 3, 1, 2, 2, 1),
+(3, 0, 4, 2, 1, 0, 2, 1),
+(4, 18, 4, 4, 1, 3, 2, 1),
+(5, 6, 6, 1, 1, 4, 2, 1),
+(6, 0, 5, 3, 1, 0, 2, 1),
+(7, 4, 4, 2, 1, 5, 2, 1),
+(8, 5, 5, 1, 1, 6, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -67,7 +73,30 @@ CREATE TABLE `asignacion_capitulos_programa` (
 --
 
 INSERT INTO `asignacion_capitulos_programa` (`id_asignacion_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_capitulo`, `creado_por`, `estatus_asignacion`) VALUES
-(3, 3, 1, 1, 1, 1, 1);
+(1, 1, 1, 1, 1, 2, 1),
+(2, 1, 1, 1, 2, 2, 1),
+(3, 1, 1, 1, 3, 2, 1),
+(4, 1, 1, 1, 4, 2, 1),
+(5, 1, 1, 1, 5, 2, 1),
+(6, 1, 1, 1, 6, 2, 1),
+(7, 1, 1, 1, 7, 2, 1),
+(8, 1, 1, 1, 8, 2, 1),
+(9, 1, 1, 1, 9, 2, 1),
+(10, 1, 1, 1, 10, 2, 1),
+(11, 1, 1, 1, 11, 2, 1),
+(12, 1, 1, 1, 12, 2, 1),
+(13, 1, 1, 1, 13, 2, 1),
+(14, 1, 1, 1, 14, 2, 1),
+(15, 1, 1, 1, 15, 2, 1),
+(16, 1, 1, 1, 16, 2, 1),
+(17, 1, 1, 1, 17, 2, 1),
+(18, 2, 3, 1, 12, 2, 1),
+(19, 4, 2, 1, 0, 2, 1),
+(20, 4, 4, 1, 18, 2, 1),
+(22, 6, 1, 1, 6, 2, 1),
+(23, 4, 2, 1, 4, 2, 1),
+(24, 5, 3, 1, 0, 2, 1),
+(25, 5, 1, 1, 5, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -89,8 +118,16 @@ CREATE TABLE `asignacion_salones_programa` (
 --
 
 INSERT INTO `asignacion_salones_programa` (`id_asignacion_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_salon`, `creado_por`, `estatus_asignacion`) VALUES
-(10, 1, 1, 3, 1, 1),
-(11, 1, 1, 1, 1, 1);
+(1, 1, 1, 1, 2, 1),
+(2, 1, 1, 2, 2, 1),
+(3, 1, 1, 3, 2, 1),
+(4, 1, 1, 4, 2, 1),
+(5, 1, 1, 5, 2, 1),
+(6, 1, 1, 6, 2, 1),
+(7, 3, 1, 2, 2, 1),
+(8, 2, 1, 4, 2, 1),
+(9, 4, 1, 4, 2, 1),
+(10, 3, 1, 5, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -119,8 +156,37 @@ CREATE TABLE `asignacion_temas_programa` (
 --
 
 INSERT INTO `asignacion_temas_programa` (`id_asignacion_tema`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `fk_id_actividad`, `fk_id_tema`, `hora_inicial`, `hora_final`, `fk_id_profesor`, `fk_id_modalidad`, `creado_por`, `estatus_asignacion`) VALUES
-(1, 1, 3, 1, 1, 1, 1, '12:07:00', '14:06:00', 1, 2, 1, 1),
-(2, 1, 3, 1, 1, 2, 2, '13:07:00', '15:07:00', 2, 2, 1, 1);
+(10, 1, 1, 1, 1, 1, 1, '11:00:00', '11:08:00', 1, 1, 2, 1),
+(11, 1, 1, 1, 1, 1, 2, '11:16:00', '11:24:00', 2, 1, 2, 1),
+(12, 1, 1, 1, 1, 1, 3, '11:24:00', '11:32:00', 3, 1, 2, 1),
+(13, 1, 1, 1, 1, 1, 4, '11:32:00', '11:40:00', 4, 1, 2, 1),
+(14, 1, 1, 1, 1, 1, 5, '12:04:00', '12:12:00', 5, 1, 2, 1),
+(15, 1, 1, 1, 1, 1, 6, '12:12:00', '12:20:00', 6, 1, 2, 1),
+(16, 1, 1, 1, 1, 1, 7, '12:20:00', '12:28:00', 7, 1, 2, 1),
+(17, 1, 1, 1, 1, 1, 8, '13:45:00', '13:53:00', 8, 1, 2, 1),
+(18, 1, 1, 1, 1, 1, 9, '13:53:00', '14:01:00', 2, 1, 2, 1),
+(19, 1, 1, 1, 1, 1, 10, '14:01:00', '14:09:00', 9, 1, 2, 1),
+(20, 1, 1, 1, 1, 1, 11, '14:09:00', '14:17:00', 10, 1, 2, 1),
+(21, 1, 1, 1, 1, 1, 12, '14:17:00', '14:25:00', 11, 1, 2, 1),
+(22, 1, 1, 1, 1, 1, 13, '14:25:00', '14:33:00', 12, 1, 2, 1),
+(23, 1, 1, 1, 1, 1, 14, '14:33:00', '14:41:00', 13, 1, 2, 1),
+(24, 1, 1, 1, 1, 1, 15, '14:41:00', '14:49:00', 14, 1, 2, 1),
+(25, 1, 1, 1, 1, 1, 16, '14:49:00', '14:57:00', 3, 1, 2, 1),
+(26, 12, 2, 3, 1, 2, 17, '14:00:00', '14:32:00', 15, 1, 2, 1),
+(27, 0, 4, 2, 1, 0, 18, '12:15:00', '13:00:00', 0, 0, 2, 1),
+(28, 18, 4, 4, 1, 3, 17, '08:30:00', '08:50:00', 16, 1, 2, 1),
+(29, 6, 6, 1, 1, 4, 17, '11:00:00', '13:00:00', 17, 1, 2, 1),
+(30, 12, 2, 3, 1, 2, 19, '14:00:00', '14:08:00', 18, 1, 2, 1),
+(31, 1, 1, 1, 1, 1, 20, '11:08:00', '11:16:00', 0, 0, 2, 1),
+(32, 18, 4, 4, 1, 3, 21, '08:30:00', '08:37:00', 19, 1, 2, 1),
+(33, 4, 4, 2, 1, 5, 17, '13:00:00', '14:30:00', 21, 1, 2, 1),
+(34, 6, 6, 1, 1, 4, 22, '11:00:00', '11:15:00', 20, 2, 2, 1),
+(35, 12, 2, 3, 1, 2, 23, '14:08:00', '14:16:00', 22, 1, 2, 1),
+(36, 0, 5, 3, 1, 0, 24, '17:00:00', '17:30:00', 23, 1, 2, 1),
+(37, 18, 4, 4, 1, 3, 21, '08:37:00', '08:45:00', 33, 1, 2, 1),
+(38, 1, 1, 1, 1, 1, 25, '11:40:00', '11:48:00', 0, 0, 2, 1),
+(39, 5, 5, 1, 1, 6, 26, '16:40:00', '18:50:00', 34, 2, 2, 1),
+(40, 1, 1, 1, 1, 1, 27, '11:48:00', '11:56:00', 0, 0, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -144,8 +210,13 @@ CREATE TABLE `cat_actividades` (
 --
 
 INSERT INTO `cat_actividades` (`id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_actividad`, `creado_por`, `estatus_actividad`) VALUES
-(1, 1, 2, 1, 1, 'Actividad fecha 7-12-2023', 1, 1),
-(2, 2, 1, 1, 1, 'Actividad fecha 6-12-2023', 1, 1);
+(0, 0, 0, 1, 1, 'Sin actividad asignada', 2, 1),
+(1, 1, 1, 1, 1, 'Abordaje y tratamiento de cadera', 2, 1),
+(2, 12, 2, 3, 1, 'Seudoartrosis séptica', 2, 1),
+(3, 18, 4, 4, 1, 'Hombro congelado', 2, 1),
+(4, 6, 6, 1, 1, 'Trauma complejo pediátrico ', 2, 1),
+(5, 4, 4, 2, 1, 'Tumores en Columna', 2, 1),
+(6, 5, 5, 1, 1, 'Lesiones neurológicas y transferencias tendinosas', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -168,8 +239,25 @@ CREATE TABLE `cat_capitulos` (
 --
 
 INSERT INTO `cat_capitulos` (`id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_capitulo`, `creado_por`, `estatus_capitulo`) VALUES
-(1, 2, 1, 1, 'Capitulo fecha 7-12-2023', 1, 1),
-(2, 1, 1, 1, 'Capitulo fecha 6-12-2023', 1, 1);
+(0, 0, 1, 1, 'Sin capítulo asignado', 2, 1),
+(1, 1, 1, 1, 'Cadera y Rodilla', 2, 1),
+(2, 1, 1, 1, 'Trauma y Osteosíntesis', 2, 1),
+(3, 1, 1, 1, 'Artroscopia y Ortopedia del Deporte', 2, 1),
+(4, 1, 1, 1, 'Columna', 2, 1),
+(5, 1, 1, 1, 'Hombro y Codo', 2, 1),
+(6, 1, 1, 1, 'Ortopedia Pediátrica', 2, 1),
+(7, 1, 1, 1, 'Investigación', 2, 1),
+(8, 1, 1, 1, 'Tumores', 2, 1),
+(9, 1, 1, 1, 'Simposio Farmacológico', 2, 1),
+(10, 1, 1, 1, 'Residentes', 2, 1),
+(11, 1, 1, 1, 'Mano y Muñeca', 2, 1),
+(12, 1, 1, 1, 'Infecciones Óseas', 2, 1),
+(13, 1, 1, 1, 'Dolor', 2, 1),
+(14, 1, 1, 1, 'Tobillo y Pie', 2, 1),
+(15, 1, 1, 1, 'Metabolismo Óseo', 2, 1),
+(16, 1, 1, 1, 'Ortobiológicos', 2, 1),
+(17, 1, 1, 1, 'Ortopedia Geriátrica', 2, 1),
+(18, 4, 4, 1, 'Medicina Física y Rehabilitación', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -192,7 +280,7 @@ CREATE TABLE `cat_eventos` (
 --
 
 INSERT INTO `cat_eventos` (`id_evento`, `nombre_evento`, `descripcion_evento`, `fecha_inicio_evento`, `fecha_fin_evento`, `creado_por`, `estatus_evento`) VALUES
-(1, 'LXIX Congreso Nacional de Ortopedia', 'World Tarde Center Cuidad de México', '2023-12-06', '2023-12-10', 1, 1);
+(1, 'LXIX CONGRESO NACIONAL DE ORTOPEDIA', 'World Trade Center, CDMX', '2024-04-27', '2024-05-01', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -213,7 +301,11 @@ CREATE TABLE `cat_fechas_programa` (
 --
 
 INSERT INTO `cat_fechas_programa` (`id_fecha_programa`, `fk_id_programa`, `fecha_programa`, `creado_por`, `estatus_fecha_programa`) VALUES
-(1, 1, '2023-12-06', 1, 1);
+(1, 1, '2024-04-27', 2, 1),
+(2, 1, '2024-04-28', 2, 1),
+(3, 1, '2024-04-29', 2, 1),
+(4, 1, '2024-04-30', 2, 1),
+(5, 1, '2024-05-01', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -570,7 +662,7 @@ INSERT INTO `cat_menu` (`id_menu`, `nombre_menu`, `descripcion_menu`, `referenci
 (3, 'Estadísticas', 'Sección de estadísticas de rastro de documentos', 'admin/estadisticas', 99, '<i class=\"fa-solid fa-chart-column\"></i>', 3, 0),
 (4, 'Catálogos', 'Sección de catálogos', 'admin/catalogos', 2, '<i class=\"fa-solid fa-list\"></i>', 3, 0),
 (5, 'Cartas', 'Sección de cartas de invitación de profesores', 'cartas/', 3, '<i class=\"fa-solid fa-envelope-open-text\"></i>', 3, 1),
-(6, 'Reportes', 'Sección de reportes de los programas creados por eventos', 'reportes/', 4, '<i class=\"fa-solid fa-filter\"></i>', 3, 1);
+(6, 'Reportes', 'Sección de reportes de los programas creados por eventos', 'reportes/', 4, '<i class=\"fa-solid fa-filter\"></i>', 3, 0);
 
 -- --------------------------------------------------------
 
@@ -589,6 +681,7 @@ CREATE TABLE `cat_modalida` (
 --
 
 INSERT INTO `cat_modalida` (`id_modalidad`, `nombre_modalidad`, `estatus_modalidad`) VALUES
+(0, 'Sin asignar', 1),
 (1, 'Presencial', 1),
 (2, 'Virtual', 1);
 
@@ -610,6 +703,7 @@ CREATE TABLE `cat_prefijos` (
 --
 
 INSERT INTO `cat_prefijos` (`id_prefijo`, `nombre_prefijo`, `siglas_prefijo`, `estatus_prefijo`) VALUES
+(0, 'Sin prefijo', 'S/P.', 1),
 (1, 'Doctor', 'Dr.', 1),
 (2, 'Doctora', 'Dra.', 1);
 
@@ -644,8 +738,32 @@ CREATE TABLE `cat_profesores` (
 --
 
 INSERT INTO `cat_profesores` (`id_profesor`, `fk_id_prefijo`, `nombre_profesor`, `apellidop_profesor`, `apellidom_profesor`, `fk_id_pais`, `fk_id_estado`, `hospedaje`, `transporte_aereo`, `transporte_terrestre`, `miembro_cmot`, `miembro_cmo`, `fk_id_lada`, `telefono_profesor`, `correo_profesor`, `creado_por`, `estatus_profesor`) VALUES
-(1, 1, 'Francisco', 'Arenal', '', 156, 2545, 0, 0, 0, 0, 0, 310, '', 'francisco.arenal.guerrero@gmail.com', 1, 1),
-(2, 1, 'Jesús Gerardo', 'Arenal', 'Rodriguez', 156, 2540, 0, 0, 0, 0, 0, 310, '', 'jesus@mail.com', 1, 1);
+(0, 0, 'Sin profesor', 'Asignado', NULL, 156, 2545, 0, 0, 0, 0, 0, 310, NULL, 'sinasignacion@mail.com', 2, 1),
+(1, 1, 'Daniel', 'Diego', 'Ball', 156, 2545, 0, 0, 0, 0, 0, 310, '5554563152', 'diego.ortopediacentro@gmail.com', 2, 1),
+(2, 1, 'Rafael', 'Sierra', '', 71, 1191, 0, 0, 0, 0, 0, 310, '5072692904', 'Sierra.rafael@mayo.edu', 2, 1),
+(3, 1, 'Efraín', 'Díaz', 'Borjón', 156, 2545, 0, 0, 0, 0, 0, 310, '5541408769', 'efraindb@hotmail.com', 2, 1),
+(4, 1, 'Julio César', 'Pérez', 'Alavez', 156, 2545, 0, 0, 0, 0, 0, 310, '5528621823', 'jcmacuil@gmail.com', 2, 1),
+(5, 1, 'Everth', 'Mérida', 'Herrera', 156, 2545, 0, 0, 0, 0, 0, 310, '5532223785', 'everth.merida@usa.net', 2, 1),
+(6, 1, 'José Manuel', 'Aguilera', 'Zepeda', 156, 2545, 0, 0, 0, 0, 0, 310, '5554143246', 'ortoremplazos@yahoo.com.mx', 2, 1),
+(7, 1, 'Fidel Enrique', 'García Dobarganes', 'Barlow', 156, 2558, 0, 0, 0, 0, 0, 310, '4422810981', 'fdobarganes@icloud.com', 2, 1),
+(8, 1, 'William Rafael', 'Arbeláez', '', 49, 743, 0, 0, 0, 0, 0, 310, '573153328728', 'williamarbelaz@yahoo.com', 2, 1),
+(9, 1, 'José Ignacio', 'Urbina', '', 49, 743, 0, 0, 0, 0, 0, 310, '5730 1336 4351', 'drsanchezortopedia@gmail.com', 2, 1),
+(10, 1, 'César', 'Rocha', '', 49, 743, 0, 0, 0, 0, 0, 310, '', 'novalido@no.com', 2, 1),
+(11, 1, 'Víctor', 'Ilizarrituri', 'Sánchez', 156, 2545, 0, 0, 0, 0, 0, 310, '5554014037', 'vichip2002@yahoo.com.mx', 2, 1),
+(12, 1, 'Jorge', 'Negrete', 'Corona', 156, 2545, 0, 0, 0, 0, 0, 310, '5255 5183 2185', 'negretedoc@hotmail.com', 2, 1),
+(13, 1, 'Tomás', 'Guerrero', 'Rubio', 156, 2545, 0, 0, 0, 0, 0, 310, '55 1348 0117', 'tomygu1@yahoo.com.mx', 2, 1),
+(14, 1, 'José Manuel', 'Aguilera', 'Zepeda', 156, 2545, 0, 0, 0, 0, 0, 310, '5554143246', 'ortoremplazos@yahoo.com.mx', 2, 1),
+(15, 1, 'Job Diego', 'Velázquez', 'Moreno', 156, 2545, 0, 0, 0, 0, 0, 23, '55 1953 2653', 'sseido@att.net.mx', 2, 1),
+(16, 2, 'Nancy', 'Hernández ', 'Flores', 156, 2545, 0, 0, 0, 0, 0, 23, '5522723579', 'hdzfnan@hotmail.com', 2, 1),
+(17, 1, 'Luis Alberto', ' Pérez ', 'Méndez', 156, 2556, 0, 0, 0, 0, 0, 23, '9512346495', 'betotrauma@hotmail.com', 2, 1),
+(18, 1, 'José Antonio', 'Hernández ', 'García', 156, 2545, 0, 0, 0, 0, 0, 23, '55 3431 1295', 'hantonychepe@hotmail.com', 2, 1),
+(19, 1, 'Ricardo Brian', 'Palmieri', 'Bouchan', 156, 2545, 0, 0, 0, 0, 0, 23, '5521292716', 'drpalmieri@me.com', 2, 1),
+(20, 1, 'Diego', 'Hurtado', 'Alonso', 156, 2545, 0, 0, 0, 0, 0, 23, '5533978943', 'drhualdi37@gmail.com', 2, 1),
+(21, 1, 'Leonardo', 'Álvarez', 'Betancourt', 156, 2545, 0, 0, 0, 0, 0, 23, '5554336526', 'leoalvarezb1@hotmail.com', 2, 1),
+(22, 1, 'Lamberto Fabián', 'Ramos', 'Alejo', 156, 2545, 0, 0, 0, 0, 0, 23, '55 1489 8655', 'fabianra@yahoo.com', 2, 1),
+(23, 2, 'Ana María', 'Serrano', 'Ardila', 156, 2545, 0, 0, 0, 0, 0, 23, '5533993589', 'ana.serrano@ortopediaabc.mx', 2, 1),
+(33, 1, 'Gustavo Adolfo', 'Ramírez', 'Leyva', 156, 2551, 0, 0, 0, 0, 0, 23, '5534308184', 'gusaaarl2000@yahoo.com.mx', 2, 1),
+(34, 1, 'Luis Alfredo ', 'Miranda ', 'Ocaña', 156, 2562, 0, 0, 0, 0, 0, 23, '00000000', 'eventos@colegiocmo.com.mx', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -658,6 +776,8 @@ CREATE TABLE `cat_programa` (
   `fk_id_evento` int(11) NOT NULL,
   `nombre_programa` text NOT NULL,
   `creado_por` int(11) NOT NULL,
+  `responsable_programa` text DEFAULT NULL,
+  `correo_responsable` text DEFAULT NULL,
   `estatus_programa` tinyint(1) NOT NULL DEFAULT 1 COMMENT '0=Inactivo;1=Activo'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
@@ -665,8 +785,8 @@ CREATE TABLE `cat_programa` (
 -- Volcado de datos para la tabla `cat_programa`
 --
 
-INSERT INTO `cat_programa` (`id_programa`, `fk_id_evento`, `nombre_programa`, `creado_por`, `estatus_programa`) VALUES
-(1, 1, 'Programa Académico Congreso', 1, 1);
+INSERT INTO `cat_programa` (`id_programa`, `fk_id_evento`, `nombre_programa`, `creado_por`, `responsable_programa`, `correo_responsable`, `estatus_programa`) VALUES
+(1, 1, 'Programa Académico Congreso', 2, 'Claudia Velez', 'eventos@colegiocmo.com.mx', 1);
 
 -- --------------------------------------------------------
 
@@ -708,9 +828,13 @@ CREATE TABLE `cat_salones` (
 --
 
 INSERT INTO `cat_salones` (`id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_salon`, `creado_por`, `estatus_salon`) VALUES
-(1, 1, 1, 'Salon fecha 6-12-2023', 1, 1),
-(2, 1, 1, 'Salon fecha 7-12-2023', 1, 1),
-(3, 1, 1, 'sdfsdfsdafsd', 1, 1);
+(0, 1, 1, 'Sin salón asignado', 2, 1),
+(1, 1, 1, 'Olmeca 1', 2, 1),
+(2, 1, 1, 'Olmeca 2', 2, 1),
+(3, 1, 1, 'Tolteca 1', 2, 1),
+(4, 1, 1, 'Tolteca 2', 2, 1),
+(5, 1, 1, 'Mixteca 1', 2, 1),
+(6, 1, 1, 'Mixteca 2', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -750,8 +874,33 @@ CREATE TABLE `cat_temas` (
 --
 
 INSERT INTO `cat_temas` (`id_tema`, `fk_id_actividad`, `fk_id_capitulo`, `fk_id_salon`, `fk_id_fechas`, `fk_id_programa`, `nombre_tema`, `creado_por`, `estatus_tema`) VALUES
-(1, 1, 1, 2, 1, 1, 'Tema fecha 7-12-2023', 1, 1),
-(2, 2, 2, 1, 1, 1, 'Tema fecha 6-12-2023', 1, 1);
+(1, 1, 1, 1, 1, 1, 'Avances tecnológicos y uso de robots en ATC ¿dónde estamos?', 2, 1),
+(2, 1, 1, 1, 1, 1, 'Cirugía navegada con Giroscópio (orthalign) Han Held Navigativo en \"Mayo Clinic\"', 2, 1),
+(3, 1, 1, 1, 1, 1, '¿Qué diferencia hay entre usar Robot en ATC y no utilizarlo, está a la altura de los robots de la rodilla?', 2, 1),
+(4, 1, 1, 1, 1, 1, 'ATC opciones actuales con Robots y realidad aumentada', 2, 1),
+(5, 1, 1, 1, 1, 1, 'Porqué no utilizo robot en ATC ¿algún día el robot suplirá al humano?', 2, 1),
+(6, 1, 1, 1, 1, 1, 'Cirugía robótica vs abordaje tradicional lateral directo ¿es necesario?', 2, 1),
+(7, 1, 1, 1, 1, 1, 'Cirugía robótica vs  abordaje tradicional posterior ¿cómo me ayudaría?', 2, 1),
+(8, 1, 1, 1, 1, 1, 'Endoprótesis y revisiones complejas en ATR de revisión', 2, 1),
+(9, 1, 1, 1, 1, 1, 'Conos y aumentos de metal trabecular en ATR de revisión', 2, 1),
+(10, 1, 1, 1, 1, 1, 'Mejoras tecnológicas en ATR de revisión que es lo actual', 2, 1),
+(11, 1, 1, 1, 1, 1, 'Niveles de construcción en cirugía de revisión ATR', 2, 1),
+(12, 1, 1, 1, 1, 1, 'ATR de revisión ¿tiene utilidad el Robot?', 2, 1),
+(13, 1, 1, 1, 1, 1, 'ATR revisión por Inestabilidad ¿cómo la hacemos?', 2, 1),
+(14, 1, 1, 1, 1, 1, 'ATR revisión balance de Gaps y Liena articular ¿cómo se hace?', 2, 1),
+(15, 1, 1, 1, 1, 1, 'ATR compleja ¿Cómo manejo la rodilla valga severa?', 2, 1),
+(16, 1, 1, 1, 1, 1, '¿Cómo manejo la deformidad en flexión severa?', 2, 1),
+(17, 2, 12, 2, 3, 1, 'Coordinador', 2, 1),
+(18, 0, 0, 4, 2, 1, 'Exposición Técnico - Comercial', 2, 1),
+(19, 2, 12, 2, 3, 1, 'Criterios de diagnóstico. Laboratorio, gabinete,clínico', 2, 1),
+(20, 1, 1, 1, 1, 1, 'Cirugía Robótica Rosa en ATC abordaje anterior', 2, 1),
+(21, 3, 18, 4, 4, 1, 'Mesa Redonda: manejo ortopédico y ejercicio isocinético', 2, 1),
+(22, 4, 6, 6, 1, 1, 'Politrauma pediátrico: manejo inicial, actualidad', 2, 1),
+(23, 2, 12, 2, 3, 1, 'Cultivos; ¿cuántos? ¿preoperatorios o transoperatorios?', 2, 1),
+(24, 0, 0, 5, 3, 1, 'Mesa de discusión: preguntas y casos ', 2, 1),
+(25, 1, 1, 1, 1, 1, 'ATC con Robot Mako', 2, 1),
+(26, 6, 5, 5, 1, 1, 'Síndrome de pectoral menor. Manejo', 2, 1),
+(27, 1, 1, 1, 1, 1, 'ATC uso de Robot ventajas y desventajas', 2, 1);
 
 -- --------------------------------------------------------
 
@@ -774,7 +923,8 @@ CREATE TABLE `cat_usuarios` (
 
 INSERT INTO `cat_usuarios` (`id_usuario`, `nombre_usuario`, `usuario`, `password_usuario`, `tipo_usuario`, `estatus_usuario`) VALUES
 (1, 'Francisco Arenal', 'francisco', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1),
-(2, 'Cecilia Soto', 'cecilia.soto', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1);
+(2, 'Cecilia Soto', 'cecilia.soto', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1),
+(3, 'Claudia Velez', 'claudia.velez', 'TE0xL3B4Ymh5RkhTRFd3UVBjVEpqdz09', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -803,7 +953,7 @@ CREATE TABLE `configuracion` (
 --
 
 INSERT INTO `configuracion` (`id_sociedad`, `nombre_sociedad`, `nombre_sistema`, `descripcion_sistema`, `servidor_correo`, `puerto_servidor_correo`, `correo_soporte`, `password_correo`, `correo_institucional`, `ruta_logotipo`, `ruta_icono`, `dominio_sociedad`, `estatus_sociedad`) VALUES
-(1, 'Colegio Mexicano de Ortopedia', 'CMO-SPA', 'Sistema para sistematizar el programa académico acorde al evento en curso.', 'mail.grupolahe.com', '465', 'francisco.arenal@grupolahe.com', 'fag1912...', NULL, 'public/img/logo_lahe.png', 'public/img/logo_lahe.png', 'http://localhost/programa.academico/', 1);
+(1, 'Colegio Mexicano de Ortopedia', 'CMO-SPA', 'Sistema para sistematizar el programa académico acorde al evento en curso.', 'mail.grupolahe.com', '465', 'francisco.arenal@grupolahe.com', 'fag1912...', NULL, 'public/img/logo_lahe.png', 'public/img/logo_lahe.png', 'https://programa.colegiocmo.com.mx/', 1);
 
 -- --------------------------------------------------------
 
@@ -5547,37 +5697,37 @@ ALTER TABLE `paises`
 -- AUTO_INCREMENT de la tabla `asignacion_actividades_programa`
 --
 ALTER TABLE `asignacion_actividades_programa`
-  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_asignacion_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_capitulos_programa`
 --
 ALTER TABLE `asignacion_capitulos_programa`
-  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_asignacion_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_salones_programa`
 --
 ALTER TABLE `asignacion_salones_programa`
-  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_asignacion_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de la tabla `asignacion_temas_programa`
 --
 ALTER TABLE `asignacion_temas_programa`
-  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_asignacion_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_actividades`
 --
 ALTER TABLE `cat_actividades`
-  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_actividad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_capitulos`
 --
 ALTER TABLE `cat_capitulos`
-  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_capitulo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_eventos`
@@ -5589,7 +5739,7 @@ ALTER TABLE `cat_eventos`
 -- AUTO_INCREMENT de la tabla `cat_fechas_programa`
 --
 ALTER TABLE `cat_fechas_programa`
-  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id_fecha_programa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_ladas`
@@ -5619,7 +5769,7 @@ ALTER TABLE `cat_prefijos`
 -- AUTO_INCREMENT de la tabla `cat_profesores`
 --
 ALTER TABLE `cat_profesores`
-  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_profesor` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_programa`
@@ -5637,7 +5787,7 @@ ALTER TABLE `cat_roles`
 -- AUTO_INCREMENT de la tabla `cat_salones`
 --
 ALTER TABLE `cat_salones`
-  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_salon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_submenu`
@@ -5649,13 +5799,13 @@ ALTER TABLE `cat_submenu`
 -- AUTO_INCREMENT de la tabla `cat_temas`
 --
 ALTER TABLE `cat_temas`
-  MODIFY `id_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_tema` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT de la tabla `cat_usuarios`
 --
 ALTER TABLE `cat_usuarios`
-  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_usuario` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `configuracion`
