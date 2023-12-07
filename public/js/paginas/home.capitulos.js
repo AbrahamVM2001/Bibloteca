@@ -110,9 +110,9 @@ $(function () {
                 let option = document.createElement("option")
                 option.value = item.id_capitulo;
                 option.text = item.nombre_capitulo
-                /* if (item.asignado == 1 && filtro == null) {
+                if (item.asignado == 1 && filtro == null) {
                     option.disabled = true;
-                } */
+                }
                 if (actual != null) {
                     if (item.id_capitulo == atob(atob(actual))) {
                         option.disabled = true;
