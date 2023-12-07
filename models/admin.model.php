@@ -448,10 +448,11 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1 GROUP BY cpp.fk_id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
+            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_salon = :idSalon AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1 GROUP BY cpp.fk_id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha))
+                ':idFechas' => base64_decode(base64_decode($idfecha)),
+                ':idSalon' => base64_decode(base64_decode($idsalon)),
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {
