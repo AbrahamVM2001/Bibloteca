@@ -1,259 +1,302 @@
 $(function () {
-  async function tablaConcentradoCartas() {
-    try {
-      let peticion = await fetch(
-        servidor + `reportes/temasAsignadosProfesores/${programa}`
-      );
+  $('.fecha-seleccionada').click(async function(){
+    console.log($(this).data('id'));
+    let peticion = await fetch(servidor + `programa/infoPrograma/${idprograma}/${$(this).data('id')}`);
       let response = await peticion.json();
-      $("#container-concentrado").empty();
+      console.log($(this).data('date'));
       if (response.length == 0) {
-        jQuery(`<h2>Sin temas asignados</h2>`)
-          .appendTo("#container-concentrado")
-          .addClass("text-danger text-center text-uppercase");
+        jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`).appendTo("#"+$(this).data('date')).addClass('text-danger');
         return false;
-      }
-      jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result">
-            <thead><tr>
-            <th class="text-uppercase">Día</th>
-            <th class="text-uppercase">Salón</th>
-            <th class="text-uppercase">Capítulo</th>
-            <th class="text-uppercase">Actividad</th>
-            <th class="text-uppercase">Horario Inicio</th>
-            <th class="text-uppercase">Horario Fin</th>
-            <th class="text-uppercase">Tema</th>
-            <th class="text-uppercase">Modalidad</th>
-            <th class="text-uppercase">Profesor</th>
-            <th class="text-uppercase">País profesor</th>
-            <th class="text-uppercase">Estado profesor</th>
-            </tr></thead>
-            </table>`)
-        .appendTo("#container-concentrado")
-        .removeClass("text-danger");
-
-      $("#info-table-result").DataTable({
-        drawCallback: function (settings) {
-          $(".paginate_button").addClass("btn").removeClass("paginate_button");
-          $(".dataTables_length").addClass("pull-left");
-          $("#info-table-result_filter").addClass("pull-right");
-          $("input").addClass("form-control");
-          $("select").addClass("form-control");
-          $(".previous.disabled").addClass(
-            "btn-outline-info opacity-5 btn-rounded mx-2 mt-3"
-          );
-          $(".next.disabled").addClass(
-            "btn-outline-info opacity-5 btn-rounded mx-2 mt-3"
-          );
-          $(".previous").addClass("btn-outline-info btn-rounded mx-2 mt-3");
-          $(".next").addClass("btn-outline-info btn-rounded mx-2 mt-3");
-        },
-        scrollX: true,
-        orderCellsTop: true,
-        fixedHeader: true,
-        initComplete: function () {
-            var api = this.api();
-            // For each column
-            api.columns().eq(0)
-                .each(function (colIdx) {
-                    // Set the header cell to contain the input element
-                    var cell = $('.filters th').eq(
-                        $(api.column(colIdx).header()).index()
-                    );
-                    var title = $(cell).text();
-                    $(cell).html('<input type="text" placeholder="' + title + '" />');
-                    // On every keypress in this input
-                    $(
-                        'input',
-                        $('.filters th').eq($(api.column(colIdx).header()).index())
-                    )
-                        .off('keyup change')
-                        .on('change', function (e) {
-                            // Get the search value
-                            $(this).attr('title', $(this).val());
-                            var regexr = '({search})'; //$(this).parents('th').find('select').val();
-                            var cursorPosition = this.selectionStart;
-                            // Search the column for that value
-                            api
-                                .column(colIdx)
-                                .search(
-                                    this.value != ''
-                                        ? regexr.replace('{search}', '(((' + this.value + ')))')
-                                        : '',
-                                    this.value != '',
-                                    this.value == ''
-                                )
-                                .draw();
-                        })
-                        .on('keyup', function (e) {
-                            e.stopPropagation();
-                            $(this).trigger('change');
-                            $(this)
-                                .focus()[0]
-                                .setSelectionRange(cursorPosition, cursorPosition);
-                        });
-                });
-        },
-        language: {
-          url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
-        },
-        dom: "Bfrtip",
-        buttons: [
-            {
-                extend: 'excel',
-                text: 'Exportar a Excel', // Cambia el texto del botón de exportación a Excel
-                titleAttr: 'Exportar a Excel',
-                filename: atob(atob(exportable)),
-            },
-        ],
-        pageLength: 10,
-        lengthMenu: [
-          [10, 20, -1],
-          [10, 20, "All"],
-        ],
-        data: response,
-        columns: [
-          { data: "fecha_programa", className: "text-vertical text-center" },
-          { data: "nombre_salon", className: "text-vertical text-center" },
-          { data: "nombre_capitulo", className: "text-vertical text-center" },
-          { data: "nombre_actividad", className: "text-vertical text-center" },
-          { data: "hora_inicial", className: "text-vertical text-center" },
-          { data: "hora_final", className: "text-vertical text-center" },
-          { data: "nombre_tema", className: "text-vertical text-center" },
-          { data: "nombre_modalidad", className: "text-vertical text-center" },
-          { data: "profesor", className: "text-vertical text-center" },
-          { data: "pais", className: "text-vertical text-center" },
-          { data: "estado", className: "text-vertical text-center" },
-          /* {
-            data: null,
-            render: function (data) {
-              botones = `<div class="col-sm-12 col-md-12 col-lg-12 col-<xl-12 d-flex justify-content-between align-items-center" >
-                                <button data-id="${btoa(
-                                  btoa(data.id_profesor)
-                                )}" data-prof="${
-                data.profesor
-              }" data-programa="${btoa(
-                btoa(data.fk_id_programa)
-              )}" data-bs-toggle="tooltip" title="Temas asignados" type="button" class="btn btn-info temas-asignados"><i class="fa-solid fa-list"></i></button>
-                                <a href="${servidor}reportes/previewCartas/${btoa(
-                btoa(data.id_profesor)
-              )}/${btoa(
-                btoa(data.fk_id_programa)
-              )}" target="_blank" data-bs-toggle="tooltip" title="Previsualizar Cartas" type="button" class="btn btn-secondary visualizar-cartas"><i class="fa-solid fa-magnifying-glass"></i></a>
-                                <a href="${servidor}reportes/sendCartas/${btoa(
-                btoa(data.id_profesor)
-              )}/${btoa(
-                btoa(data.fk_id_programa)
-              )}" target="_blank" data-bs-toggle="tooltip" title="Enviar cartas" type="button" class="btn btn-success enviar-cartas"><i class="fa-solid fa-envelope-open-text"></i></a>
-                                </div>`;
-              return botones;
-            },
-            className: "text-vertical text-center",
-          }, */
-        ],
-      });
-      $('body #info-table-result thead tr')
-        .clone(true)
-        .addClass('filters')
-        .appendTo('body #info-table-result thead');
-    } catch (error) {
-      console.log(error);
     }
-  }
-  tablaConcentradoCartas();
-  
-  async function buscarTemasAsignados(idprof, idprog) {
-    let peticion = await fetch(
-      servidor + `reportes/buscarTemasAsignados/${idprof}/${idprog}`
-    );
-    let response = await peticion.json();
-    console.log(response);
-    $("#container-table-temas").empty();
-    if (response.length == 0) {
-      jQuery(`<h2>no se encontraron temas asignados</h2>`)
-        .appendTo("#container-table-temas")
-        .addClass("text-danger text-center text-uppercase");
-      return false;
-    }
-    jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-temas">
-        <thead><tr>
-        <th class="text-uppercase">Fecha</th>
-        <th class="text-uppercase">Hora inicial</th>
-        <th class="text-uppercase">Hora final</th>
-        <th class="text-uppercase">Salón</th>
-        <th class="text-uppercase">Capítulo</th>
-        <th class="text-uppercase">Actividad</th>
-        <th class="text-uppercase">Tema</th>
-        <th class="text-uppercase">Modalidad</th>
-        </tr></thead>
-        </table>`)
-      .appendTo("#container-table-temas")
-      .removeClass("text-danger");
-
-    $("#info-table-temas").DataTable({
-      drawCallback: function (settings) {
-        $(".paginate_button").addClass("btn").removeClass("paginate_button");
-        $(".dataTables_length").addClass("pull-left");
-        $("#info-table-temas_filter").addClass("pull-right");
-        $("input").addClass("form-control");
-        $("select").addClass("form-control");
-        $(".previous.disabled").addClass(
-          "btn-outline-info opacity-5 btn-rounded mx-2 mt-3"
-        );
-        $(".next.disabled").addClass(
-          "btn-outline-info opacity-5 btn-rounded mx-2 mt-3"
-        );
-        $(".previous").addClass("btn-outline-info btn-rounded mx-2 mt-3");
-        $(".next").addClass("btn-outline-info btn-rounded mx-2 mt-3");
-      },
-      language: {
-        url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json",
-      },
-      pageLength: 5,
-      lengthMenu: [
-        [5, 10, -1],
-        [5, 10, "All"],
-      ],
-      data: response,
-      columns: [
-        /* { "data": "fecha_programa", className: 'text-vertical text-center' }, */
-        {
-          data: null,
-          render: function (data) {
-            return moment(data.fecha_programa).format("DD/MM/YYYY");
-          },
-          className: "text-vertical text-center",
-        },
-        { data: "hora_inicial", className: "text-vertical text-center" },
-        { data: "hora_final", className: "text-vertical text-center" },
-        { data: "nombre_salon", className: "text-vertical text-center" },
-        { data: "nombre_capitulo", className: "text-vertical text-center" },
-        { data: "nombre_actividad", className: "text-vertical text-center" },
-        { data: "nombre_tema", className: "text-vertical text-center" },
-        { data: "nombre_modalidad", className: "text-vertical text-center" },
-      ],
+    response.forEach((item, index) => {
+        jQuery(`
+        <h4>
+        <img class="rounded float-left m-r-15" width="40" alt="user"
+          src="https://bootdey.com/img/Content/avatar/avatar1.png"> Horizontal Timeline<br>
+        <small><?= date('j ', strtotime($value['fecha_programa'])) . $meses[date('F', strtotime($value['fecha_programa']))]." de ".date('Y', strtotime($value['fecha_programa'])); ?></small>
+      </h4>
+      <hr>
+      <p>It is a long established fact that a reader will be distracted by the readable content of a page
+        when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+        distribution of letters, as opposed to using 'Content here, content here', making it look like
+        readable English. Many desktop publishing packages and web page editors infancy.
+        <br>
+        <button class="btn btn-primary btn-round">Read more</button>
+      </p>
+      <hr>
+        `).appendTo("#"+$(this).data('date'));
     });
-  }
-  $("#container-concentrado").on("click", ".temas-asignados", function () {
-    $("#modalListaTemas").modal("show");
-    $("#profesor-seleccionado").text($(this).data("prof"));
-    buscarTemasAsignados($(this).data("id"), $(this).data("programa"));
   });
-  $("#container-concentrado").on("click", ".visualizar-cartas", function () {
-    verificarBloqueadorVentanasEmergentes();
-    /* console.log("Click Preview de carta"); */
+
+
+  /* Métodos de funcionamiento del ejemplo TimeLine */
+  jQuery(document).ready(function ($) {
+    var timelines = $('.cd-horizontal-timeline'),
+      eventsMinDistance = 60;
+
+    (timelines.length > 0) && initTimeline(timelines);
+
+    function initTimeline(timelines) {
+      timelines.each(function () {
+        var timeline = $(this),
+          timelineComponents = {};
+        //cache timeline components 
+        timelineComponents['timelineWrapper'] = timeline.find('.events-wrapper');
+        timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
+        timelineComponents['fillingLine'] = timelineComponents['eventsWrapper'].children('.filling-line');
+        timelineComponents['timelineEvents'] = timelineComponents['eventsWrapper'].find('a');
+        timelineComponents['timelineDates'] = parseDate(timelineComponents['timelineEvents']);
+        timelineComponents['eventsMinLapse'] = minLapse(timelineComponents['timelineDates']);
+        timelineComponents['timelineNavigation'] = timeline.find('.cd-timeline-navigation');
+        timelineComponents['eventsContent'] = timeline.children('.events-content');
+
+        //assign a left postion to the single events along the timeline
+        setDatePosition(timelineComponents, eventsMinDistance);
+        //assign a width to the timeline
+        var timelineTotWidth = setTimelineWidth(timelineComponents, eventsMinDistance);
+        //the timeline has been initialize - show it
+        timeline.addClass('loaded');
+
+        //detect click on the next arrow
+        timelineComponents['timelineNavigation'].on('click', '.next', function (event) {
+          event.preventDefault();
+          updateSlide(timelineComponents, timelineTotWidth, 'next');
+        });
+        //detect click on the prev arrow
+        timelineComponents['timelineNavigation'].on('click', '.prev', function (event) {
+          event.preventDefault();
+          updateSlide(timelineComponents, timelineTotWidth, 'prev');
+        });
+        //detect click on the a single event - show new event content
+        timelineComponents['eventsWrapper'].on('click', 'a', function (event) {
+          event.preventDefault();
+          timelineComponents['timelineEvents'].removeClass('selected');
+          $(this).addClass('selected');
+          updateOlderEvents($(this));
+          updateFilling($(this), timelineComponents['fillingLine'], timelineTotWidth);
+          updateVisibleContent($(this), timelineComponents['eventsContent']);
+        });
+
+        //on swipe, show next/prev event content
+        timelineComponents['eventsContent'].on('swipeleft', function () {
+          var mq = checkMQ();
+          (mq == 'mobile') && showNewContent(timelineComponents, timelineTotWidth, 'next');
+        });
+        timelineComponents['eventsContent'].on('swiperight', function () {
+          var mq = checkMQ();
+          (mq == 'mobile') && showNewContent(timelineComponents, timelineTotWidth, 'prev');
+        });
+
+        //keyboard navigation
+        $(document).keyup(function (event) {
+          if (event.which == '37' && elementInViewport(timeline.get(0))) {
+            showNewContent(timelineComponents, timelineTotWidth, 'prev');
+          } else if (event.which == '39' && elementInViewport(timeline.get(0))) {
+            showNewContent(timelineComponents, timelineTotWidth, 'next');
+          }
+        });
+      });
+    }
+
+    function updateSlide(timelineComponents, timelineTotWidth, string) {
+      //retrieve translateX value of timelineComponents['eventsWrapper']
+      var translateValue = getTranslateValue(timelineComponents['eventsWrapper']),
+        wrapperWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', ''));
+      //translate the timeline to the left('next')/right('prev') 
+      (string == 'next')
+        ? translateTimeline(timelineComponents, translateValue - wrapperWidth + eventsMinDistance, wrapperWidth - timelineTotWidth)
+        : translateTimeline(timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
+    }
+
+    function showNewContent(timelineComponents, timelineTotWidth, string) {
+      //go from one event to the next/previous one
+      var visibleContent = timelineComponents['eventsContent'].find('.selected'),
+        newContent = (string == 'next') ? visibleContent.next() : visibleContent.prev();
+
+      if (newContent.length > 0) { //if there's a next/prev event - show it
+        var selectedDate = timelineComponents['eventsWrapper'].find('.selected'),
+          newEvent = (string == 'next') ? selectedDate.parent('li').next('li').children('a') : selectedDate.parent('li').prev('li').children('a');
+
+        updateFilling(newEvent, timelineComponents['fillingLine'], timelineTotWidth);
+        updateVisibleContent(newEvent, timelineComponents['eventsContent']);
+        newEvent.addClass('selected');
+        selectedDate.removeClass('selected');
+        updateOlderEvents(newEvent);
+        updateTimelinePosition(string, newEvent, timelineComponents);
+      }
+    }
+
+    function updateTimelinePosition(string, event, timelineComponents) {
+      //translate timeline to the left/right according to the position of the selected event
+      var eventStyle = window.getComputedStyle(event.get(0), null),
+        eventLeft = Number(eventStyle.getPropertyValue("left").replace('px', '')),
+        timelineWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', '')),
+        timelineTotWidth = Number(timelineComponents['eventsWrapper'].css('width').replace('px', ''));
+      var timelineTranslate = getTranslateValue(timelineComponents['eventsWrapper']);
+
+      if ((string == 'next' && eventLeft > timelineWidth - timelineTranslate) || (string == 'prev' && eventLeft < - timelineTranslate)) {
+        translateTimeline(timelineComponents, - eventLeft + timelineWidth / 2, timelineWidth - timelineTotWidth);
+      }
+    }
+
+    function translateTimeline(timelineComponents, value, totWidth) {
+      var eventsWrapper = timelineComponents['eventsWrapper'].get(0);
+      value = (value > 0) ? 0 : value; //only negative translate value
+      value = (!(typeof totWidth === 'undefined') && value < totWidth) ? totWidth : value; //do not translate more than timeline width
+      setTransformValue(eventsWrapper, 'translateX', value + 'px');
+      //update navigation arrows visibility
+      console.log(value);
+      (value == 0) ? timelineComponents['timelineNavigation'].find('.prev').addClass('inactive') : timelineComponents['timelineNavigation'].find('.prev').removeClass('inactive');
+      (value == totWidth) ? timelineComponents['timelineNavigation'].find('.next').addClass('inactive') : timelineComponents['timelineNavigation'].find('.next').removeClass('inactive');
+    }
+
+    function updateFilling(selectedEvent, filling, totWidth) {
+      //change .filling-line length according to the selected event
+      var eventStyle = window.getComputedStyle(selectedEvent.get(0), null),
+        eventLeft = eventStyle.getPropertyValue("left"),
+        eventWidth = eventStyle.getPropertyValue("width");
+      eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
+      var scaleValue = eventLeft / totWidth;
+      setTransformValue(filling.get(0), 'scaleX', scaleValue);
+    }
+
+    function setDatePosition(timelineComponents, min) {
+      for (i = 0; i < timelineComponents['timelineDates'].length; i++) {
+        var distance = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][i]),
+          distanceNorm = Math.round(distance / timelineComponents['eventsMinLapse']) + 2;
+        timelineComponents['timelineEvents'].eq(i).css('left', distanceNorm * min + 'px');
+      }
+    }
+
+    function setTimelineWidth(timelineComponents, width) {
+      var timeSpan = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][timelineComponents['timelineDates'].length - 1]),
+        timeSpanNorm = timeSpan / timelineComponents['eventsMinLapse'],
+        timeSpanNorm = Math.round(timeSpanNorm) + 4,
+        totalWidth = timeSpanNorm * width;
+      timelineComponents['eventsWrapper'].css('width', totalWidth + 'px');
+      updateFilling(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents['fillingLine'], totalWidth);
+      updateTimelinePosition('next', timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents);
+
+      return totalWidth;
+    }
+
+    function updateVisibleContent(event, eventsContent) {
+      var eventDate = event.data('date'),
+        visibleContent = eventsContent.find('.selected'),
+        selectedContent = eventsContent.find('[data-date="' + eventDate + '"]'),
+        selectedContentHeight = selectedContent.height();
+
+      if (selectedContent.index() > visibleContent.index()) {
+        var classEnetering = 'selected enter-right',
+          classLeaving = 'leave-left';
+      } else {
+        var classEnetering = 'selected enter-left',
+          classLeaving = 'leave-right';
+      }
+
+      selectedContent.attr('class', classEnetering);
+      visibleContent.attr('class', classLeaving).one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
+        visibleContent.removeClass('leave-right leave-left');
+        selectedContent.removeClass('enter-left enter-right');
+      });
+      eventsContent.css('height', selectedContentHeight + 'px');
+    }
+
+    function updateOlderEvents(event) {
+      event.parent('li').prevAll('li').children('a').addClass('older-event').end().end().nextAll('li').children('a').removeClass('older-event');
+    }
+
+    function getTranslateValue(timeline) {
+      var timelineStyle = window.getComputedStyle(timeline.get(0), null),
+        timelineTranslate = timelineStyle.getPropertyValue("-webkit-transform") ||
+          timelineStyle.getPropertyValue("-moz-transform") ||
+          timelineStyle.getPropertyValue("-ms-transform") ||
+          timelineStyle.getPropertyValue("-o-transform") ||
+          timelineStyle.getPropertyValue("transform");
+
+      if (timelineTranslate.indexOf('(') >= 0) {
+        var timelineTranslate = timelineTranslate.split('(')[1];
+        timelineTranslate = timelineTranslate.split(')')[0];
+        timelineTranslate = timelineTranslate.split(',');
+        var translateValue = timelineTranslate[4];
+      } else {
+        var translateValue = 0;
+      }
+
+      return Number(translateValue);
+    }
+
+    function setTransformValue(element, property, value) {
+      element.style["-webkit-transform"] = property + "(" + value + ")";
+      element.style["-moz-transform"] = property + "(" + value + ")";
+      element.style["-ms-transform"] = property + "(" + value + ")";
+      element.style["-o-transform"] = property + "(" + value + ")";
+      element.style["transform"] = property + "(" + value + ")";
+    }
+
+    //based on http://stackoverflow.com/questions/542938/how-do-i-get-the-number-of-days-between-two-dates-in-javascript
+    function parseDate(events) {
+      var dateArrays = [];
+      events.each(function () {
+        var singleDate = $(this),
+          dateComp = singleDate.data('date').split('T');
+        if (dateComp.length > 1) { //both DD/MM/YEAR and time are provided
+          var dayComp = dateComp[0].split('/'),
+            timeComp = dateComp[1].split(':');
+        } else if (dateComp[0].indexOf(':') >= 0) { //only time is provide
+          var dayComp = ["2000", "0", "0"],
+            timeComp = dateComp[0].split(':');
+        } else { //only DD/MM/YEAR
+          var dayComp = dateComp[0].split('/'),
+            timeComp = ["0", "0"];
+        }
+        var newDate = new Date(dayComp[2], dayComp[1] - 1, dayComp[0], timeComp[0], timeComp[1]);
+        dateArrays.push(newDate);
+      });
+      return dateArrays;
+    }
+
+    function daydiff(first, second) {
+      return Math.round((second - first));
+    }
+
+    function minLapse(dates) {
+      //determine the minimum distance among events
+      var dateDistances = [];
+      for (i = 1; i < dates.length; i++) {
+        var distance = daydiff(dates[i - 1], dates[i]);
+        dateDistances.push(distance);
+      }
+      return Math.min.apply(null, dateDistances);
+    }
+
+    /*
+        How to tell if a DOM element is visible in the current viewport?
+        http://stackoverflow.com/questions/123999/how-to-tell-if-a-dom-element-is-visible-in-the-current-viewport
+    */
+    function elementInViewport(el) {
+      var top = el.offsetTop;
+      var left = el.offsetLeft;
+      var width = el.offsetWidth;
+      var height = el.offsetHeight;
+
+      while (el.offsetParent) {
+        el = el.offsetParent;
+        top += el.offsetTop;
+        left += el.offsetLeft;
+      }
+
+      return (
+        top < (window.pageYOffset + window.innerHeight) &&
+        left < (window.pageXOffset + window.innerWidth) &&
+        (top + height) > window.pageYOffset &&
+        (left + width) > window.pageXOffset
+      );
+    }
+
+    function checkMQ() {
+      //check if mobile or desktop device
+      return window.getComputedStyle(document.querySelector('.cd-horizontal-timeline'), '::before').getPropertyValue('content').replace(/'/g, "").replace(/"/g, "");
+    }
   });
-  $("#container-concentrado").on("click", ".enviar-cartas", function () {
-    console.log("Click Enviar cartas");
-  });
-  function verificarBloqueadorVentanasEmergentes() {
-    var ventanaEmergente = window.open("", "", "width=1,height=1");
-    var bloqueadorActivo =
-      ventanaEmergente === null || typeof ventanaEmergente === "undefined";
-    ventanaEmergente.close();
-  }
-  /*$('.visualizar-cartas').click(function () {
-        console.log("Click Preview de carta");
-    })
-    $('.enviar-cartas').click(function () {
-        console.log("Click Enviar cartas");
-    }) */
 });

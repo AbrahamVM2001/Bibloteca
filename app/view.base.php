@@ -19,6 +19,9 @@ class ViewBase
   public $idcapitulo;
   public $idactividad;
   public $exportable;
+  public $programa;
+  public $datos;
+  public $fechasPrograma;
   function __construct()
   {
     // echo "<p>Vista base</p>";
