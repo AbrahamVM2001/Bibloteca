@@ -623,6 +623,35 @@ class Admin extends ControllerBase
             return;
         }
     }
+    function eliminarAsignacionTema($param = null)
+    {
+        try {
+            $eliminar = AdminModel::eliminarAsignacionTema($param[0]);
+            if ($eliminar != false) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Asignación eliminada',
+                    'respuesta' => 'Se elimino correctamente la asignación',
+                    'tipo_resp' => ''
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Asignación no eliminada',
+                    'respuesta' => 'No se pudo eliminar correctamente la asignación.',
+                    'tipo_resp' => $eliminar
+                ];
+            }
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Contacte al área de sistemas.Error:' . $th->getMessage(),
+                'tipo_resp' => ''
+            ];
+        }
+        echo json_encode($data);
+    }
     function verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $hora_final)
     {
         try {

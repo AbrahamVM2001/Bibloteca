@@ -643,6 +643,22 @@ class AdminModel extends ModelBase
             return;
         }
     }
+    public static function eliminarAsignacionTema($idtemaasignado){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("DELETE FROM asignacion_temas_programa WHERE id_asignacion_tema = :idAsignacion");
+            $query->execute([
+                ':idAsignacion' => $idtemaasignado
+            ]);
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminarAsignacionTema: " . $e->getMessage();
+            return false;
+        }
+    }
     public static function verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $horafinal)
     {
         try {

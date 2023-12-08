@@ -18,6 +18,7 @@
       <h3 class="mx-auto">Temas</h3>
       <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoTema"
         data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
+        <p class="mx-auto">Para editar o eliminar una asignación de tema, haga doble clic en el registro a editar.</p>
     </div>
     <div class="card-body">
       <div class="row table-responsive" id="container-temas"></div>
@@ -102,6 +103,7 @@ let actividad = '<?= $this->idactividad; ?>';
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button id="" type="button" class="btn btn-danger eliminar-asignacion">Eliminar <i class="fa-solid fa-trash"></i></button>
           <button data-formulario="form-temas" data-tipo="nuevo" type="button"
             class="btn btn-success btn-save-temas">Guardar</button>
         </div>

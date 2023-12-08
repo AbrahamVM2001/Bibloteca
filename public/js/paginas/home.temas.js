@@ -331,6 +331,8 @@ $(function () {
 
     $('#add-document').click(function(){
         $('#modalNuevoTemaLabel').text('Agregar/Asignar nuevo tema');
+        $('.eliminar-asignacion').addClass('d-none');
+        $('.eliminar-asignacion').attr('id','');
         $("#form-temas")[0].reset();
         $('#tipo').val('nuevo');
         $('#id_asignacion_tema').val('')
@@ -339,7 +341,10 @@ $(function () {
     });
     $('body').on('dblclick', '#info-table-result tbody tr', function () {
         var data = $('#info-table-result').DataTable().row(this).data();
+        console.log(data);
         $('#modalNuevoTemaLabel').text('Editar tema asignado');
+        $('.eliminar-asignacion').removeClass('d-none');
+        $('.eliminar-asignacion').attr('id',data['id_asignacion_tema']);
         $("#form-temas")[0].reset();
         $('#contenedor-agregar').addClass('d-none');
         $('#tipo').val('editar');
@@ -348,6 +353,40 @@ $(function () {
         temas('#asignar_tema', 'NoNulo', data['fk_id_tema']);
         editarTemaAsignado(data['id_asignacion_tema']);
     });
+    $('.eliminar-asignacion').click(function(){
+        console.log("Eliminar:"+$(this).attr('id'));
+        Swal.fire({
+            title: `Desea eliminar está asignación?`,
+            text: `Si elimina este registro, no se podrá recuperar la información capturada de está asignación.`,
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#82d616",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Sí, eliminar!",
+            cancelButtonText: "No, cancelar",
+          }).then((result) => {
+            if (result.isConfirmed) {
+                eliminarAsignacionTema($(this).attr('id'))
+            }
+          });
+    });
+    async function eliminarAsignacionTema(idtemaasignado){
+        let peticion = await fetch(servidor + `admin/eliminarAsignacionTema/${idtemaasignado}`);
+        let response = await peticion.json();
+        Swal.fire({
+            position: "top-end",
+            icon: response.estatus,
+            title: response.titulo,
+            text: response.respuesta,
+            showConfirmButton: false,
+            timer: 2000,
+          });
+        if (response.estatus == 'success') {
+            setTimeout(() => {
+                location.reload();
+              }, 2000);
+        }
+    }
     async function editarTemaAsignado(idtemaasignado) {
         let peticion = await fetch(servidor + `admin/buscarTema/${idtemaasignado}`);
         let response = await peticion.json();
