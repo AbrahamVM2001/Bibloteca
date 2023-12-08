@@ -655,10 +655,14 @@ class Admin extends ControllerBase
     function verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $hora_final)
     {
         try {
-            $resp = AdminModel::verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $hora_final);
-            if (count($resp) > 0) {
-                return false;
-            } else {
+            if ($idprofesor != 0) {
+                $resp = AdminModel::verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $hora_final);
+                if (count($resp) > 0) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }else{
                 return true;
             }
         } catch (\Throwable $th) {

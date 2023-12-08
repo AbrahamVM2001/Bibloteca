@@ -23,6 +23,8 @@ $(function () {
             <th class="text-uppercase">Tema</th>
             <th class="text-uppercase">Modalidad</th>
             <th class="text-uppercase">Profesor</th>
+            <th class="text-uppercase">País profesor</th>
+            <th class="text-uppercase">Estado profesor</th>
             </tr></thead>
             </table>`)
         .appendTo("#container-concentrado")
@@ -118,6 +120,8 @@ $(function () {
           { data: "nombre_tema", className: "text-vertical text-center" },
           { data: "nombre_modalidad", className: "text-vertical text-center" },
           { data: "profesor", className: "text-vertical text-center" },
+          { data: "pais", className: "text-vertical text-center" },
+          { data: "estado", className: "text-vertical text-center" },
           /* {
             data: null,
             render: function (data) {
