@@ -576,10 +576,11 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1 ORDER BY ca.nombre_actividad;");
+            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad AND aap.fk_id_capitulo = :fkCapitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1 ORDER BY ca.nombre_actividad;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha))
+                ':idFechas' => base64_decode(base64_decode($idfecha)),
+                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {
