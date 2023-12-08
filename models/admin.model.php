@@ -322,7 +322,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon AND asp.estatus_asignacion = 1) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1;");
+            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon AND asp.estatus_asignacion = 1) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1 ORDER BY cs.nombre_salon ASC;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha))
@@ -448,7 +448,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_salon = :idSalon AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1 GROUP BY cpp.fk_id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1;");
+            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_salon = :idSalon AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1 GROUP BY cpp.fk_id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1 ORDER BY cp.nombre_capitulo;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha)),
@@ -576,7 +576,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1;");
+            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1 ORDER BY ca.nombre_actividad;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFechas' => base64_decode(base64_decode($idfecha))
@@ -707,7 +707,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND estatus_tema = 1;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND estatus_tema = 1 ORDER BY ct.nombre_tema;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma))
             ]);
@@ -767,7 +767,7 @@ class AdminModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,p.pais,e.estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado WHERE cp.estatus_profesor = 1;");
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,p.pais,e.estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado WHERE cp.estatus_profesor = 1 ORDER BY profesor;");
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
