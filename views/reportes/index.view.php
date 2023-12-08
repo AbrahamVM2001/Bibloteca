@@ -10,7 +10,7 @@
   </div>
 </div>
 <?php require('views/footer.view.php'); ?>
-<script src="<?= constant('URL') ?>public/js/paginas/cartas.eventos.js"></script>
+<script src="<?= constant('URL') ?>public/js/paginas/reportes.eventos.js"></script>
 <div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel"
   tabindex="-1">
   <div class="modal-dialog modal-dialog-centered modal-lg">

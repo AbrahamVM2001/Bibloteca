@@ -26,7 +26,7 @@ class Reportes extends ControllerBase
     function eventos()
     {
         try {
-            $eventos = CartasModel::eventos();
+            $eventos = ReportesModel::eventos();
             echo json_encode($eventos);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador eventos: " . $th->getMessage();
@@ -37,7 +37,7 @@ class Reportes extends ControllerBase
     {
         if ($this->verificarAdmin()) {
             $this->view->evento = $param[0];
-            $_SESSION['evento_carta_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
+            $_SESSION['evento_reporte_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
             $this->view->render("reportes/programas");
         } else {
             $this->recargar();
@@ -46,21 +46,42 @@ class Reportes extends ControllerBase
     function infoProgramas($param = null)
     {
         try {
-            $eventos = CartasModel::infoProgramas($param[0]);
+            $eventos = ReportesModel::infoProgramas($param[0]);
             echo json_encode($eventos);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador eventos: " . $th->getMessage();
             return;
         }
     }
-    function concentrado($param = null)
+    function programa($param = null)
     {
         if ($this->verificarAdmin()) {
             $this->view->idprograma = $param[0];
-            $_SESSION['programa_carta_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
+            $this->view->exportable = $param[2];
+            $_SESSION['programa_reporte_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
             $this->view->render("reportes/concentrado");
         } else {
             $this->recargar();
+        }
+    }
+    function temasAsignadosProfesores($param = null)
+    {
+        try {
+            $asignacion = ReportesModel::temasAsignadosProfesores($param[0]);
+            echo json_encode($asignacion);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function buscarTemasAsignados($param = null)
+    {
+        try {
+            $temas = ReportesModel::buscarTemasAsignados($param[0], $param[1]);
+            echo json_encode($temas);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
         }
     }
 }

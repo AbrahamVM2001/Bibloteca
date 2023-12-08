@@ -18,6 +18,7 @@ class ViewBase
   public $idsalon;
   public $idcapitulo;
   public $idactividad;
+  public $exportable;
   function __construct()
   {
     // echo "<p>Vista base</p>";

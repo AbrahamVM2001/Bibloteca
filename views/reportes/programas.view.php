@@ -9,7 +9,7 @@
     <div class="card-header d-flex justify-content-between flex-wrap">
       <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i>
         Regresar</button>
-        <h3 class="mx-auto">Cartas | Programas</h3>
+        <h3 class="mx-auto">Reportes | Programas</h3>
     </div>
     <div class="card-body">
       <div class="row" id="container-programas"></div>
@@ -18,7 +18,7 @@
 </div>
 <?php require('views/footer.view.php'); ?>
 <script>let evento = '<?= $this->evento; ?>';</script>
-<script src="<?= constant('URL') ?>public/js/paginas/cartas.programas.js"></script>
+<script src="<?= constant('URL') ?>public/js/paginas/reportes.programas.js"></script>
 
 <div class="modal fade" id="modalNuevoPrograma" aria-hidden="true" aria-labelledby="modalNuevoProgramaLabel"
   tabindex="-1">
