@@ -51,7 +51,7 @@ class ProgramaModel extends ModelBase
                 INNER JOIN cat_salones cs ON cs.id_salon = atp.fk_id_salon 
                 INNER JOIN cat_fechas_programa cfp ON cfp.id_fecha_programa = atp.fk_id_fechas 
                 INNER JOIN cat_modalida cmo ON cmo.id_modalidad = atp.fk_id_modalidad 
-                WHERE atp.fk_id_programa = :idPrograma AND atp.fk_id_fechas = :idFecha;");
+                WHERE atp.fk_id_programa = :idPrograma AND atp.fk_id_fechas = :idFecha ORDER BY atp.hora_inicial ASC;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma)),
                 ':idFecha' => base64_decode(base64_decode($idfecha)),

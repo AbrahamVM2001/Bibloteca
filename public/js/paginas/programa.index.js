@@ -16,58 +16,88 @@ $(function () {
       return false;
     }
     response.forEach((item, index) => {
+      if (index % 2 === 0) {
+        content =`
+        <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+          <h4>
+            ${item.nombre_tema}
+          </h4>
+        </div>
+        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
+        <i class="fa-solid fa-calendar-day fa-beat"></i>
+        </div>
+        `;
+        content2 = `
+        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
+        <h3>${fecha(item.fecha_programa)}</h3>
+        <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
+        </div>
+        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
+          <small class="text-end">${item.nombre_salon}</small><br>
+          <small class="text-end">${item.nombre_capitulo}</small><br>
+          <small class="text-end">${item.nombre_actividad}</small><br>
+        </div>
+        `;
+    } else {
+      content =`
+      <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
+      <i class="fa-solid fa-calendar-day fa-beat"></i>
+      </div>
+      <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+        <h4>
+          ${item.nombre_tema}
+        </h4>
+      </div>
+      `;
+      content2 = `
+        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
+          <small class="text-end">${item.nombre_salon}</small><br>
+          <small class="text-end">${item.nombre_capitulo}</small><br>
+          <small class="text-end">${item.nombre_actividad}</small><br>
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
+          <h3>${fecha(item.fecha_programa)}</h3>
+          <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
+        </div>
+        `;
+    }
       jQuery(`
         <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex align-items-center">
-            <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
-              <img class="rounded float-left m-r-15" width="40" alt="user" src="https://bootdey.com/img/Content/avatar/avatar1.png">
-            </div>
-            <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
-              <h4>
-                ${item.nombre_tema}<br>
-                <small>${fecha(item.fecha_programa)} (${item.hora_inicial} - ${
-        item.hora_final
-      } hrs)</small>
-              </h4>
-            </div>
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-between align-items-center">
+            ${content}
           </div>
           <hr>
-          <p>It is a long established fact that a reader will be distracted by the readable content of a page
-            when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-            distribution of letters, as opposed to using 'Content here, content here', making it look like
-            readable English. Many desktop publishing packages and web page editors infancy.
-            <br>
-            <button class="btn btn-primary btn-round">Read more</button>
-          </p>
+          ${content2}
         </div>
       <hr class="mb-3">
         `).appendTo("#" + $(this).data("date"));
     });
   });
   function fecha(value) {
-    var fechaOriginal = value;
-
-    // Convierte la cadena de fecha a un objeto Date
-    var fecha = new Date(fechaOriginal);
-
+    // Array de fechas en formato 'YYYY-MM-DD'
+    let fecha = value;
+    return (fechaFormateada = formatearFecha(fecha));
+  }
+  // Función para formatear una fecha en 'DD mes'
+  function formatearFecha(fecha) {
     // Traducción de nombres de meses
-    var meses = [
-      "Enero",
-      "Febrero",
-      "Marzo",
-      "Abril",
-      "Mayo",
-      "Junio",
-      "Julio",
-      "Agosto",
-      "Septiembre",
-      "Octubre",
-      "Noviembre",
-      "Diciembre",
+    let meses = [
+      "enero",
+      "febrero",
+      "marzo",
+      "abril",
+      "mayo",
+      "junio",
+      "julio",
+      "agosto",
+      "septiembre",
+      "octubre",
+      "noviembre",
+      "diciembre",
     ];
-
-    // Formatea la fecha manualmente
-    return fechaFormateada = fecha.getDate() + " " + meses[fecha.getMonth()] + " de " + fecha.getFullYear();
+    let partesFecha = fecha.split("-");
+    let fechaObj = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
+    return fechaObj.getDate() + " " + meses[fechaObj.getMonth()] + " de " + fechaObj.getFullYear();
   }
 
   /* Métodos de funcionamiento del ejemplo TimeLine */
