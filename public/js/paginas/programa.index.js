@@ -1,98 +1,170 @@
 $(function () {
-  $('.fecha-seleccionada').click(async function(){
-    console.log($(this).data('id'));
-    let peticion = await fetch(servidor + `programa/infoPrograma/${idprograma}/${$(this).data('id')}`);
-      let response = await peticion.json();
-      console.log($(this).data('date'));
-      if (response.length == 0) {
-        jQuery(`<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`).appendTo("#"+$(this).data('date')).addClass('text-danger');
-        return false;
+  $(".fecha-seleccionada").click(async function () {
+    $('[data-borrar="true"]').empty();
+    console.log($(this).data("id"));
+    let peticion = await fetch(
+      servidor + `programa/infoPrograma/${idprograma}/${$(this).data("id")}`
+    );
+    let response = await peticion.json();
+    console.log(response);
+    if (response.length == 0) {
+      jQuery(
+        `<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`
+      )
+        .appendTo("#" + $(this).data("date"))
+        .addClass("text-danger");
+      return false;
     }
     response.forEach((item, index) => {
-        jQuery(`
-        <h4>
-        <img class="rounded float-left m-r-15" width="40" alt="user"
-          src="https://bootdey.com/img/Content/avatar/avatar1.png"> Horizontal Timeline<br>
-        <small><?= date('j ', strtotime($value['fecha_programa'])) . $meses[date('F', strtotime($value['fecha_programa']))]." de ".date('Y', strtotime($value['fecha_programa'])); ?></small>
-      </h4>
-      <hr>
-      <p>It is a long established fact that a reader will be distracted by the readable content of a page
-        when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
-        distribution of letters, as opposed to using 'Content here, content here', making it look like
-        readable English. Many desktop publishing packages and web page editors infancy.
-        <br>
-        <button class="btn btn-primary btn-round">Read more</button>
-      </p>
-      <hr>
-        `).appendTo("#"+$(this).data('date'));
+      jQuery(`
+        <div class="row">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex align-items-center">
+            <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2">
+              <img class="rounded float-left m-r-15" width="40" alt="user" src="https://bootdey.com/img/Content/avatar/avatar1.png">
+            </div>
+            <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+              <h4>
+                ${item.nombre_tema}<br>
+                <small>${fecha(item.fecha_programa)} (${item.hora_inicial} - ${
+        item.hora_final
+      } hrs)</small>
+              </h4>
+            </div>
+          </div>
+          <hr>
+          <p>It is a long established fact that a reader will be distracted by the readable content of a page
+            when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal
+            distribution of letters, as opposed to using 'Content here, content here', making it look like
+            readable English. Many desktop publishing packages and web page editors infancy.
+            <br>
+            <button class="btn btn-primary btn-round">Read more</button>
+          </p>
+        </div>
+      <hr class="mb-3">
+        `).appendTo("#" + $(this).data("date"));
     });
   });
+  function fecha(value) {
+    var fechaOriginal = value;
 
+    // Convierte la cadena de fecha a un objeto Date
+    var fecha = new Date(fechaOriginal);
+
+    // Traducción de nombres de meses
+    var meses = [
+      "Enero",
+      "Febrero",
+      "Marzo",
+      "Abril",
+      "Mayo",
+      "Junio",
+      "Julio",
+      "Agosto",
+      "Septiembre",
+      "Octubre",
+      "Noviembre",
+      "Diciembre",
+    ];
+
+    // Formatea la fecha manualmente
+    return fechaFormateada = fecha.getDate() + " " + meses[fecha.getMonth()] + " de " + fecha.getFullYear();
+  }
 
   /* Métodos de funcionamiento del ejemplo TimeLine */
   jQuery(document).ready(function ($) {
-    var timelines = $('.cd-horizontal-timeline'),
+    var timelines = $(".cd-horizontal-timeline"),
       eventsMinDistance = 60;
 
-    (timelines.length > 0) && initTimeline(timelines);
+    timelines.length > 0 && initTimeline(timelines);
 
     function initTimeline(timelines) {
       timelines.each(function () {
         var timeline = $(this),
           timelineComponents = {};
-        //cache timeline components 
-        timelineComponents['timelineWrapper'] = timeline.find('.events-wrapper');
-        timelineComponents['eventsWrapper'] = timelineComponents['timelineWrapper'].children('.events');
-        timelineComponents['fillingLine'] = timelineComponents['eventsWrapper'].children('.filling-line');
-        timelineComponents['timelineEvents'] = timelineComponents['eventsWrapper'].find('a');
-        timelineComponents['timelineDates'] = parseDate(timelineComponents['timelineEvents']);
-        timelineComponents['eventsMinLapse'] = minLapse(timelineComponents['timelineDates']);
-        timelineComponents['timelineNavigation'] = timeline.find('.cd-timeline-navigation');
-        timelineComponents['eventsContent'] = timeline.children('.events-content');
+        //cache timeline components
+        timelineComponents["timelineWrapper"] =
+          timeline.find(".events-wrapper");
+        timelineComponents["eventsWrapper"] =
+          timelineComponents["timelineWrapper"].children(".events");
+        timelineComponents["fillingLine"] =
+          timelineComponents["eventsWrapper"].children(".filling-line");
+        timelineComponents["timelineEvents"] =
+          timelineComponents["eventsWrapper"].find("a");
+        timelineComponents["timelineDates"] = parseDate(
+          timelineComponents["timelineEvents"]
+        );
+        timelineComponents["eventsMinLapse"] = minLapse(
+          timelineComponents["timelineDates"]
+        );
+        timelineComponents["timelineNavigation"] = timeline.find(
+          ".cd-timeline-navigation"
+        );
+        timelineComponents["eventsContent"] =
+          timeline.children(".events-content");
 
         //assign a left postion to the single events along the timeline
         setDatePosition(timelineComponents, eventsMinDistance);
         //assign a width to the timeline
-        var timelineTotWidth = setTimelineWidth(timelineComponents, eventsMinDistance);
+        var timelineTotWidth = setTimelineWidth(
+          timelineComponents,
+          eventsMinDistance
+        );
         //the timeline has been initialize - show it
-        timeline.addClass('loaded');
+        timeline.addClass("loaded");
 
         //detect click on the next arrow
-        timelineComponents['timelineNavigation'].on('click', '.next', function (event) {
-          event.preventDefault();
-          updateSlide(timelineComponents, timelineTotWidth, 'next');
-        });
+        timelineComponents["timelineNavigation"].on(
+          "click",
+          ".next",
+          function (event) {
+            event.preventDefault();
+            updateSlide(timelineComponents, timelineTotWidth, "next");
+          }
+        );
         //detect click on the prev arrow
-        timelineComponents['timelineNavigation'].on('click', '.prev', function (event) {
-          event.preventDefault();
-          updateSlide(timelineComponents, timelineTotWidth, 'prev');
-        });
+        timelineComponents["timelineNavigation"].on(
+          "click",
+          ".prev",
+          function (event) {
+            event.preventDefault();
+            updateSlide(timelineComponents, timelineTotWidth, "prev");
+          }
+        );
         //detect click on the a single event - show new event content
-        timelineComponents['eventsWrapper'].on('click', 'a', function (event) {
+        timelineComponents["eventsWrapper"].on("click", "a", function (event) {
           event.preventDefault();
-          timelineComponents['timelineEvents'].removeClass('selected');
-          $(this).addClass('selected');
+          timelineComponents["timelineEvents"].removeClass("selected");
+          $(this).addClass("selected");
           updateOlderEvents($(this));
-          updateFilling($(this), timelineComponents['fillingLine'], timelineTotWidth);
-          updateVisibleContent($(this), timelineComponents['eventsContent']);
+          updateFilling(
+            $(this),
+            timelineComponents["fillingLine"],
+            timelineTotWidth
+          );
+          updateVisibleContent($(this), timelineComponents["eventsContent"]);
         });
 
         //on swipe, show next/prev event content
-        timelineComponents['eventsContent'].on('swipeleft', function () {
+        timelineComponents["eventsContent"].on("swipeleft", function () {
           var mq = checkMQ();
-          (mq == 'mobile') && showNewContent(timelineComponents, timelineTotWidth, 'next');
+          mq == "mobile" &&
+            showNewContent(timelineComponents, timelineTotWidth, "next");
         });
-        timelineComponents['eventsContent'].on('swiperight', function () {
+        timelineComponents["eventsContent"].on("swiperight", function () {
           var mq = checkMQ();
-          (mq == 'mobile') && showNewContent(timelineComponents, timelineTotWidth, 'prev');
+          mq == "mobile" &&
+            showNewContent(timelineComponents, timelineTotWidth, "prev");
         });
 
         //keyboard navigation
         $(document).keyup(function (event) {
-          if (event.which == '37' && elementInViewport(timeline.get(0))) {
-            showNewContent(timelineComponents, timelineTotWidth, 'prev');
-          } else if (event.which == '39' && elementInViewport(timeline.get(0))) {
-            showNewContent(timelineComponents, timelineTotWidth, 'next');
+          if (event.which == "37" && elementInViewport(timeline.get(0))) {
+            showNewContent(timelineComponents, timelineTotWidth, "prev");
+          } else if (
+            event.which == "39" &&
+            elementInViewport(timeline.get(0))
+          ) {
+            showNewContent(timelineComponents, timelineTotWidth, "next");
           }
         });
       });
@@ -100,27 +172,49 @@ $(function () {
 
     function updateSlide(timelineComponents, timelineTotWidth, string) {
       //retrieve translateX value of timelineComponents['eventsWrapper']
-      var translateValue = getTranslateValue(timelineComponents['eventsWrapper']),
-        wrapperWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', ''));
-      //translate the timeline to the left('next')/right('prev') 
-      (string == 'next')
-        ? translateTimeline(timelineComponents, translateValue - wrapperWidth + eventsMinDistance, wrapperWidth - timelineTotWidth)
-        : translateTimeline(timelineComponents, translateValue + wrapperWidth - eventsMinDistance);
+      var translateValue = getTranslateValue(
+          timelineComponents["eventsWrapper"]
+        ),
+        wrapperWidth = Number(
+          timelineComponents["timelineWrapper"].css("width").replace("px", "")
+        );
+      //translate the timeline to the left('next')/right('prev')
+      string == "next"
+        ? translateTimeline(
+            timelineComponents,
+            translateValue - wrapperWidth + eventsMinDistance,
+            wrapperWidth - timelineTotWidth
+          )
+        : translateTimeline(
+            timelineComponents,
+            translateValue + wrapperWidth - eventsMinDistance
+          );
     }
 
     function showNewContent(timelineComponents, timelineTotWidth, string) {
       //go from one event to the next/previous one
-      var visibleContent = timelineComponents['eventsContent'].find('.selected'),
-        newContent = (string == 'next') ? visibleContent.next() : visibleContent.prev();
+      var visibleContent =
+          timelineComponents["eventsContent"].find(".selected"),
+        newContent =
+          string == "next" ? visibleContent.next() : visibleContent.prev();
 
-      if (newContent.length > 0) { //if there's a next/prev event - show it
-        var selectedDate = timelineComponents['eventsWrapper'].find('.selected'),
-          newEvent = (string == 'next') ? selectedDate.parent('li').next('li').children('a') : selectedDate.parent('li').prev('li').children('a');
+      if (newContent.length > 0) {
+        //if there's a next/prev event - show it
+        var selectedDate =
+            timelineComponents["eventsWrapper"].find(".selected"),
+          newEvent =
+            string == "next"
+              ? selectedDate.parent("li").next("li").children("a")
+              : selectedDate.parent("li").prev("li").children("a");
 
-        updateFilling(newEvent, timelineComponents['fillingLine'], timelineTotWidth);
-        updateVisibleContent(newEvent, timelineComponents['eventsContent']);
-        newEvent.addClass('selected');
-        selectedDate.removeClass('selected');
+        updateFilling(
+          newEvent,
+          timelineComponents["fillingLine"],
+          timelineTotWidth
+        );
+        updateVisibleContent(newEvent, timelineComponents["eventsContent"]);
+        newEvent.addClass("selected");
+        selectedDate.removeClass("selected");
         updateOlderEvents(newEvent);
         updateTimelinePosition(string, newEvent, timelineComponents);
       }
@@ -129,25 +223,55 @@ $(function () {
     function updateTimelinePosition(string, event, timelineComponents) {
       //translate timeline to the left/right according to the position of the selected event
       var eventStyle = window.getComputedStyle(event.get(0), null),
-        eventLeft = Number(eventStyle.getPropertyValue("left").replace('px', '')),
-        timelineWidth = Number(timelineComponents['timelineWrapper'].css('width').replace('px', '')),
-        timelineTotWidth = Number(timelineComponents['eventsWrapper'].css('width').replace('px', ''));
-      var timelineTranslate = getTranslateValue(timelineComponents['eventsWrapper']);
+        eventLeft = Number(
+          eventStyle.getPropertyValue("left").replace("px", "")
+        ),
+        timelineWidth = Number(
+          timelineComponents["timelineWrapper"].css("width").replace("px", "")
+        ),
+        timelineTotWidth = Number(
+          timelineComponents["eventsWrapper"].css("width").replace("px", "")
+        );
+      var timelineTranslate = getTranslateValue(
+        timelineComponents["eventsWrapper"]
+      );
 
-      if ((string == 'next' && eventLeft > timelineWidth - timelineTranslate) || (string == 'prev' && eventLeft < - timelineTranslate)) {
-        translateTimeline(timelineComponents, - eventLeft + timelineWidth / 2, timelineWidth - timelineTotWidth);
+      if (
+        (string == "next" && eventLeft > timelineWidth - timelineTranslate) ||
+        (string == "prev" && eventLeft < -timelineTranslate)
+      ) {
+        translateTimeline(
+          timelineComponents,
+          -eventLeft + timelineWidth / 2,
+          timelineWidth - timelineTotWidth
+        );
       }
     }
 
     function translateTimeline(timelineComponents, value, totWidth) {
-      var eventsWrapper = timelineComponents['eventsWrapper'].get(0);
-      value = (value > 0) ? 0 : value; //only negative translate value
-      value = (!(typeof totWidth === 'undefined') && value < totWidth) ? totWidth : value; //do not translate more than timeline width
-      setTransformValue(eventsWrapper, 'translateX', value + 'px');
+      var eventsWrapper = timelineComponents["eventsWrapper"].get(0);
+      value = value > 0 ? 0 : value; //only negative translate value
+      value =
+        !(typeof totWidth === "undefined") && value < totWidth
+          ? totWidth
+          : value; //do not translate more than timeline width
+      setTransformValue(eventsWrapper, "translateX", value + "px");
       //update navigation arrows visibility
       console.log(value);
-      (value == 0) ? timelineComponents['timelineNavigation'].find('.prev').addClass('inactive') : timelineComponents['timelineNavigation'].find('.prev').removeClass('inactive');
-      (value == totWidth) ? timelineComponents['timelineNavigation'].find('.next').addClass('inactive') : timelineComponents['timelineNavigation'].find('.next').removeClass('inactive');
+      value == 0
+        ? timelineComponents["timelineNavigation"]
+            .find(".prev")
+            .addClass("inactive")
+        : timelineComponents["timelineNavigation"]
+            .find(".prev")
+            .removeClass("inactive");
+      value == totWidth
+        ? timelineComponents["timelineNavigation"]
+            .find(".next")
+            .addClass("inactive")
+        : timelineComponents["timelineNavigation"]
+            .find(".next")
+            .removeClass("inactive");
     }
 
     function updateFilling(selectedEvent, filling, totWidth) {
@@ -155,69 +279,105 @@ $(function () {
       var eventStyle = window.getComputedStyle(selectedEvent.get(0), null),
         eventLeft = eventStyle.getPropertyValue("left"),
         eventWidth = eventStyle.getPropertyValue("width");
-      eventLeft = Number(eventLeft.replace('px', '')) + Number(eventWidth.replace('px', '')) / 2;
+      eventLeft =
+        Number(eventLeft.replace("px", "")) +
+        Number(eventWidth.replace("px", "")) / 2;
       var scaleValue = eventLeft / totWidth;
-      setTransformValue(filling.get(0), 'scaleX', scaleValue);
+      setTransformValue(filling.get(0), "scaleX", scaleValue);
     }
 
     function setDatePosition(timelineComponents, min) {
-      for (i = 0; i < timelineComponents['timelineDates'].length; i++) {
-        var distance = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][i]),
-          distanceNorm = Math.round(distance / timelineComponents['eventsMinLapse']) + 2;
-        timelineComponents['timelineEvents'].eq(i).css('left', distanceNorm * min + 'px');
+      for (i = 0; i < timelineComponents["timelineDates"].length; i++) {
+        var distance = daydiff(
+            timelineComponents["timelineDates"][0],
+            timelineComponents["timelineDates"][i]
+          ),
+          distanceNorm =
+            Math.round(distance / timelineComponents["eventsMinLapse"]) + 2;
+        timelineComponents["timelineEvents"]
+          .eq(i)
+          .css("left", distanceNorm * min + "px");
       }
     }
 
     function setTimelineWidth(timelineComponents, width) {
-      var timeSpan = daydiff(timelineComponents['timelineDates'][0], timelineComponents['timelineDates'][timelineComponents['timelineDates'].length - 1]),
-        timeSpanNorm = timeSpan / timelineComponents['eventsMinLapse'],
+      var timeSpan = daydiff(
+          timelineComponents["timelineDates"][0],
+          timelineComponents["timelineDates"][
+            timelineComponents["timelineDates"].length - 1
+          ]
+        ),
+        timeSpanNorm = timeSpan / timelineComponents["eventsMinLapse"],
         timeSpanNorm = Math.round(timeSpanNorm) + 4,
         totalWidth = timeSpanNorm * width;
-      timelineComponents['eventsWrapper'].css('width', totalWidth + 'px');
-      updateFilling(timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents['fillingLine'], totalWidth);
-      updateTimelinePosition('next', timelineComponents['eventsWrapper'].find('a.selected'), timelineComponents);
+      timelineComponents["eventsWrapper"].css("width", totalWidth + "px");
+      updateFilling(
+        timelineComponents["eventsWrapper"].find("a.selected"),
+        timelineComponents["fillingLine"],
+        totalWidth
+      );
+      updateTimelinePosition(
+        "next",
+        timelineComponents["eventsWrapper"].find("a.selected"),
+        timelineComponents
+      );
 
       return totalWidth;
     }
 
     function updateVisibleContent(event, eventsContent) {
-      var eventDate = event.data('date'),
-        visibleContent = eventsContent.find('.selected'),
+      var eventDate = event.data("date"),
+        visibleContent = eventsContent.find(".selected"),
         selectedContent = eventsContent.find('[data-date="' + eventDate + '"]'),
         selectedContentHeight = selectedContent.height();
 
       if (selectedContent.index() > visibleContent.index()) {
-        var classEnetering = 'selected enter-right',
-          classLeaving = 'leave-left';
+        var classEnetering = "selected enter-right",
+          classLeaving = "leave-left";
       } else {
-        var classEnetering = 'selected enter-left',
-          classLeaving = 'leave-right';
+        var classEnetering = "selected enter-left",
+          classLeaving = "leave-right";
       }
 
-      selectedContent.attr('class', classEnetering);
-      visibleContent.attr('class', classLeaving).one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
-        visibleContent.removeClass('leave-right leave-left');
-        selectedContent.removeClass('enter-left enter-right');
-      });
-      eventsContent.css('height', selectedContentHeight + 'px');
+      selectedContent.attr("class", classEnetering);
+      visibleContent
+        .attr("class", classLeaving)
+        .one(
+          "webkitAnimationEnd oanimationend msAnimationEnd animationend",
+          function () {
+            visibleContent.removeClass("leave-right leave-left");
+            selectedContent.removeClass("enter-left enter-right");
+          }
+        );
+      //eventsContent.css('height', selectedContentHeight + 'px');
     }
 
     function updateOlderEvents(event) {
-      event.parent('li').prevAll('li').children('a').addClass('older-event').end().end().nextAll('li').children('a').removeClass('older-event');
+      event
+        .parent("li")
+        .prevAll("li")
+        .children("a")
+        .addClass("older-event")
+        .end()
+        .end()
+        .nextAll("li")
+        .children("a")
+        .removeClass("older-event");
     }
 
     function getTranslateValue(timeline) {
       var timelineStyle = window.getComputedStyle(timeline.get(0), null),
-        timelineTranslate = timelineStyle.getPropertyValue("-webkit-transform") ||
+        timelineTranslate =
+          timelineStyle.getPropertyValue("-webkit-transform") ||
           timelineStyle.getPropertyValue("-moz-transform") ||
           timelineStyle.getPropertyValue("-ms-transform") ||
           timelineStyle.getPropertyValue("-o-transform") ||
           timelineStyle.getPropertyValue("transform");
 
-      if (timelineTranslate.indexOf('(') >= 0) {
-        var timelineTranslate = timelineTranslate.split('(')[1];
-        timelineTranslate = timelineTranslate.split(')')[0];
-        timelineTranslate = timelineTranslate.split(',');
+      if (timelineTranslate.indexOf("(") >= 0) {
+        var timelineTranslate = timelineTranslate.split("(")[1];
+        timelineTranslate = timelineTranslate.split(")")[0];
+        timelineTranslate = timelineTranslate.split(",");
         var translateValue = timelineTranslate[4];
       } else {
         var translateValue = 0;
@@ -239,25 +399,34 @@ $(function () {
       var dateArrays = [];
       events.each(function () {
         var singleDate = $(this),
-          dateComp = singleDate.data('date').split('T');
-        if (dateComp.length > 1) { //both DD/MM/YEAR and time are provided
-          var dayComp = dateComp[0].split('/'),
-            timeComp = dateComp[1].split(':');
-        } else if (dateComp[0].indexOf(':') >= 0) { //only time is provide
+          dateComp = singleDate.data("date").split("T");
+        if (dateComp.length > 1) {
+          //both DD/MM/YEAR and time are provided
+          var dayComp = dateComp[0].split("/"),
+            timeComp = dateComp[1].split(":");
+        } else if (dateComp[0].indexOf(":") >= 0) {
+          //only time is provide
           var dayComp = ["2000", "0", "0"],
-            timeComp = dateComp[0].split(':');
-        } else { //only DD/MM/YEAR
-          var dayComp = dateComp[0].split('/'),
+            timeComp = dateComp[0].split(":");
+        } else {
+          //only DD/MM/YEAR
+          var dayComp = dateComp[0].split("/"),
             timeComp = ["0", "0"];
         }
-        var newDate = new Date(dayComp[2], dayComp[1] - 1, dayComp[0], timeComp[0], timeComp[1]);
+        var newDate = new Date(
+          dayComp[2],
+          dayComp[1] - 1,
+          dayComp[0],
+          timeComp[0],
+          timeComp[1]
+        );
         dateArrays.push(newDate);
       });
       return dateArrays;
     }
 
     function daydiff(first, second) {
-      return Math.round((second - first));
+      return Math.round(second - first);
     }
 
     function minLapse(dates) {
@@ -287,16 +456,23 @@ $(function () {
       }
 
       return (
-        top < (window.pageYOffset + window.innerHeight) &&
-        left < (window.pageXOffset + window.innerWidth) &&
-        (top + height) > window.pageYOffset &&
-        (left + width) > window.pageXOffset
+        top < window.pageYOffset + window.innerHeight &&
+        left < window.pageXOffset + window.innerWidth &&
+        top + height > window.pageYOffset &&
+        left + width > window.pageXOffset
       );
     }
 
     function checkMQ() {
       //check if mobile or desktop device
-      return window.getComputedStyle(document.querySelector('.cd-horizontal-timeline'), '::before').getPropertyValue('content').replace(/'/g, "").replace(/"/g, "");
+      return window
+        .getComputedStyle(
+          document.querySelector(".cd-horizontal-timeline"),
+          "::before"
+        )
+        .getPropertyValue("content")
+        .replace(/'/g, "")
+        .replace(/"/g, "");
     }
   });
 });

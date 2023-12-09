@@ -41,7 +41,7 @@
           </div>
           <div class="body">
             <div class="cd-horizontal-timeline loaded">
-              <div class="timeline">
+              <div class="timeline sticky-top">
                 <div class="events-wrapper">
                   <div class="events" style="width: 800px;">
                     <ol>
@@ -81,8 +81,7 @@
                       <hr class="mt-5">
                     </li>
                   <?php foreach ($this->fechasPrograma as $key => $value): ?>
-                    <li class="" id="<?= $value['fecha_programa']; ?>" data-date="<?= $value['fecha_programa']; ?>">
-                      
+                    <li data-borrar="true" id="<?= $value['fecha_programa']; ?>" data-date="<?= $value['fecha_programa']; ?>">
                     </li>
                   <?php endforeach; ?>
                 </ol>

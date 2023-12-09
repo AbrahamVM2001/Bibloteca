@@ -47,14 +47,16 @@ body {
   opacity: 1;
 }
 .cd-horizontal-timeline .timeline {
-  position: relative;
+  position: sticky;
+  background-color: #e9ecef7a !important;
   height: 100px;
   width: 90%;
   max-width: 800px;
   margin: 0 auto;
 }
 .cd-horizontal-timeline .events-wrapper {
-  position: relative;
+  position: sticky;
+  /* background-color: #e9ecef7a !important; */
   height: 100%;
   margin: 0 40px;
   overflow: hidden;
@@ -254,9 +256,9 @@ body {
   transform: translateX(-100%);
   padding: 0 5%;
   opacity: 0;
-  -webkit-animation-duration: 0.4s;
-  -moz-animation-duration: 0.4s;
-  animation-duration: 0.4s;
+  -webkit-animation-duration: 0s;
+  -moz-animation-duration: 0s;
+  animation-duration: 0s;
   -webkit-animation-timing-function: ease-in-out;
   -moz-animation-timing-function: ease-in-out;
   animation-timing-function: ease-in-out;
