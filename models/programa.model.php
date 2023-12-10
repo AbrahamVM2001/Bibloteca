@@ -43,8 +43,10 @@ class ProgramaModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad 
+                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad,concat_ws(' ',cpre.siglas_prefijo,cpr.nombre_profesor,cpr.apellidop_profesor,cpr.apellidom_profesor) AS profesor 
                 FROM asignacion_temas_programa atp 
+                INNER JOIN cat_profesores cpr ON cpr.id_profesor = atp.fk_id_profesor 
+                INNER JOIN cat_prefijos cpre ON cpre.id_prefijo = cpr.fk_id_prefijo 
                 INNER JOIN cat_temas cm ON cm.id_tema = atp.fk_id_tema 
                 INNER JOIN cat_actividades ca ON ca.id_actividad = atp.fk_id_actividad 
                 INNER JOIN cat_capitulos cp ON cp.id_capitulo = atp.fk_id_capitulo 

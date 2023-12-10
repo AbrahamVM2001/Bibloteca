@@ -20,3 +20,5 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="<?php echo constant("URL");?>public/plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="<?php echo constant("URL");?>public/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>

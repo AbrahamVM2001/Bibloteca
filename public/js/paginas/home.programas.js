@@ -63,11 +63,14 @@ $(function () {
                             <img class="w-100 border-radius-md" src="${servidor}public/img/libro.gif">
                                 <p class="mb-0 text-xs font-weight-bolder text-primary text-gradient text-uppercase">${item.nombre_programa}</p>
                                 <div class="row mt-3">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <button data-id="${btoa(btoa(item.id_programa))}" class="btn btn-info form-control btn-edit-event"><i class="fa-solid fa-edit"></i> Editar</button>
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                                         <a href="${servidor}admin/fechas/${btoa(btoa(item.id_programa))}/${btoa(item.nombre_programa)}" class="btn btn-dark form-control">Administrar <i class="fa-solid fa-gear"></i></a>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                                        <a href="${servidor}programa/programa/${btoa(btoa(item.id_programa))}" target="_blank" class="btn btn-primary form-control">Link <i class="fa-solid fa-link fa-beat-fade"></i></a>
                                     </div>
                                 </div>
                             </div>

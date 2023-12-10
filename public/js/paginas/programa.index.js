@@ -6,7 +6,7 @@ $(function () {
       servidor + `programa/infoPrograma/${idprograma}/${$(this).data("id")}`
     );
     let response = await peticion.json();
-    console.log(response);
+    /* console.log(response); */
     if (response.length == 0) {
       jQuery(
         `<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`
@@ -17,11 +17,13 @@ $(function () {
     }
     response.forEach((item, index) => {
       if (index % 2 === 0) {
-        content =`
-        <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+        animacion = "items-right";
+        content = `
+        <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 text-start">
           <h4>
             ${item.nombre_tema}
           </h4>
+          <small><i class="fa-solid fa-user"></i> ${item.profesor}</small>
         </div>
         <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
         <i class="fa-solid fa-calendar-day fa-beat"></i>
@@ -38,18 +40,20 @@ $(function () {
           <small class="text-end">${item.nombre_actividad}</small><br>
         </div>
         `;
-    } else {
-      content =`
+      } else {
+        animacion = "items-left";
+        content = `
       <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
       <i class="fa-solid fa-calendar-day fa-beat"></i>
       </div>
-      <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10">
+      <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 text-end">
         <h4>
           ${item.nombre_tema}
         </h4>
+        <small><i class="fa-solid fa-user"></i> ${item.profesor}</small>
       </div>
       `;
-      content2 = `
+        content2 = `
         <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
           <small class="text-end">${item.nombre_salon}</small><br>
           <small class="text-end">${item.nombre_capitulo}</small><br>
@@ -60,9 +64,9 @@ $(function () {
           <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
         </div>
         `;
-    }
+      }
       jQuery(`
-        <div class="row">
+        <div class="row ${animacion}">
           <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-between align-items-center">
             ${content}
           </div>
@@ -97,7 +101,13 @@ $(function () {
     ];
     let partesFecha = fecha.split("-");
     let fechaObj = new Date(partesFecha[0], partesFecha[1] - 1, partesFecha[2]);
-    return fechaObj.getDate() + " " + meses[fechaObj.getMonth()] + " de " + fechaObj.getFullYear();
+    return (
+      fechaObj.getDate() +
+      " " +
+      meses[fechaObj.getMonth()] +
+      " de " +
+      fechaObj.getFullYear()
+    );
   }
 
   /* Métodos de funcionamiento del ejemplo TimeLine */

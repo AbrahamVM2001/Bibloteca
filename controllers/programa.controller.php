@@ -24,9 +24,9 @@ class Programa extends ControllerBase
         if ($param == null) {
             $this->sinprograma();
         } else {
-            $this->view->programa = $param[0];
-            $this->view->datos = ProgramaModel::datosPrograma($param[0]);
-            $this->view->fechasPrograma = ProgramaModel::fechaPrograma($param[0]);
+            $this->view->programa = (ProgramaModel::datosPrograma($param[0]) != false)?$param[0]:'Error';
+            $this->view->datos = (ProgramaModel::datosPrograma($param[0]) != false)?ProgramaModel::datosPrograma($param[0]):'Error';
+            $this->view->fechasPrograma = (ProgramaModel::fechaPrograma($param[0]) != false)?ProgramaModel::fechaPrograma($param[0]):'Error';
             $this->view->render("programa/index");
         }
     }
