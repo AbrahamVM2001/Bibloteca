@@ -23,6 +23,12 @@
     <div class="card-body">
       <div class="row table-responsive" id="container-concentrado"></div>
     </div>
+    <div class="card-header d-flex justify-content-center flex-wrap">
+      <h3>Asignación de temas por profesor</h3>
+    </div>
+    <div class="card-body">
+      <div class="row table-responsive" id="container-concentrado2"></div>
+    </div>
   </div>
 </div>
 <?php require('views/footer.view.php'); ?>

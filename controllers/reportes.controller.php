@@ -74,6 +74,16 @@ class Reportes extends ControllerBase
             return;
         }
     }
+    function temasAsignadosProfesores2($param = null)
+    {
+        try {
+            $asignacion = ReportesModel::temasAsignadosProfesores2($param[0]);
+            echo json_encode($asignacion);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
     function buscarTemasAsignados($param = null)
     {
         try {

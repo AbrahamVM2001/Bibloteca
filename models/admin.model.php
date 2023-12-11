@@ -518,7 +518,8 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    public static function buscarAsignacionActividad($idActividad){
+    public static function buscarAsignacionActividad($idActividad)
+    {
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa WHERE fk_id_actividad = :idActividad AND estatus_asignacion = 1");
@@ -531,7 +532,8 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function eliminarAsignacionesActividadesInactivas(){
+    public static function eliminarAsignacionesActividadesInactivas()
+    {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
@@ -645,7 +647,8 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function eliminarAsignacionTema($idtemaasignado){
+    public static function eliminarAsignacionTema($idtemaasignado)
+    {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();

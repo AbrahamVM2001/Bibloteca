@@ -1,5 +1,5 @@
 <?php require('views/headervertical.view.php'); ?>
-<div class="container">
+<div class="container-fluid">
   <div class="card">
     <div class="card card-body blur shadow-blur mx-2 mt-n4 overflow-hidden"
       style="background-color: #e9ecef !important;">
