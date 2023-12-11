@@ -160,6 +160,7 @@ $(function () {
                 $('.previous').addClass("btn-outline-info btn-rounded mx-2 mt-3");
                 $('.next').addClass("btn-outline-info btn-rounded mx-2 mt-3");
             },
+            scrollX: true,
             "language": {
                 "url": "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Spanish.json"
             },
