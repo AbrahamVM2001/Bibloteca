@@ -8,7 +8,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
 
-class Admin extends ControllerBase
+class Catalogos extends ControllerBase
 {
     function __construct()
     {
@@ -18,7 +18,7 @@ class Admin extends ControllerBase
     function render()
     {
         if ($this->verificarAdmin()) {
-            $this->view->render("admin/index");
+            $this->view->render("catalogos/index");
         } else {
             $this->recargar();
         }
@@ -569,8 +569,8 @@ class Admin extends ControllerBase
     function guardarTemas()
     {
         try {
-            /* $horarios_encimados = $this->verificarAsignacion($_POST['profesor'], $_POST['idfecha'], $_POST['idprograma'], $_POST['hora_inicial'], $_POST['hora_final']);
-            if ($horarios_encimados == true) { */
+            $horarios_encimados = $this->verificarAsignacion($_POST['profesor'], $_POST['idfecha'], $_POST['idprograma'], $_POST['hora_inicial'], $_POST['hora_final']);
+            if ($horarios_encimados == true) {
                 if (!empty($_POST['nuevo_tema'])) {
                     $resp = AdminModel::guardarTemas($_POST);
                     $resp2 = AdminModel::asignarTemaPrograma($_POST['idcapitulo'], $_POST['idsalon'], $_POST['idfecha'], $_POST['idprograma'], $_POST['idactividad'], $resp, $_POST);
@@ -594,14 +594,14 @@ class Admin extends ControllerBase
                         'tipo_resp' => ''
                     ];
                 }
-            /* } else {
+            } else {
                 $data = [
                     'estatus' => 'warning',
                     'titulo' => 'Horarios encimados',
                     'respuesta' => 'No se puede asignar el tema porque se enciman los horarios con otra ponencia.',
                     'tipo_resp' => 'horarios'
                 ];
-            } */
+            }
         } catch (\Throwable $th) {
             /* echo "respuesta:".$th->getMessage() */
             $data = [
