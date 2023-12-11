@@ -24,9 +24,9 @@ class Programa extends ControllerBase
         if ($param == null) {
             $this->sinprograma();
         } else {
-            $this->view->programa = (ProgramaModel::datosPrograma($param[0]) != false)?$param[0]:'Error';
-            $this->view->datos = (ProgramaModel::datosPrograma($param[0]) != false)?ProgramaModel::datosPrograma($param[0]):'Error';
-            $this->view->fechasPrograma = (ProgramaModel::fechaPrograma($param[0]) != false)?ProgramaModel::fechaPrograma($param[0]):'Error';
+            $this->view->programa = (ProgramaModel::datosPrograma($param[0]) != false) ? $param[0] : 'Error';
+            $this->view->datos = (ProgramaModel::datosPrograma($param[0]) != false) ? ProgramaModel::datosPrograma($param[0]) : 'Error';
+            $this->view->fechasPrograma = (ProgramaModel::fechaPrograma($param[0]) != false) ? ProgramaModel::fechaPrograma($param[0]) : 'Error';
             $this->view->render("programa/index");
         }
     }
@@ -37,8 +37,18 @@ class Programa extends ControllerBase
     function infoPrograma($param = null)
     {
         try {
-            $asignacion = ProgramaModel::infoPrograma($param[0],$param[1]);
+            $asignacion = ProgramaModel::infoPrograma($param[0], $param[1], $param[2]);
             echo json_encode($asignacion);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function infoCapitulos($param = null)
+    {
+        try {
+            $capitulos = ProgramaModel::infoCapitulos($param[0], $param[1]);
+            echo json_encode($capitulos);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador eventos: " . $th->getMessage();
             return;

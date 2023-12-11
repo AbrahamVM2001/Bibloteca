@@ -84,7 +84,7 @@
                   </li>
                   <?php if ($this->fechasPrograma != 'Error') : ?>
                     <?php foreach ($this->fechasPrograma as $key => $value) : ?>
-                      <li data-borrar="true" id="<?= $value['fecha_programa']; ?>" data-date="<?= $value['fecha_programa']; ?>">
+                      <li class="accordion" data-borrar="true" id="contenedor-<?= $value['fecha_programa']; ?>" data-date="<?= $value['fecha_programa']; ?>">
                       </li>
                     <?php endforeach; ?>
                   <?php endif; ?>

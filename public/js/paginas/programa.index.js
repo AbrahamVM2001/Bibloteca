@@ -3,10 +3,129 @@ $(function () {
     $('[data-borrar="true"]').empty();
     console.log($(this).data("id"));
     let peticion = await fetch(
+      servidor + `programa/infoCapitulos/${idprograma}/${$(this).data("id")}`
+    );
+    let response = await peticion.json();
+    console.log(response);
+    if (response.length == 0) {
+      jQuery(
+        `<h3 class="mt-4 text-center text-uppercase">Sin capítulos asignados</h3>`
+      )
+        .appendTo("#" + $(this).data("date"))
+        .addClass("text-danger");
+      return false;
+    }
+    response.forEach((item, index) => {
+      if (index % 2 === 0) {
+        animacion = "items-right";
+      }else{
+        animacion = "items-left";
+      }
+      jQuery(`
+        <div class="row ${animacion}">
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-between align-items-center">
+            <div class="accordion-item mx-auto">
+              <h2 class="accordion-header" id="capitulo-${item.id_capitulo}">
+                <button data-ident="temas-${item.id_capitulo}" data-capitulo="${btoa(btoa(item.id_capitulo))}" data-fecha="${btoa(btoa(item.id_fecha_programa))}" data-programa="${btoa(btoa(item.fk_id_programa))}" class="accordion-button select-capitulo" type="button" data-bs-toggle="collapse" data-bs-target="#contenedor-capitulo-${item.id_capitulo}" aria-expanded="${(index == 0)?'true':'false'}" aria-controls="contenedor-capitulo-${item.id_capitulo}">
+                  ${item.nombre_capitulo}
+                </button>
+              </h2>
+              <div id="contenedor-capitulo-${item.id_capitulo}" class="accordion-collapse collapse" aria-labelledby="capitulo-${item.id_capitulo}" data-bs-parent="#contenedor-${item.fecha_programa}">
+                <div class="accordion-body" id="temas-${item.id_capitulo}">
+                  ...
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      <hr class="mb-3">
+        `).appendTo("#contenedor-" + $(this).data("date"));
+    });
+  });
+  $('body').on('click','.select-capitulo',function(){
+    temasCapituloFecha($(this).data('programa'),$(this).data('fecha'),$(this).data('capitulo'),$(this).data('ident'))
+  });
+  async function temasCapituloFecha(idprograma,idfechas,idcapitulo,identificador){
+    $('#'+identificador).empty();
+    let peticion = await fetch(servidor + `programa/infoPrograma/${idprograma}/${idfechas}/${idcapitulo}`);
+    let response = await peticion.json();
+    if (response.length == 0) {
+      jQuery(
+        `<h3 class="mt-4 text-center text-uppercase">Sin temas asignados</h3>`
+      )
+        .appendTo("#" + identificador)
+        .addClass("text-danger");
+      return false;
+    }
+    response.forEach((item, index) => {
+      if (index % 2 === 0) {
+        animacion = "items-right";
+        content = `
+        <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 text-start">
+          <h4 class="lh-base">
+            ${item.nombre_tema}
+          </h4>
+          <small><i class="fa-solid fa-user"></i> ${item.profesor}</small>
+        </div>
+        <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
+        <i class="fa-solid fa-calendar-day fa-beat"></i>
+        </div>
+        `;
+        content2 = `
+        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
+        <h3>${fecha(item.fecha_programa)}</h3>
+        <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
+        </div>
+        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
+          <small class="text-end">${item.nombre_salon}</small><br>
+          <small class="text-end">${item.nombre_capitulo}</small><br>
+          <small class="text-end">${item.nombre_actividad}</small><br>
+        </div>
+        `;
+      } else {
+        animacion = "items-left";
+        content = `
+      <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
+      <i class="fa-solid fa-calendar-day fa-beat"></i>
+      </div>
+      <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 text-end">
+        <h4 class="lh-base">
+          ${item.nombre_tema}
+        </h4>
+        <small><i class="fa-solid fa-user"></i> ${item.profesor}</small>
+      </div>
+      `;
+        content2 = `
+        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
+          <small class="text-end">${item.nombre_salon}</small><br>
+          <small class="text-end">${item.nombre_capitulo}</small><br>
+          <small class="text-end">${item.nombre_actividad}</small><br>
+        </div>
+        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
+          <h3>${fecha(item.fecha_programa)}</h3>
+          <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
+        </div>
+        `;
+      }
+      jQuery(`
+        <div class="row ${animacion}">
+          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-between align-items-center">
+            ${content}
+          </div>
+          <hr>
+          ${content2}
+        </div>
+      <hr class="mb-3">
+        `).appendTo("#" + identificador);
+    });
+  }
+  /* $(".fecha-seleccionada").click(async function () {
+    $('[data-borrar="true"]').empty();
+    console.log($(this).data("id"));
+    let peticion = await fetch(
       servidor + `programa/infoPrograma/${idprograma}/${$(this).data("id")}`
     );
     let response = await peticion.json();
-    /* console.log(response); */
     if (response.length == 0) {
       jQuery(
         `<h3 class="mt-4 text-center text-uppercase">Sin salones asignados</h3>`
@@ -76,7 +195,8 @@ $(function () {
       <hr class="mb-3">
         `).appendTo("#" + $(this).data("date"));
     });
-  });
+  }); */
+  /* Inicio Funciones para formatear fechas */
   function fecha(value) {
     // Array de fechas en formato 'YYYY-MM-DD'
     let fecha = value;
@@ -109,6 +229,7 @@ $(function () {
       fechaObj.getFullYear()
     );
   }
+  /* Fin Funciones para formatear fechas */
 
   /* Métodos de funcionamiento del ejemplo TimeLine */
   jQuery(document).ready(function ($) {
