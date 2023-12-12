@@ -24,8 +24,8 @@
       <div class="accordion" id="accordionExample">
         <div class="accordion-item">
           <h2 class="accordion-header" id="profesores">
-            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#accordion-profesores"
-              aria-expanded="true" aria-controls="accordion-profesores">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+              data-bs-target="#accordion-profesores" aria-expanded="true" aria-controls="accordion-profesores">
               Profesores
             </button>
           </h2>
@@ -101,24 +101,21 @@
 <script>
   let programa = '<?= $this->programa; ?>'
 </script>
-<!-- Nuevo profesor -->
-<div class="modal fade" id="modalNuevoProfesor" aria-hidden="true" aria-labelledby="modalNuevoProfesorLabel"
+<!-- Modal profesores -->
+<div class="modal fade" id="modalProfesores" aria-hidden="true" aria-labelledby="modalProfesoresLabel"
   tabindex="-1">
   <div class="modal-dialog modal-lg">
-    <form id="form-profesor-nuevo" action="javascript:;" class="needs-validation" novalidate method="post">
-      <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
-      <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
-      <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
-      <input type="hidden" name="idcapitulo" id="idcapitulo" value="<?= $this->idcapitulo; ?>" readonly>
-      <input type="hidden" name="idactividad" id="idactividad" value="<?= $this->idactividad; ?>" readonly>
+    <form id="form-profesores" action="javascript:;" class="needs-validation" novalidate method="post">
+      <input type="hidden" name="idprofesor" id="idprofesor" readonly>
+      <input type="hidden" name="tipo" id="tipo" readonly>
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalNuevoProfesorLabel">Agregar nuevo profesor</h1>
+          <h1 class="modal-title fs-5" id="modalProfesoresLabel">Titulo profesores</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
+            <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
               <label for="">Prefijo <small class="text-danger">*</small></label>
               <select class="form-control" name="prefijo" id="prefijo" required>
               </select>
@@ -126,7 +123,7 @@
                 Seleccione una opción, por favor.
               </div>
             </div>
-          <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
+            <div class="col-sm-12 col-md-12 col-lg-9 col-xl-9">
               <label for="">Nombre <small class="text-danger">*</small></label>
               <input class="form-control" type="text" name="nombre_profesor" id="nombre_profesor" required>
               <div class="invalid-feedback">
@@ -204,7 +201,40 @@
         </div>
         <div class="modal-footer d-flex justify-content-between">
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-          <button data-formulario="form-profesor-nuevo" data-tipo="nuevo" type="button"
+          <button data-formulario="form-profesores" data-tipo="nuevo" type="button"
+            class="btn btn-success btn-save-profesores">Guardar</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Modal salones -->
+<div class="modal fade" id="modalSalones" aria-hidden="true" aria-labelledby="modalSalonesLabel"
+  tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <form id="form-profesores" action="javascript:;" class="needs-validation" novalidate method="post">
+      <input type="hidden" name="idprofesor" id="idprofesor" readonly>
+      <input type="hidden" name="tipo" id="tipo" readonly>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="modalSalonesLabel">Titulo salones</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-3 col-xl-3">
+              <label for="">Prefijo <small class="text-danger">*</small></label>
+              <select class="form-control" name="a" id="a" required>
+              </select>
+              <div class="invalid-feedback">
+                Seleccione una opción, por favor.
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-content-between">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
+          <button data-formulario="form-profesores" data-tipo="nuevo" type="button"
             class="btn btn-success btn-save-profesores">Guardar</button>
         </div>
       </div>

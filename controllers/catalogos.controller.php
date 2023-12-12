@@ -53,7 +53,8 @@ class Catalogos extends ControllerBase
             return;
         }
     }
-    function catalogos($param = null){
+    function catalogos($param = null)
+    {
         if ($this->verificarAdmin()) {
             $this->view->programa = $param[0];
             $_SESSION['programa_catalogos_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
@@ -62,6 +63,7 @@ class Catalogos extends ControllerBase
             $this->recargar();
         }
     }
+    /* Profesores */
     function infoProfesores($param = null)
     {
         try {
@@ -72,7 +74,27 @@ class Catalogos extends ControllerBase
             return;
         }
     }
-
+    function buscarProfesor($param = null)
+    {
+        try {
+            $profesor = CatalogosModel::buscarProfesor($param[0]);
+            echo json_encode($profesor);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoProfesores: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Catálogos */
+    function cat_estados($param = null)
+    {
+        try {
+            $prefijos = CatalogosModel::cat_estados($param[0]);
+            echo json_encode($prefijos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador cat_profesores: " . $th->getMessage();
+            return;
+        }
+    }
 
 
 

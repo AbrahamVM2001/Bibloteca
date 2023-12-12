@@ -669,7 +669,7 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             /* $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa WHERE fk_id_profesor = :fkProfesor AND fk_id_fechas = :fkFechas AND fk_id_programa = :fkPrograma AND ((hora_inicial BETWEEN '$horainicial' AND '$horafinal') OR (hora_final > '$horainicial'))"); */
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa atp INNER JOIN cat_profesores cp ON cp.id_profesor =  WHERE atp.fk_id_profesor = :fkProfesor AND atp.fk_id_fechas = :fkFechas AND atp.fk_id_programa = :fkPrograma AND cp.rol_profesor IN (0) AND ((atp.hora_inicial BETWEEN '$horainicial' AND '$horafinal'))");
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa atp INNER JOIN cat_profesores cp ON cp.id_profesor = atp.fk_id_profesor  WHERE atp.fk_id_profesor = :fkProfesor AND atp.fk_id_fechas = :fkFechas AND atp.fk_id_programa = :fkPrograma AND cp.rol_profesor IN (0) AND ((atp.hora_inicial BETWEEN '$horainicial' AND '$horafinal'))");
             $query->execute([
                 ':fkProfesor' => $idprofesor,
                 ':fkFechas' => base64_decode(base64_decode($idfechas)),
