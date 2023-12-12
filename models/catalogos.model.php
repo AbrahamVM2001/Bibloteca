@@ -37,6 +37,44 @@ class CatalogosModel extends ModelBase
             return;
         }
     }
+    public static function infoProfesores(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,cp.correo_profesor,cp.telefono_profesor,p.pais,e.estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado;");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoProfesores: " . $e->getMessage();
+            return;
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     public static function temasAsignadosProfesores($idprograma){
         try {
             $con = new Database;

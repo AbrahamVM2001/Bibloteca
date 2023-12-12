@@ -62,6 +62,16 @@ class Catalogos extends ControllerBase
             $this->recargar();
         }
     }
+    function infoProfesores($param = null)
+    {
+        try {
+            $profesores = CatalogosModel::infoProfesores();
+            echo json_encode($profesores);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoProfesores: " . $th->getMessage();
+            return;
+        }
+    }
 
 
 
