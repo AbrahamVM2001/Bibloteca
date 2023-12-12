@@ -62,6 +62,33 @@ class CatalogosModel extends ModelBase
             return;
         }
     }
+    /* Salonres */
+    public static function infoSalones($idprograma){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE fk_id_programa = :idPrograma;");
+            $query->execute([
+                ':idPrograma' => base64_decode(base64_decode($idprograma))
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model infoProfesores: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function buscarSalon($idprofesor){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_profesores cp WHERE cp.id_profesor = :idProfesor;");
+            $query->execute([
+                ':idProfesor' => $idprofesor
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarProfesor: " . $e->getMessage();
+            return;
+        }
+    }
     /* Catálogos */
     public static function cat_estados($id)
     {

@@ -84,6 +84,17 @@ class Catalogos extends ControllerBase
             return;
         }
     }
+    /* Salones */
+    function infoSalones($param = null)
+    {
+        try {
+            $salones = CatalogosModel::infoSalones($param[0]);
+            echo json_encode($salones);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoProfesores: " . $th->getMessage();
+            return;
+        }
+    }
     /* Catálogos */
     function cat_estados($param = null)
     {
