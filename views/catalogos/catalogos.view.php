@@ -243,7 +243,7 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Salón <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_salon_ingles" id="nombre_salon_ingles" required>
+              <input type="text" class="form-control" name="nombre_salon_ingles" id="nombre_salon_ingles">
               <div class="invalid-feedback">
                 Escriba un nombre de salón, por favor.
               </div>
@@ -281,8 +281,7 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Capítulo <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_capitulo_ingles" id="nombre_capitulo_ingles"
-                required>
+              <input type="text" class="form-control" name="nombre_capitulo_ingles" id="nombre_capitulo_ingles">
               <div class="invalid-feedback">
                 Ingrese un nombre de capítulo, por favor.
               </div>
@@ -320,8 +319,7 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Actividad <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_actividad_ingles" id="nombre_actividad_ingles"
-                required>
+              <input type="text" class="form-control" name="nombre_actividad_ingles" id="nombre_actividad_ingles">
               <div class="invalid-feedback">
                 Ingrese un nombre de actividad, por favor.
               </div>
@@ -359,7 +357,7 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Tema <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_tema_ingles" id="nombre_tema_ingles" required>
+              <input type="text" class="form-control" name="nombre_tema_ingles" id="nombre_tema_ingles" >
               <div class="invalid-feedback">
                 Ingrese un nombre de tema, por favor.
               </div>
