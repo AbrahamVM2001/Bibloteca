@@ -42,7 +42,7 @@ class CatalogosModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,cp.correo_profesor,cp.telefono_profesor,p.pais,e.estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado;");
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,cp.correo_profesor,cp.telefono_profesor,p.pais,e.estado,cp.rol_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado;");
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
@@ -79,17 +79,17 @@ class CatalogosModel extends ModelBase
             return;
         }
     }
-    public static function buscarSalon($idprofesor)//Pendiente
+    public static function buscarSalon($idsalon)
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_salones cp WHERE cp.id_profesor = :idProfesor;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE id_salon = :idSalon;");
             $query->execute([
-                ':idProfesor' => $idprofesor
+                ':idSalon' => $idsalon
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model buscarProfesor: " . $e->getMessage();
+            echo "Error recopilado model buscarSalon: " . $e->getMessage();
             return;
         }
     }
@@ -108,13 +108,13 @@ class CatalogosModel extends ModelBase
             return;
         }
     }
-    public static function buscarCapitulo($idprofesor)//Pendiente
+    public static function buscarCapitulo($idcapitulo)//Pendiente
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_capitulos cp WHERE cp.id_profesor = :idProfesor;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_capitulos WHERE id_capitulo = :idCapitulo;");
             $query->execute([
-                ':idProfesor' => $idprofesor
+                ':idCapitulo' => $idcapitulo
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
@@ -141,9 +141,9 @@ class CatalogosModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_actividades cp WHERE cp.id_profesor = :idProfesor;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_actividades WHERE id_actividad = :idActividad;");
             $query->execute([
-                ':idProfesor' => $idprofesor
+                ':idActividad' => $idprofesor
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
@@ -166,13 +166,13 @@ class CatalogosModel extends ModelBase
             return;
         }
     }
-    public static function buscarTema($idprofesor)//Pendiente
+    public static function buscarTema($idtema)//Pendiente
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_actividades cp WHERE cp.id_profesor = :idProfesor;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_temas WHERE id_tema = :idTema;");
             $query->execute([
-                ':idProfesor' => $idprofesor
+                ':idTema' => $idtema
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
@@ -181,6 +181,7 @@ class CatalogosModel extends ModelBase
         }
     }
     /* Actualizaciones de catalogos acorde a la sección */
+    /* Actualizar Profesor */
     public static function updateProfesor($datos)
     {
         try {
@@ -191,14 +192,14 @@ class CatalogosModel extends ModelBase
 
                 ':idProfesor' => $datos['idprofesor'],
                 ':fkPrefijo' => $datos['prefijo'],
-                ':nombreProfesor' => $datos['nombre_profesor'],
-                ':apellidoPaterno' => $datos['apellidop_profesor'],
-                ':apellidoMaterno' => $datos['apellidom_profesor'],
+                ':nombreProfesor' => trim($datos['nombre_profesor']),
+                ':apellidoPaterno' => trim($datos['apellidop_profesor']),
+                ':apellidoMaterno' => trim($datos['apellidom_profesor']),
                 ':fkPais' => $datos['pais'],
                 ':fkEstado' => $datos['estado'],
                 ':fkLada' => $datos['lada'],
-                ':telefono' => $datos['telefono_profesor'],
-                ':correoProfesor' => $datos['correo_profesor'],
+                ':telefono' => trim($datos['telefono_profesor']),
+                ':correoProfesor' => trim($datos['correo_profesor']),
                 ':rolProfesor' => $datos['rol_profesor']
             ]);
             $con->pdo->commit();
@@ -209,22 +210,87 @@ class CatalogosModel extends ModelBase
             return false;
         }
     }
+    /* Actualizar Salon */
     public static function updateSalon($datos)
     {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE cat_salones SET  nombre_salon = :nombreSalon WHERE id_salon = :idSalon");
+            $query = $con->pdo->prepare("UPDATE cat_salones SET nombre_salon = :nombreSalon, nombre_salon_ingles = :salonIngles WHERE id_salon = :idSalon");
             $query->execute([
 
                 ':idSalon' => $datos['idsalon'],
-                ':nombreSalon' => $datos['nombre_salon']
+                ':nombreSalon' => trim($datos['nombre_salon']),
+                ':salonIngles' => trim($datos['nombre_salon_ingles'])
             ]);
             $con->pdo->commit();
             return true ;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
             echo "Error recopilado model updateSalon: " . $e->getMessage();
+            return false;
+        }
+    }
+    /* Actualizar Capitulo */
+    public static function updateCapitulo($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE cat_capitulos SET nombre_capitulo = :nombreCapitulo, nombre_capitulo_ingles = :capituloIngles WHERE id_capitulo = :idCapitulo");
+            $query->execute([
+
+                ':idCapitulo' => $datos['idcapitulo'],
+                ':nombreCapitulo' => trim($datos['nombre_capitulo']),
+                ':capituloIngles' => trim($datos['nombre_capitulo_ingles']),
+            ]);
+            $con->pdo->commit();
+            return true ;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model updateCapitulo: " . $e->getMessage();
+            return false;
+        }
+    }
+    /* Actualizar Actividad */
+    public static function updateActividad($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE cat_actividades SET nombre_actividad = :nombreActividad, nombre_actividad_ingles = :actividadIngles  WHERE id_actividad = :idActividad");
+            $query->execute([
+
+                ':idActividad' => $datos['idactividad'],
+                ':nombreActividad' => trim($datos['nombre_actividad']),
+                ':actividadIngles' => trim($datos['nombre_actividad_ingles']),
+            ]);
+            $con->pdo->commit();
+            return true ;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model updateActividad: " . $e->getMessage();
+            return false;
+        }
+    }
+    /* Actualizar Actividad */
+    public static function updateTema($datos)
+    {
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+            $query = $con->pdo->prepare("UPDATE cat_temas SET nombre_tema = :nombreTema, nombre_tema_ingles = :temaIngles WHERE id_tema = :idTema");
+            $query->execute([
+
+                ':idTema' => $datos['idtema'],
+                ':nombreTema' => trim($datos['nombre_tema']),
+                ':temaIngles' => (!empty(trim($datos['nombre_tema_ingles'])))?trim($datos['nombre_tema_ingles']):null
+            ]);
+            $con->pdo->commit();
+            return true ;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model updateTema: " . $e->getMessage();
             return false;
         }
     }

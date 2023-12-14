@@ -19,7 +19,8 @@
     </div>
     <div class="card-header d-flex justify-content-center flex-wrap">
       <h3>Catálogos</h3>
-      <small class="text-center">Para editar un registro, deberá de dar <strong>doble click</strong> en el registro deseado y se mostrara un formulario con la información a editar.</small>
+      <small class="text-center">Para editar un registro, deberá de dar <strong>doble click</strong> en el registro
+        deseado y se mostrara un formulario con la información a editar.</small>
     </div>
     <div class="card-body">
       <div class="accordion" id="accordionExample">
@@ -103,15 +104,15 @@
   let programa = '<?= $this->programa; ?>'
 </script>
 <!-- Modal profesores -->
-<div class="modal fade" id="modalProfesores" aria-hidden="true" aria-labelledby="modalProfesoresLabel"
-  tabindex="-1">
+<div class="modal fade" id="modalProfesores" aria-hidden="true" aria-labelledby="modalProfesoresLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
-    <form id="form-profesores" name="form-profesores" action="javascript:;" class="needs-validation" novalidate method="post">
+    <form id="form-profesores" name="form-profesores" action="javascript:;" class="needs-validation" novalidate
+      method="post">
       <input type="hidden" name="idprofesor" id="idprofesor" readonly>
       <input type="hidden" name="formulario" id="formulario" value="profesores" readonly>
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalProfesoresLabel">Titulo profesores</h1>
+          <h1 class="modal-title fs-5" id="modalProfesoresLabel">-</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
@@ -213,18 +214,25 @@
 <div class="modal fade" id="modalSalones" aria-hidden="true" aria-labelledby="modalSalonesLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form id="form-salones" action="javascript:;" class="needs-validation" novalidate method="post">
-    <input type="hidden" name="formulario" id="formulario" value="salones" readonly>
+      <input type="hidden" name="formulario" id="formulario" value="salones" readonly>
       <input type="hidden" name="idsalon" id="idsalon">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalSalonesLabel">Agregar nuevo salón</h1>
+          <h1 class="modal-title fs-5" id="modalSalonesLabel">-</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Salón</label>
+              <label for="">Salón <small>(español)</small></label>
               <input type="text" class="form-control" name="nombre_salon" id="nombre_salon" required>
+              <div class="invalid-feedback">
+                Escriba un nombre de salón, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Salón <small>(inglés)</small></label>
+              <input type="text" class="form-control" name="nombre_salon_ingles" id="nombre_salon_ingles" required>
               <div class="invalid-feedback">
                 Escriba un nombre de salón, por favor.
               </div>
@@ -244,17 +252,25 @@
 <div class="modal fade" id="modalCapitulos" aria-hidden="true" aria-labelledby="modalCapitulosLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form id="form-capitulos" action="javascript:;" class="needs-validation" novalidate method="post">
-      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="formulario" id="formulario" value="capitulos" readonly>
+      <input type="hidden" name="idcapitulo" id="idcapitulo">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalCapitulosLabel">Agregar nuevo capitulo</h1>
+          <h1 class="modal-title fs-5" id="modalCapitulosLabel">-</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Capitulo</label>
+              <label for="">Capítulo <small>(español)</small></label>
               <input type="text" class="form-control" name="nombre_capitulo" id="nombre_capitulo" required>
+              <div class="invalid-feedback">
+                Ingrese un nombre de capítulo, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Capítulo <small>(inglés)</small></label>
+              <input type="text" class="form-control" name="nombre_capitulo_ingles" id="nombre_capitulo_ingles" required>
               <div class="invalid-feedback">
                 Ingrese un nombre de capítulo, por favor.
               </div>
@@ -271,25 +287,28 @@
   </div>
 </div>
 <!-- Modal actividades -->
-<div class="modal fade" id="modalActividades" aria-hidden="true" aria-labelledby="modalActividadesLabel"
-  tabindex="-1">
+<div class="modal fade" id="modalActividades" aria-hidden="true" aria-labelledby="modalActividadesLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form id="form-actividades" action="javascript:;" class="needs-validation" novalidate method="post">
-      <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
-      <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
-      <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
-      <input type="hidden" name="idcapitulo" id="idcapitulo" value="<?= $this->idcapitulo; ?>" readonly>
-      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="formulario" id="formulario" value="actividades" readonly>
+      <input type="hidden" name="idactividad" id="idactividad">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalActividadesLabel">Agregar nueva actividad</h1>
+          <h1 class="modal-title fs-5" id="modalActividadesLabel">-</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Actividad</label>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Actividad <small>(español)</small></label>
               <input type="text" class="form-control" name="nombre_actividad" id="nombre_actividad" required>
+              <div class="invalid-feedback">
+                Ingrese un nombre de actividad, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Actividad <small>(inglés)</small></label>
+              <input type="text" class="form-control" name="nombre_actividad_ingles" id="nombre_actividad_ingles" required>
               <div class="invalid-feedback">
                 Ingrese un nombre de actividad, por favor.
               </div>
@@ -306,27 +325,30 @@
   </div>
 </div>
 <!-- Modal temas -->
-<div class="modal fade" id="modalTemas" aria-hidden="true" aria-labelledby="modalTemasLabel"
-  tabindex="-1">
+<div class="modal fade" id="modalTemas" aria-hidden="true" aria-labelledby="modalTemasLabel" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <form id="form-temas" action="javascript:;" class="needs-validation" novalidate method="post">
-      <input type="hidden" name="idfecha" id="idfecha" value="<?= $this->idfecha; ?>" readonly>
-      <input type="hidden" name="idprograma" id="idprograma" value="<?= $this->idprograma; ?>" readonly>
-      <input type="hidden" name="idsalon" id="idsalon" value="<?= $this->idsalon; ?>" readonly>
-      <input type="hidden" name="idcapitulo" id="idcapitulo" value="<?= $this->idcapitulo; ?>" readonly>
-      <input type="hidden" name="tipo" id="tipo" value="nuevo">
+      <input type="hidden" name="formulario" id="formulario" value="temas" readonly>
+      <input type="hidden" name="idtema" id="idtema">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalTemasLabel">Agregar nueva actividad</h1>
+          <h1 class="modal-title fs-5" id="modalTemasLabel">-</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
-          <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Tema</label>
-              <input type="text" class="form-control" name="nombre_actividad" id="nombre_actividad" required>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Tema <small>(español)</small></label>
+              <input type="text" class="form-control" name="nombre_tema" id="nombre_tema" required>
               <div class="invalid-feedback">
-                Ingrese un nombre de actividad, por favor.
+                Ingrese un nombre de tema, por favor.
+              </div>
+            </div>
+            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+              <label for="">Tema <small>(inglés)</small></label>
+              <input type="text" class="form-control" name="nombre_tema_ingles" id="nombre_tema_ingles" required>
+              <div class="invalid-feedback">
+                Ingrese un nombre de tema, por favor.
               </div>
             </div>
           </div>

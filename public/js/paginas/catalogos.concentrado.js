@@ -56,7 +56,7 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-profesores">
         <thead><tr>
-        <th class="text-uppercase">Profesor</th><th class="text-uppercase">Correo</th><th class="text-uppercase">Teléfono</th><th class="text-uppercase">País</th><th class="text-uppercase">Estado</th>
+        <th class="text-uppercase">Profesor</th><th class="text-uppercase">Correo</th><th class="text-uppercase">Teléfono</th><th class="text-uppercase">País</th><th class="text-uppercase">Estado</th><th class="text-uppercase">Rol</th>
         </tr></thead>
         </table>`).appendTo("#container-profesores").removeClass('text-danger');
 
@@ -83,7 +83,21 @@ $(function () {
                     { "data": "correo_profesor", className: 'text-vertical text-center' },
                     { "data": "telefono_profesor", className: 'text-vertical text-center' },
                     { "data": "pais", className: 'text-vertical text-center' },
-                    { "data": "estado", className: 'text-vertical text-center' }
+                    { "data": "estado", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            let rol = '';
+                            switch (data.rol_profesor) {
+                                case 0:rol='Profesor';break;
+                                case 1:rol='Coordinador';break;
+                                case 2:rol='Profesor/Coordinador';break;
+                                default:rol='Sin rol asignado';break;
+                            }
+                            return rol;
+                        },
+                        className: 'text-vertical text-center'
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
                     // Agrega la clase 'miClase' a todas las filas
@@ -106,7 +120,8 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-salones">
         <thead><tr>
-        <th class="text-uppercase">Nombre salón</th>
+        <th class="text-uppercase">Nombre salón (español)</th>
+        <th class="text-uppercase">Nombre salón (inglés)</th>
         </tr></thead>
         </table>`).appendTo("#container-salones").removeClass('text-danger');
 
@@ -129,7 +144,14 @@ $(function () {
                 "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
                 data: response,
                 "columns": [
-                    { "data": "nombre_salon", className: 'text-vertical text-center' }
+                    { "data": "nombre_salon", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return (data.nombre_salon_ingles != null && data.nombre_salon_ingles != "")?data.nombre_salon_ingles:'<h4 class="text-danger">Sin traducción</h4>'
+                        },
+                        className: 'text-vertical text-center'
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
                     // Agrega la clase 'miClase' a todas las filas
@@ -152,7 +174,8 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-capitulos">
         <thead><tr>
-        <th class="text-uppercase">Nombre capítulo</th>
+        <th class="text-uppercase">Nombre capítulo (español)</th>
+        <th class="text-uppercase">Nombre capítulo (inglés)</th>
         </tr></thead>
         </table>`).appendTo("#container-capitulos").removeClass('text-danger');
 
@@ -175,7 +198,14 @@ $(function () {
                 "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
                 data: response,
                 "columns": [
-                    { "data": "nombre_capitulo", className: 'text-vertical text-center' }
+                    { "data": "nombre_capitulo", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return (data.nombre_capitulo_ingles != null && data.nombre_capitulo_ingles != "")?data.nombre_capitulo_ingles:'<h4 class="text-danger">Sin traducción</h4>'
+                        },
+                        className: 'text-vertical text-center'
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
                     // Agrega la clase 'miClase' a todas las filas
@@ -198,7 +228,8 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-actividades">
         <thead><tr>
-        <th class="text-uppercase">Nombre capítulo</th>
+        <th class="text-uppercase">Nombre actividad (español)</th>
+        <th class="text-uppercase">Nombre actividad (inglés)</th>
         </tr></thead>
         </table>`).appendTo("#container-actividades").removeClass('text-danger');
 
@@ -221,7 +252,14 @@ $(function () {
                 "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
                 data: response,
                 "columns": [
-                    { "data": "nombre_actividad", className: 'text-vertical text-center' }
+                    { "data": "nombre_actividad", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return (data.nombre_actividad_ingles != null && data.nombre_actividad_ingles != "")?data.nombre_actividad_ingles:'<h4 class="text-danger">Sin traducción</h4>'
+                        },
+                        className: 'text-vertical text-center'
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
                     // Agrega la clase 'miClase' a todas las filas
@@ -244,7 +282,8 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-temas">
         <thead><tr>
-        <th class="text-uppercase">Nombre tema</th>
+        <th class="text-uppercase">Nombre tema (español)</th>
+        <th class="text-uppercase">Nombre tema (inglés)</th>
         </tr></thead>
         </table>`).appendTo("#container-temas").removeClass('text-danger');
 
@@ -267,7 +306,14 @@ $(function () {
                 "lengthMenu": [[5, 10, -1], [5, 10, "All"]],
                 data: response,
                 "columns": [
-                    { "data": "nombre_tema", className: 'text-vertical text-center' }
+                    { "data": "nombre_tema", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            return (data.nombre_tema_ingles != null)?data.nombre_tema_ingles:'<h4 class="text-danger">Sin traducción</h4>'
+                        },
+                        className: 'text-vertical text-center'
+                    },
                 ],
                 createdRow: function (row, data, dataIndex) {
                     // Agrega la clase 'miClase' a todas las filas
@@ -413,25 +459,15 @@ $(function () {
             $("#form-salones")[0].reset();
             $('#modalSalonesLabel').text('Editar salón');
             $('#modalSalones').modal('show');
-            /* buscarSalon(data['id_profesor']); */
+            buscarSalon(data['id_salon']);
         }
     });
     async function buscarSalon(idsalon) {
         let peticion = await fetch(servidor + `catalogos/buscarSalon/${idsalon}`);
         let response = await peticion.json();
-        cat_estados('estado', response['fk_id_pais']);
-        $('#prefijo').val(response['fk_id_prefijo'])
-        $('#nombre_profesor').val(response['nombre_profesor'])
-        $('#apellidop_profesor').val(response['apellidop_profesor'])
-        $('#apellidom_profesor').val(response['apellidom_profesor'])
-        $('#pais').val(response['fk_id_pais'])
-        setTimeout(() => {
-            $('#estado').val(response['fk_id_estado'])
-        }, 100);
-        $('#lada').val(response['fk_id_lada'])
-        $('#telefono_profesor').val(response['telefono_profesor'])
-        $('#rol_profesor').val(response['rol_profesor'])
-        $('#correo_profesor').val(response['correo_profesor'])
+        $('#idsalon').val(response['id_salon']);
+        $('#nombre_salon').val(response['nombre_salon']);
+        $('#nombre_salon_ingles').val(response['nombre_salon_ingles']);
     }
     /* Capitulos */
     $('#container-capitulos').on('dblclick', '#info-table-result-capitulos .tr-capitulos', function () {
@@ -442,25 +478,15 @@ $(function () {
             $("#form-capitulos")[0].reset();
             $('#modalCapitulosLabel').text('Editar capítulo');
             $('#modalCapitulos').modal('show');
-            /* buscarCapitulo(data['id_profesor']); */
+            buscarCapitulo(data['id_capitulo']);
         }
     });
     async function buscarCapitulo(idcapitulo) {
         let peticion = await fetch(servidor + `catalogos/buscarCapitulo/${idcapitulo}`);
         let response = await peticion.json();
-        cat_estados('estado', response['fk_id_pais']);
-        $('#prefijo').val(response['fk_id_prefijo'])
-        $('#nombre_profesor').val(response['nombre_profesor'])
-        $('#apellidop_profesor').val(response['apellidop_profesor'])
-        $('#apellidom_profesor').val(response['apellidom_profesor'])
-        $('#pais').val(response['fk_id_pais'])
-        setTimeout(() => {
-            $('#estado').val(response['fk_id_estado'])
-        }, 100);
-        $('#lada').val(response['fk_id_lada'])
-        $('#telefono_profesor').val(response['telefono_profesor'])
-        $('#rol_profesor').val(response['rol_profesor'])
-        $('#correo_profesor').val(response['correo_profesor'])
+        $('#idcapitulo').val(response['id_capitulo'])
+        $('#nombre_capitulo').val(response['nombre_capitulo'])
+        $('#nombre_capitulo_ingles').val(response['nombre_capitulo_ingles'])
     }
     /* Actividades */
     $('#container-actividades').on('dblclick', '#info-table-result-actividades .tr-actividades', function () {
@@ -471,25 +497,15 @@ $(function () {
             $("#form-actividades")[0].reset();
             $('#modalActividadesLabel').text('Editar actividad');
             $('#modalActividades').modal('show');
-            /* buscarActividad(data['id_profesor']); */
+            buscarActividad(data['id_actividad']);
         }
     });
     async function buscarActividad(idactividad) {
         let peticion = await fetch(servidor + `catalogos/buscarActividad/${idactividad}`);
         let response = await peticion.json();
-        cat_estados('estado', response['fk_id_pais']);
-        $('#prefijo').val(response['fk_id_prefijo'])
-        $('#nombre_profesor').val(response['nombre_profesor'])
-        $('#apellidop_profesor').val(response['apellidop_profesor'])
-        $('#apellidom_profesor').val(response['apellidom_profesor'])
-        $('#pais').val(response['fk_id_pais'])
-        setTimeout(() => {
-            $('#estado').val(response['fk_id_estado'])
-        }, 100);
-        $('#lada').val(response['fk_id_lada'])
-        $('#telefono_profesor').val(response['telefono_profesor'])
-        $('#rol_profesor').val(response['rol_profesor'])
-        $('#correo_profesor').val(response['correo_profesor'])
+        $('#idactividad').val(response['id_actividad']);
+        $('#nombre_actividad').val(response['nombre_actividad']);
+        $('#nombre_actividad_ingles').val(response['nombre_actividad_ingles']);
     }
     /* Temas */
     $('#container-temas').on('dblclick', '#info-table-result-temas .tr-temas', function () {
@@ -500,25 +516,15 @@ $(function () {
             $("#form-temas")[0].reset();
             $('#modalTemasLabel').text('Editar tema');
             $('#modalTemas').modal('show');
-            /* buscarTema(data['id_profesor']); */
+            buscarTema(data['id_tema']);
         }
     });
     async function buscarTema(idactividad) {
         let peticion = await fetch(servidor + `catalogos/buscarTema/${idactividad}`);
         let response = await peticion.json();
-        cat_estados('estado', response['fk_id_pais']);
-        $('#prefijo').val(response['fk_id_prefijo'])
-        $('#nombre_profesor').val(response['nombre_profesor'])
-        $('#apellidop_profesor').val(response['apellidop_profesor'])
-        $('#apellidom_profesor').val(response['apellidom_profesor'])
-        $('#pais').val(response['fk_id_pais'])
-        setTimeout(() => {
-            $('#estado').val(response['fk_id_estado'])
-        }, 100);
-        $('#lada').val(response['fk_id_lada'])
-        $('#telefono_profesor').val(response['telefono_profesor'])
-        $('#rol_profesor').val(response['rol_profesor'])
-        $('#correo_profesor').val(response['correo_profesor'])
+        $('#idtema').val(response['id_tema'])
+        $('#nombre_tema').val(response['nombre_tema'])
+        $('#nombre_tema_ingles').val(response['nombre_tema_ingles'])
     }
     function registroNoEditar() {
         Swal.fire({

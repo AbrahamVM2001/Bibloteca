@@ -95,6 +95,16 @@ class Catalogos extends ControllerBase
             return;
         }
     }
+    function buscarSalon($param = null)
+    {
+        try {
+            $salon = CatalogosModel::buscarSalon($param[0]);
+            echo json_encode($salon);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarSalon: " . $th->getMessage();
+            return;
+        }
+    }
     /* Capitulos */
     function infoCapitulos($param = null)
     {
@@ -103,6 +113,16 @@ class Catalogos extends ControllerBase
             echo json_encode($capitulos);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador infoCapitulos: " . $th->getMessage();
+            return;
+        }
+    }
+    function buscarCapitulo($param = null)
+    {
+        try {
+            $capitulo = CatalogosModel::buscarCapitulo($param[0]);
+            echo json_encode($capitulo);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarCapitulo: " . $th->getMessage();
             return;
         }
     }
@@ -117,6 +137,16 @@ class Catalogos extends ControllerBase
             return;
         }
     }
+    function buscarActividad($param = null)
+    {
+        try {
+            $actividad = CatalogosModel::buscarActividad($param[0]);
+            echo json_encode($actividad);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarActividad: " . $th->getMessage();
+            return;
+        }
+    }
     /* Actividades */
     function infoTemas($param = null)
     {
@@ -125,6 +155,16 @@ class Catalogos extends ControllerBase
             echo json_encode($temas);
         } catch (\Throwable $th) {
             echo "Error recopilado controlador infoTemas: " . $th->getMessage();
+            return;
+        }
+    }
+    function buscarTema($param = null)
+    {
+        try {
+            $tema = CatalogosModel::buscarTema($param[0]);
+            echo json_encode($tema);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador buscarTema: " . $th->getMessage();
             return;
         }
     }
@@ -148,7 +188,15 @@ class Catalogos extends ControllerBase
                 case 'salones':
                     $resp = CatalogosModel::updateSalon($_POST);
                     break;
-                
+                case 'capitulos':
+                    $resp = CatalogosModel::updateCapitulo($_POST);
+                    break;
+                case 'actividades':
+                    $resp = CatalogosModel::updateActividad($_POST);
+                    break;
+                case 'temas':
+                    $resp = CatalogosModel::updateTema($_POST);
+                    break;
                 default:
                     echo "No hay formulario";
                     break;
