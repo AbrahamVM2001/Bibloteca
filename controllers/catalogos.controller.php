@@ -80,7 +80,7 @@ class Catalogos extends ControllerBase
             $profesor = CatalogosModel::buscarProfesor($param[0]);
             echo json_encode($profesor);
         } catch (\Throwable $th) {
-            echo "Error recopilado controlador infoProfesores: " . $th->getMessage();
+            echo "Error recopilado controlador buscarProfesor: " . $th->getMessage();
             return;
         }
     }
@@ -91,7 +91,40 @@ class Catalogos extends ControllerBase
             $salones = CatalogosModel::infoSalones($param[0]);
             echo json_encode($salones);
         } catch (\Throwable $th) {
-            echo "Error recopilado controlador infoProfesores: " . $th->getMessage();
+            echo "Error recopilado controlador infoSalones: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Capitulos */
+    function infoCapitulos($param = null)
+    {
+        try {
+            $capitulos = CatalogosModel::infoCapitulos($param[0]);
+            echo json_encode($capitulos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoCapitulos: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Actividades */
+    function infoActividades($param = null)
+    {
+        try {
+            $actividades = CatalogosModel::infoActividades($param[0]);
+            echo json_encode($actividades);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoActividades: " . $th->getMessage();
+            return;
+        }
+    }
+    /* Actividades */
+    function infoTemas($param = null)
+    {
+        try {
+            $temas = CatalogosModel::infoTemas($param[0]);
+            echo json_encode($temas);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador infoTemas: " . $th->getMessage();
             return;
         }
     }
@@ -106,58 +139,41 @@ class Catalogos extends ControllerBase
             return;
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-    function programa($param = null)
-    {
-        if ($this->verificarAdmin()) {
-            $this->view->idprograma = $param[0];
-            $this->view->exportable = $param[2];
-            $_SESSION['programa_reporte_seleccionado'] = mb_convert_encoding(base64_decode($param[1]), 'UTF-8', 'ISO-8859-1');
-            $this->view->render("catalogos/concentrado");
-        } else {
-            $this->recargar();
-        }
-    }
-    function temasAsignadosProfesores($param = null)
-    {
+    function actualizarCatalogo(){
         try {
-            $asignacion = CatalogosModel::temasAsignadosProfesores($param[0]);
-            echo json_encode($asignacion);
+            switch ($_POST['formulario']) {
+                case 'profesores':
+                    $resp = CatalogosModel::updateProfesor($_POST);
+                    break;
+                case 'salones':
+                    $resp = CatalogosModel::updateSalon($_POST);
+                    break;
+                
+                default:
+                    echo "No hay formulario";
+                    break;
+            }
+            if ($resp == true) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Registro actualizado',
+                    'respuesta' => 'Se actualizo correctamente el registro.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Registro no actualizado',
+                    'respuesta' => 'No se actualizo correctamente el registro.'
+                ];
+            }
+            
         } catch (\Throwable $th) {
-            echo "Error recopilado controlador eventos: " . $th->getMessage();
-            return;
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error servidor',
+                'respuesta' => 'Ocurrio un problema con el servidor.'
+            ];
         }
-    }
-    function temasAsignadosProfesores2($param = null)
-    {
-        try {
-            $asignacion = CatalogosModel::temasAsignadosProfesores2($param[0]);
-            echo json_encode($asignacion);
-        } catch (\Throwable $th) {
-            echo "Error recopilado controlador eventos: " . $th->getMessage();
-            return;
-        }
-    }
-    function buscarTemasAsignados($param = null)
-    {
-        try {
-            $temas = CatalogosModel::buscarTemasAsignados($param[0], $param[1]);
-            echo json_encode($temas);
-        } catch (\Throwable $th) {
-            echo "Error recopilado controlador eventos: " . $th->getMessage();
-            return;
-        }
+        echo json_encode($data);
     }
 }
