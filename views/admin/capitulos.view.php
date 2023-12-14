@@ -17,7 +17,7 @@
     <div class="card-header d-flex justify-content-between flex-wrap">
       <button class="btn btn-info mx-auto" onclick="window.history.back();"><i class="fa-solid fa-arrow-left"></i>
         Regresar</button>
-      <h3 class="mx-auto">Capitulos</h3>
+      <h3 class="mx-auto">Capítulos</h3>
       <button id="add-document" class="btn btn-success mx-auto" data-bs-target="#modalNuevoSalon"
         data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
     </div>
@@ -42,13 +42,13 @@
       <input type="hidden" name="tipo" id="tipo" value="nuevo">
       <div class="modal-content">
         <div class="modal-header">
-          <h1 class="modal-title fs-5" id="modalNuevoSalonLabel">Agregar nuevo capitulo</h1>
+          <h1 class="modal-title fs-5" id="modalNuevoSalonLabel">Agregar nuevo capítulo</h1>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
           <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Capitulo</label>
+              <label for="">Capítulo</label>
               <select class="form-control" name="asignar_capitulo" id="asignar_capitulo" required>
               </select>
               <div class="invalid-feedback">
@@ -56,7 +56,7 @@
               </div>
             </div>
             <div id="contenedor-agregar" class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-none">
-              <label for="">Capitulo</label>
+              <label for="">Capítulo</label>
               <input type="text" class="form-control" name="nuevo_capitulo" id="nuevo_capitulo" disabled="true">
               <div class="invalid-feedback">
                 Ingrese un nombre de capitulo, por favor.
