@@ -56,7 +56,7 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result-profesores">
         <thead><tr>
-        <th class="text-uppercase">Profesor</th><th class="text-uppercase">Correo</th><th class="text-uppercase">Teléfono</th><th class="text-uppercase">País</th><th class="text-uppercase">Estado</th><th class="text-uppercase">Rol</th>
+        <th class="text-uppercase">Profesor</th><th class="text-uppercase">Correo</th><th class="text-uppercase">Teléfono</th><th class="text-uppercase">País</th><th class="text-uppercase">Estado</th><th class="text-uppercase">Rol</th><th class="text-uppercase">Idioma cartas</th>
         </tr></thead>
         </table>`).appendTo("#container-profesores").removeClass('text-danger');
 
@@ -95,6 +95,19 @@ $(function () {
                                 default:rol='Sin rol asignado';break;
                             }
                             return rol;
+                        },
+                        className: 'text-vertical text-center'
+                    },
+                    {
+                        data: null,
+                        render: function (data) {
+                            let idioma = '';
+                            switch (data.idioma_cartas) {
+                                case 1:idioma='Español';break;
+                                case 2:idioma='Inglés';break;
+                                default:idioma='Sin idioma seleccionado';break;
+                            }
+                            return idioma;
                         },
                         className: 'text-vertical text-center'
                     },
@@ -449,6 +462,7 @@ $(function () {
         $('#telefono_profesor').val(response['telefono_profesor'])
         $('#rol_profesor').val(response['rol_profesor'])
         $('#correo_profesor').val(response['correo_profesor'])
+        $('#idioma_cartas').val(response['idioma_cartas']);
     }
     /* Salones */
     $('#container-salones').on('dblclick', '#info-table-result-salones .tr-salones', function () {

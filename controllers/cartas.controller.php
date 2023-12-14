@@ -88,23 +88,34 @@ class Cartas extends ControllerBase
         try {
             $resp_virtual = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
             $resp_presencial = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
-            
+            $profesor = CartasModel::buscarProfesor($param[0]);
             /* if (count($resp_presencial) > 0 && count($resp_virtual) > 0) {
                 header('Location:' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1]);
                 header('Location:' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1]);
             } */
             if (count($resp_presencial) > 0) {
-
-                echo '<script>';
-                echo 'window.open("' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1] . "/CartaPresencial" . '", "_blank");';
-                echo '</script>';
+                if ($profesor['idioma_cartas'] == 1) { //Español
+                    echo '<script>';
+                    echo 'window.open("' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1] . "/CartaPresencial" . '", "_blank");';
+                    echo '</script>';
+                } else { //Inglés
+                    echo '<script>';
+                    echo 'window.open("' . constant('URL') . 'cartas/cartaPresencialIngles/' . $param[0] . "/" . $param[1] . "/CartaPresencial" . '", "_blank");';
+                    echo '</script>';
+                }
                 /* $pdfPresencial = $this->cartaPresencial($resp_profesor['profesor'], $resp_presencial, $resp_evento); */
             }
             if (count($resp_virtual) > 0) {
+                if ($profesor['idioma_cartas'] == 1) { //Español
+                    echo '<script>';
+                    echo 'window.open("' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1] . "/CartaVirtual" . '", "_blank");';
+                    echo '</script>';
+                } else { //Inglés
+                    echo '<script>';
+                    echo 'window.open("' . constant('URL') . 'cartas/cartaVirtualIngles/' . $param[0] . "/" . $param[1] . "/CartaVirtual" . '", "_blank");';
+                    echo '</script>';
+                }
 
-                echo '<script>';
-                echo 'window.open("' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1] . "/CartaVirtual" . '", "_blank");';
-                echo '</script>';
                 /* $pdfVirtual = $this->cartaVirtual($resp_profesor['profesor'], $resp_virtual, $resp_evento); */
             }
 
@@ -137,7 +148,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -154,10 +165,6 @@ class Cartas extends ControllerBase
         $pdf->SetFont('Arial', '', 11);
         $pdf->SetLeftMargin(55);
         $pdf->WriteHTML(mb_convert_encoding($html, 'ISO-8859-1', 'UTF-8'));
-        /* Texto: En esta ocasión usted... */
-        $pdf->SetXY(55, 100);
-        $pdf->SetFont('Arial', '', 11);
-        $pdf->MultiCell(145, 5, mb_convert_encoding("En esta ocasión usted tiene registrada su participación en la modalidad virtual, con el desarrollo de grabaciones, para lo cual, un proveedor hará contacto con usted para la asesoría técnica y grabación de los temas:", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Mostramos los temas asignados al profesor */
         foreach ($temas as $key => $tema) {
             //echo $this->calcularTiempoDuracion($tema['hora_inicial'],$tema['hora_final']);
@@ -214,7 +221,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -234,8 +241,138 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        }
+
+        $pdf->Output('I', 'Carta-presencial-' . date('d-m-Y'));
+    }
+    function cartaPresencialIngles($param = null)
+    {
+        $temas = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
+        $profesor = CartasModel::buscarProfesor($param[0]);
+        $evento = CartasModel::buscarEvento($param[1]);
+        $programa = CartasModel::buscarPrograma($param[1]);
+        /* var_dump($temas);
+        exit; */
+        header('Content-Type: text/html; charset=utf-8');
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+        /* Fondo de marca de agua */
+        $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+        /* Fecha de visualización */
+        $pdf->SetXY(60, 37);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+        /* Nombre del doctor */
+        $pdf->SetXY(55, 50);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Presente */
+        $pdf->SetXY(55, 55);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Present", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Estimado Colega y Amigo */
+        $pdf->SetXY(55, 60);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Dear Colleague and Friend", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Agradeciendo su valiosa... */
+        $fecha_evento_inicial = $evento['fecha_inicio_evento'];
+        $fecha_evento_final = $evento['fecha_fin_evento'];
+        $html = "Thanking you for your valuable and important attendance at the <b>" . $evento['nombre_evento'] . "</b>, to be held at the <b>" . $evento['descripcion_evento'] . "</b>, starting on <b>" . $this->fechaEn($fecha_evento_inicial) . "</b> and ending on <b>" . $this->fechaEn($fecha_evento_final) . "</b>, your participation on the indicated dates and times is confirmed:";
+        $pdf->SetXY(55, 75);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetLeftMargin(55);
+        $pdf->WriteHTML(mb_convert_encoding($html, 'ISO-8859-1', 'UTF-8'));
+        /* Mostramos los temas asignados al profesor */
+        foreach ($temas as $key => $tema) {
+            //echo $this->calcularTiempoDuracion($tema['hora_inicial'],$tema['hora_final']);
+            $espacioRestante = $pdf->GetPageHeight() - $pdf->GetY();
+            // Comprueba si hay suficiente espacio para al menos una línea más
+            $salon = ($tema['nombre_salon_ingles'] != null && !empty($tema['nombre_salon_ingles']))?$tema['nombre_salon_ingles']:$tema['nombre_salon'];
+            $tema_txt = ($tema['nombre_tema_ingles'] != null && !empty($tema['nombre_tema_ingles']))?$tema['nombre_tema_ingles']:$tema['nombre_tema'];
+            $actividad = ($tema['nombre_actividad_ingles'] != null && !empty($tema['nombre_actividad_ingles']))?$tema['nombre_actividad_ingles']:$tema['nombre_actividad'];
+            $capitulo = ($tema['nombre_capitulo_ingles'] != null && !empty($tema['nombre_capitulo_ingles']))?$tema['nombre_capitulo_ingles']:$tema['nombre_capitulo'];
+            if ($espacioRestante > 70) {
+                // Añade más contenido
+                $texto_dia = "<br>Day: <b>" . $tema['fecha_programa'] . "</b>";
+                $texto_horario = "<br>Hour: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
+                $texto_salon = "<br>Room: <b>" . $salon . "</b>";
+                $texto_tema = "<br>Topic: <b>" . $tema_txt . "</b>";
+                $texto_actividad = "<br>Activity: <b>" . $actividad . "</b>";
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_dia, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_horario, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_salon, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_actividad, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+                /* $pdf->Line(56, $pdf->GetY() + 7, 200, $pdf->GetY() + 7); // 50mm from each edge */
+            } else {
+                // Si no hay suficiente espacio, añade un salto de página
+                $pdf->SetTopMargin(40);
+                $pdf->AddPage();
+                $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+                /* Fecha de visualización */
+                /* $pdf->SetXY(60, 37); */
+                $pdf->SetFont('Arial', 'B', 11);
+                $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+                $texto_dia = "<br>Day: <b>" . $tema['fecha_programa'] . "</b>";
+                $texto_horario = "<br>Hour: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
+                $texto_salon = "<br>Room: <b>" . $salon . "</b>";
+                $texto_tema = "<br>Topic: <b>" . $tema_txt . "</b>";
+                $texto_actividad = "<br>Activity: <b>" . $actividad . "</b>";
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_dia, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_horario, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_salon, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_actividad, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+            }
+        }
+        /* Texto: Es importante ... */
+        $pdf->Ln();
+        $pdf->SetX(55);
+        $pdf->SetLeftMargin(55);
+        $espacioRestante2 = $pdf->GetPageHeight() - $pdf->GetY();
+        if ($espacioRestante2 > 163) {
+            $txt = "For respect to the other speakers, and in compliance with the academic program, it is very important to stick to the allotted time.";
+            $txt .= "<br><br>At the end of your time, your presentation will automatically turn off, leaving only the microphone enabled to conclude.";
+            $txt .= "<br><br>Your talk can be delivered on a USB memory the day before your presentation, or you can use your device (Laptop, iPad, Tablet) to project it at the room corresponding to your presentation. It should be noted that the connection time of your device runs within the time allocated for your presentation.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        } else {
+            $pdf->SetTopMargin(40);
+            $pdf->AddPage();
+            $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+            /* Fecha de visualización */
+            $pdf->SetXY(60, 37);
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->MultiCell(140, 10, mb_convert_encoding("Ciudad de México, " . $this->fechaEs(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+            $txt = "For respect to the other speakers, and in compliance with the academic program, it is very important to stick to the allotted time.";
+            $txt .= "<br><br>At the end of your time, your presentation will automatically turn off, leaving only the microphone enabled to conclude.";
+            $txt .= "<br><br>Your talk can be delivered on a USB memory the day before your presentation, or you can use your device (Laptop, iPad, Tablet) to project it at the room corresponding to your presentation. It should be noted that the connection time of your device runs within the time allocated for your presentation.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
             $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
@@ -267,7 +404,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -332,7 +469,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -352,8 +489,127 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        }
+        $pdf->Output('I', 'Carta-virtual-' . date('d-m-Y'));
+    }
+    function cartaVirtualIngles($param = null)
+    {
+        $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
+        $profesor = CartasModel::buscarProfesor($param[0]);
+        $evento = CartasModel::buscarEvento($param[1]);
+        $programa = CartasModel::buscarPrograma($param[1]);
+        /* var_dump($temas);
+        exit; */
+        header('Content-Type: text/html; charset=utf-8');
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+        /* Fondo de marca de agua */
+        $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+        /* Fecha de visualización */
+        $pdf->SetXY(60, 37);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+        /* Nombre del doctor */
+        $pdf->SetXY(55, 50);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Presente */
+        $pdf->SetXY(55, 55);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Present", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Estimado Colega y Amigo */
+        $pdf->SetXY(55, 60);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Dear Colleague and Friend:", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Agradeciendo su valiosa... */
+        $fecha_evento_inicial = $evento['fecha_inicio_evento'];
+        $fecha_evento_final = $evento['fecha_fin_evento'];
+        $html = "Thanking you for your valuable and important attendance at the <b>" . $evento['nombre_evento'] . "</b>, to be held at the <b>" . $evento['descripcion_evento'] . "</b>, starting on <b>" . $this->fechaEn($fecha_evento_inicial) . "</b> and ending on <b>" . $this->fechaEn($fecha_evento_final) . "</b>, your participation on the indicated dates and times is confirmed:";
+        $pdf->SetXY(55, 75);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetLeftMargin(55);
+        $pdf->WriteHTML(mb_convert_encoding($html, 'ISO-8859-1', 'UTF-8'));
+        /* Texto: En esta ocasión usted... */
+        $pdf->SetXY(55, 100);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 5, mb_convert_encoding("On this occasion you have registered your participation in the virtual modality, with the development of recordings, for which a provider will contact you for technical advice and recording of the topics:", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Mostramos los temas asignados al profesor */
+        foreach ($temas as $key => $tema) {
+            //echo $this->calcularTiempoDuracion($tema['hora_inicial'],$tema['hora_final']);
+            $espacioRestante = $pdf->GetPageHeight() - $pdf->GetY();
+            $capitulo = ($tema['nombre_capitulo_ingles'] != null && !empty($tema['nombre_capitulo_ingles']))?$tema['nombre_capitulo_ingles']:$tema['nombre_capitulo'];
+            $tema_txt = ($tema['nombre_tema_ingles'] != null && !empty($tema['nombre_tema_ingles']))?$tema['nombre_tema_ingles']:$tema['nombre_tema'];
+            // Comprueba si hay suficiente espacio para al menos una línea más
+            if ($espacioRestante > 70) {
+                // Añade más contenido
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $texto_tema = "<br>Theme: <b>" . $tema_txt . "</b>";
+                $texto_duracion = "<br>Duration: <b>" . $this->calcularTiempoDuracion($tema['hora_inicial'], $tema['hora_final']) . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_duracion, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+                /* $pdf->Line(56, $pdf->GetY() + 7, 200, $pdf->GetY() + 7); // 50mm from each edge */
+            } else {
+                // Si no hay suficiente espacio, añade un salto de página
+                $pdf->SetTopMargin(40);
+                $pdf->AddPage();
+                $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+                /* Fecha de visualización */
+                /* $pdf->SetXY(60, 37); */
+                $pdf->SetFont('Arial', 'B', 11);
+                $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $texto_tema = "<br>Theme: <b>" . $tema_txt . "</b>";
+                $texto_duracion = "<br>Duration: <b>" . $this->calcularTiempoDuracion($tema['hora_inicial'], $tema['hora_final']) . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_duracion, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+            }
+        }
+        /* Texto: Es importante ... */
+        $pdf->Ln();
+        $pdf->SetX(55);
+        $pdf->SetLeftMargin(55);
+        $espacioRestante2 = $pdf->GetPageHeight() - $pdf->GetY();
+        if ($espacioRestante2 > 128) {
+            $txt = "<b>It is important to stick to the time allocated for the presentation of each topic, since the videos will be uploaded to the OrtoNet® platform.</b>";
+            $txt .= "<br><br>To support the above, and give certainty to the times and the process, we will contact you to put ourselves at your service and arrange recording appointments.";
+            $txt .= "<br><br>The agenda will be integrated for the recordings of each of the speakers; all presentations must be made before March 15, to comply with the times required for this logistics. ";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at the e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        } else {
+            $pdf->SetTopMargin(40);
+            $pdf->AddPage();
+            $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+            /* Fecha de visualización */
+            $pdf->SetXY(60, 37);
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->MultiCell(140, 10, mb_convert_encoding("Ciudad de México, " . $this->fechaEs(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+            $txt = "<b>It is important to stick to the time allocated for the presentation of each topic, since the videos will be uploaded to the OrtoNet® platform.</b>";
+            $txt .= "<br><br>To support the above, and give certainty to the times and the process, we will contact you to put ourselves at your service and arrange recording appointments.";
+            $txt .= "<br><br>The agenda will be integrated for the recordings of each of the speakers; all presentations must be made before March 15, to comply with the times required for this logistics.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at the e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
             $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
@@ -377,18 +633,25 @@ class Cartas extends ControllerBase
                 header('Location:' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1]);
             } */
             if (count($resp_presencial) > 0) {
-
+                if ($profesor['idioma_cartas'] == 1) { //Español
+                    $pdfPresencial = $this->enviarCartaPresencial($profesor, $resp_presencial, $resp_evento, $resp_programa);
+                }else{// Inglés
+                    $pdfPresencial = $this->enviarCartaPresencialIngles($profesor, $resp_presencial, $resp_evento, $resp_programa);
+                }
                 /* echo '<script>';
                 echo 'window.open("' . constant('URL') . 'cartas/cartaPresencial/' . $param[0] . "/" . $param[1] . "/CartaPresencial" . '", "_blank");';
                 echo '</script>'; */
-                $pdfPresencial = $this->enviarCartaPresencial($profesor, $resp_presencial, $resp_evento,$resp_programa);
             }
             if (count($resp_virtual) > 0) {
-
+                if ($profesor['idioma_cartas'] == 1) { //Español
+                    $pdfVirtual = $this->enviarCartaVirtual($profesor, $resp_virtual, $resp_evento, $resp_programa);
+                }else{// Inglés
+                    $pdfVirtual = $this->enviarCartaVirtualIngles($profesor, $resp_virtual, $resp_evento, $resp_programa);
+                }
                 /* echo '<script>';
                 echo 'window.open("' . constant('URL') . 'cartas/cartaVirtual/' . $param[0] . "/" . $param[1] . "/CartaVirtual" . '", "_blank");';
                 echo '</script>'; */
-                $pdfVirtual = $this->enviarCartaVirtual($profesor, $resp_virtual, $resp_evento,$resp_programa);
+                
             }
 
             /* echo '<script>';
@@ -423,7 +686,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -500,7 +763,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -520,7 +783,7 @@ class Cartas extends ControllerBase
             $txt = "Como es de su conocimiento y por respeto a los demás ponentes, y por cumplimiento al programa académico es muy importante <b>apegarse al tiempo asignado</b>.";
             $txt .= "<br><br>Importante para contar con lo anterior, al término de su tiempo asignado, se apagará automáticamente su presentación quedando habilitado únicamente el micrófono para poder concluir.";
             $txt .= "<br><br>Su plática podrá ser entregada en una memoria USB el día anterior a su presentación, o bien utilizar su dispositivo (Laptop, Ipad, Tablet), para la proyección de plática en el salón correspondiente a su presentación. Cabe hacer notar que el tiempo de conexión de su dispositivo corre dentro del tiempo asignado a su presentación.";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -545,6 +808,147 @@ class Cartas extends ControllerBase
             echo "Error al mover la carta presencial:" . $nombe_archivo;
         }
     }
+    function enviarCartaPresencialIngles($profesor, $temas, $evento, $programa)
+    {
+        /* $temas = CartasModel::buscarTemasAsignadosPresenciales($param[0], $param[1]);
+        $profesor = CartasModel::buscarProfesor($param[0]);
+        $evento = CartasModel::buscarEvento($param[1]); */
+        /* var_dump($temas);
+        exit; */
+        header('Content-Type: text/html; charset=utf-8');
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+        /* Fondo de marca de agua */
+        $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+        /* Fecha de visualización */
+        $pdf->SetXY(60, 37);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+        /* Nombre del doctor */
+        $pdf->SetXY(55, 50);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Presente */
+        $pdf->SetXY(55, 55);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Present", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Estimado Colega y Amigo */
+        $pdf->SetXY(55, 60);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Dear Colleague and Friend", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Agradeciendo su valiosa... */
+        $fecha_evento_inicial = $evento['fecha_inicio_evento'];
+        $fecha_evento_final = $evento['fecha_fin_evento'];
+        $html = "Thanking you for your valuable and important attendance at the <b>" . $evento['nombre_evento'] . "</b>, to be held at the <b>" . $evento['descripcion_evento'] . "</b>, starting on <b>" . $this->fechaEn($fecha_evento_inicial) . "</b> and ending on <b>" . $this->fechaEn($fecha_evento_final) . "</b>, your participation on the indicated dates and times is confirmed:";
+        $pdf->SetXY(55, 75);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetLeftMargin(55);
+        $pdf->WriteHTML(mb_convert_encoding($html, 'ISO-8859-1', 'UTF-8'));
+        /* Mostramos los temas asignados al profesor */
+        foreach ($temas as $key => $tema) {
+            //echo $this->calcularTiempoDuracion($tema['hora_inicial'],$tema['hora_final']);
+            $espacioRestante = $pdf->GetPageHeight() - $pdf->GetY();
+            // Comprueba si hay suficiente espacio para al menos una línea más
+            $salon = ($tema['nombre_salon_ingles'] != null && !empty($tema['nombre_salon_ingles']))?$tema['nombre_salon_ingles']:$tema['nombre_salon'];
+            $tema_txt = ($tema['nombre_tema_ingles'] != null && !empty($tema['nombre_tema_ingles']))?$tema['nombre_tema_ingles']:$tema['nombre_tema'];
+            $actividad = ($tema['nombre_actividad_ingles'] != null && !empty($tema['nombre_actividad_ingles']))?$tema['nombre_actividad_ingles']:$tema['nombre_actividad'];
+            $capitulo = ($tema['nombre_capitulo_ingles'] != null && !empty($tema['nombre_capitulo_ingles']))?$tema['nombre_capitulo_ingles']:$tema['nombre_capitulo'];
+            if ($espacioRestante > 70) {
+                // Añade más contenido
+                $texto_dia = "<br>Day: <b>" . $tema['fecha_programa'] . "</b>";
+                $texto_horario = "<br>Hour: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
+                $texto_salon = "<br>Room: <b>" . $salon . "</b>";
+                $texto_tema = "<br>Topic: <b>" . $tema_txt . "</b>";
+                $texto_actividad = "<br>Activity: <b>" . $actividad . "</b>";
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_dia, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_horario, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_salon, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_actividad, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+                /* $pdf->Line(56, $pdf->GetY() + 7, 200, $pdf->GetY() + 7); // 50mm from each edge */
+            } else {
+                // Si no hay suficiente espacio, añade un salto de página
+                $pdf->SetTopMargin(40);
+                $pdf->AddPage();
+                $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+                /* Fecha de visualización */
+                /* $pdf->SetXY(60, 37); */
+                $pdf->SetFont('Arial', 'B', 11);
+                $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+                $texto_dia = "<br>Day: <b>" . $tema['fecha_programa'] . "</b>";
+                $texto_horario = "<br>Hour: <b>" . $tema['hora_inicial'] . " - " . $tema['hora_final'] . "</b>";
+                $texto_salon = "<br>Room: <b>" . $salon . "</b>";
+                $texto_tema = "<br>Topic: <b>" . $tema_txt . "</b>";
+                $texto_actividad = "<br>Activity: <b>" . $actividad . "</b>";
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_dia, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_horario, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_salon, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_actividad, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+            }
+        }
+        /* Texto: Es importante ... */
+        $pdf->Ln();
+        $pdf->SetX(55);
+        $pdf->SetLeftMargin(55);
+        $espacioRestante2 = $pdf->GetPageHeight() - $pdf->GetY();
+        if ($espacioRestante2 > 163) {
+            $txt = "For respect to the other speakers, and in compliance with the academic program, it is very important to stick to the allotted time.";
+            $txt .= "<br><br>At the end of your time, your presentation will automatically turn off, leaving only the microphone enabled to conclude.";
+            $txt .= "<br><br>Your talk can be delivered on a USB memory the day before your presentation, or you can use your device (Laptop, iPad, Tablet) to project it at the room corresponding to your presentation. It should be noted that the connection time of your device runs within the time allocated for your presentation.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        } else {
+            $pdf->SetTopMargin(40);
+            $pdf->AddPage();
+            $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+            /* Fecha de visualización */
+            $pdf->SetXY(60, 37);
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->MultiCell(140, 10, mb_convert_encoding("Ciudad de México, " . $this->fechaEs(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+            $txt = "For respect to the other speakers, and in compliance with the academic program, it is very important to stick to the allotted time.";
+            $txt .= "<br><br>At the end of your time, your presentation will automatically turn off, leaving only the microphone enabled to conclude.";
+            $txt .= "<br><br>Your talk can be delivered on a USB memory the day before your presentation, or you can use your device (Laptop, iPad, Tablet) to project it at the room corresponding to your presentation. It should be noted that the connection time of your device runs within the time allocated for your presentation.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        }
+
+        $nombe_archivo = $profesor['profesor'] . ".pdf";
+        $nombre_carpeta = "public/cartas/" . $evento['nombre_evento'] . "/presenciales/";
+        $pdf->Output('F', $nombe_archivo);
+        if (!file_exists($nombre_carpeta)) {
+            mkdir($nombre_carpeta, 0777, true);
+        }
+        $nuevaRuta = $nombre_carpeta . '/' . $nombe_archivo;
+        if (rename($nombe_archivo, $nuevaRuta)) {
+            //echo "El archivo se ha movido exitosamente a la carpeta '$carpeta'.";
+            $this->enviarCartaIndividualIngles($profesor, $evento, $nuevaRuta, 'Presencial');
+        } else {
+            echo "Error al mover la carta presencial:" . $nombe_archivo;
+        }
+    }
     function enviarCartaVirtual($profesor, $temas, $evento, $programa)
     {
         /* $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
@@ -564,7 +968,7 @@ class Cartas extends ControllerBase
         /* Nombre del doctor */
         $pdf->SetXY(55, 50);
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'] , 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
         /* Texto: Presente */
         $pdf->SetXY(55, 55);
         $pdf->SetFont('Arial', '', 11);
@@ -629,7 +1033,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -649,7 +1053,7 @@ class Cartas extends ControllerBase
             $txt = "<b>Es importante ajustarse al tiempo asignado para la exposición de cada tema, ya que los videos se subirán a la plataforma OrtoNet®.</b>";
             $txt .= "<br><br>Para apoyar lo anterior, y darle certidumbre a los tiempos y al proceso, nos comunicaremos con usted para ponernos a sus órdenes y concertar las citas de grabación.";
             $txt .= "<br><br>Se integrará la agenda para las grabaciones de cada uno de los ponentes, deberá realizarse la totalidad de las ponencias antes del 15 de marzo, para dar cumplimiento a los tiempos que se requieren para esta logística. ";
-            $txt .= "<br><br>Cualquier aclaración, favor de contactar con ".$programa['responsable_programa']." al e-mail ".$programa['correo_responsable'];
+            $txt .= "<br><br>Cualquier aclaración, favor de contactar con " . $programa['responsable_programa'] . " al e-mail " . $programa['correo_responsable'];
             $txt .= "<br><br>Reconociendo de antemano su apreciada colaboración, le reiteramos nuestra amistad.";
             $pdf->SetFont('Arial', '', 11);
             $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
@@ -668,6 +1072,135 @@ class Cartas extends ControllerBase
         $nuevaRuta = $nombre_carpeta . '/' . $nombe_archivo;
         if (rename($nombe_archivo, $nuevaRuta)) {
             $this->enviarCartaIndividual($profesor, $evento, $nuevaRuta, 'Virtual');
+        } else {
+            echo "Error al mover la carta virtual de:" . $nombe_archivo;
+        }
+    }
+    function enviarCartaVirtualIngles($profesor, $temas, $evento, $programa)
+    {
+        /* $temas = CartasModel::buscarTemasAsignadosVirtuales($param[0], $param[1]);
+        $profesor = CartasModel::buscarProfesor($param[0]);
+        $evento = CartasModel::buscarEvento($param[1]); */
+        /* var_dump($temas);
+        exit; */
+        header('Content-Type: text/html; charset=utf-8');
+        $pdf = new FPDF('P', 'mm', 'A4');
+        $pdf->AddPage();
+        /* Fondo de marca de agua */
+        $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+        /* Fecha de visualización */
+        $pdf->SetXY(60, 37);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+        /* Nombre del doctor */
+        $pdf->SetXY(55, 50);
+        $pdf->SetFont('Arial', 'B', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding($profesor['profesor'], 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Presente */
+        $pdf->SetXY(55, 55);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Present", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Estimado Colega y Amigo */
+        $pdf->SetXY(55, 60);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 10, mb_convert_encoding("Dear Colleague and Friend:", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Texto: Agradeciendo su valiosa... */
+        $fecha_evento_inicial = $evento['fecha_inicio_evento'];
+        $fecha_evento_final = $evento['fecha_fin_evento'];
+        $html = "Thanking you for your valuable and important attendance at the <b>" . $evento['nombre_evento'] . "</b>, to be held at the <b>" . $evento['descripcion_evento'] . "</b>, starting on <b>" . $this->fechaEn($fecha_evento_inicial) . "</b> and ending on <b>" . $this->fechaEn($fecha_evento_final) . "</b>, your participation on the indicated dates and times is confirmed:";
+        $pdf->SetXY(55, 75);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->SetLeftMargin(55);
+        $pdf->WriteHTML(mb_convert_encoding($html, 'ISO-8859-1', 'UTF-8'));
+        /* Texto: En esta ocasión usted... */
+        $pdf->SetXY(55, 100);
+        $pdf->SetFont('Arial', '', 11);
+        $pdf->MultiCell(145, 5, mb_convert_encoding("On this occasion you have registered your participation in the virtual modality, with the development of recordings, for which a provider will contact you for technical advice and recording of the topics:", 'ISO-8859-1', 'UTF-8'), 0, 'L', 0);
+        /* Mostramos los temas asignados al profesor */
+        foreach ($temas as $key => $tema) {
+            //echo $this->calcularTiempoDuracion($tema['hora_inicial'],$tema['hora_final']);
+            $espacioRestante = $pdf->GetPageHeight() - $pdf->GetY();
+            $capitulo = ($tema['nombre_capitulo_ingles'] != null && !empty($tema['nombre_capitulo_ingles']))?$tema['nombre_capitulo_ingles']:$tema['nombre_capitulo'];
+            $tema_txt = ($tema['nombre_tema_ingles'] != null && !empty($tema['nombre_tema_ingles']))?$tema['nombre_tema_ingles']:$tema['nombre_tema'];
+            // Comprueba si hay suficiente espacio para al menos una línea más
+            if ($espacioRestante > 70) {
+                // Añade más contenido
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $texto_tema = "<br>Theme: <b>" . $tema_txt . "</b>";
+                $texto_duracion = "<br>Duration: <b>" . $this->calcularTiempoDuracion($tema['hora_inicial'], $tema['hora_final']) . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_duracion, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+                /* $pdf->Line(56, $pdf->GetY() + 7, 200, $pdf->GetY() + 7); // 50mm from each edge */
+            } else {
+                // Si no hay suficiente espacio, añade un salto de página
+                $pdf->SetTopMargin(40);
+                $pdf->AddPage();
+                $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+                /* Fecha de visualización */
+                /* $pdf->SetXY(60, 37); */
+                $pdf->SetFont('Arial', 'B', 11);
+                $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+                $texto_capitulo = "<br>Chapter: <b>" . $capitulo . "</b>";
+                $texto_tema = "<br>Theme: <b>" . $tema_txt . "</b>";
+                $texto_duracion = "<br>Duration: <b>" . $this->calcularTiempoDuracion($tema['hora_inicial'], $tema['hora_final']) . "</b>";
+                $pdf->SetLeftMargin(60);
+                $pdf->WriteHTML(mb_convert_encoding($texto_capitulo, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_tema, 'ISO-8859-1', 'UTF-8'));
+                $pdf->WriteHTML(mb_convert_encoding($texto_duracion, 'ISO-8859-1', 'UTF-8'));
+                $pdf->Ln();
+            }
+        }
+        /* Texto: Es importante ... */
+        $pdf->Ln();
+        $pdf->SetX(55);
+        $pdf->SetLeftMargin(55);
+        $espacioRestante2 = $pdf->GetPageHeight() - $pdf->GetY();
+        if ($espacioRestante2 > 128) {
+            $txt = "<b>It is important to stick to the time allocated for the presentation of each topic, since the videos will be uploaded to the OrtoNet® platform.</b>";
+            $txt .= "<br><br>To support the above, and give certainty to the times and the process, we will contact you to put ourselves at your service and arrange recording appointments.";
+            $txt .= "<br><br>The agenda will be integrated for the recordings of each of the speakers; all presentations must be made before March 15, to comply with the times required for this logistics. ";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at the e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        } else {
+            $pdf->SetTopMargin(40);
+            $pdf->AddPage();
+            $pdf->Image(constant('URL') . "public/img/marca-agua-cmo-cartas.png", '0', '0', '210', '295');
+            /* Fecha de visualización */
+            $pdf->SetXY(60, 37);
+            $pdf->SetFont('Arial', 'B', 11);
+            $pdf->MultiCell(140, 10, mb_convert_encoding("Mexico City, " . $this->fechaEn(date('Y-m-d')), 'ISO-8859-1', 'UTF-8'), 0, 'R', 0);
+            $txt = "<b>It is important to stick to the time allocated for the presentation of each topic, since the videos will be uploaded to the OrtoNet® platform.</b>";
+            $txt .= "<br><br>To support the above, and give certainty to the times and the process, we will contact you to put ourselves at your service and arrange recording appointments.";
+            $txt .= "<br><br>The agenda will be integrated for the recordings of each of the speakers; all presentations must be made before March 15, to comply with the times required for this logistics.";
+            $txt .= "<br><br>For any clarification, please contact " . $programa['responsable_programa'] . " at the e-mail " . $programa['correo_responsable'];
+            $txt .= "<br><br>Recognizing in advance your appreciated collaboration, we reiterate our friendship.";
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->WriteHTML(mb_convert_encoding($txt, 'ISO-8859-1', 'UTF-8'));
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-cmo.png", '55', ($pdf->GetY() + 7), '60', '30');
+            $pdf->Image(constant('URL') . "public/img/firma-presidente-2.png", '130', ($pdf->GetY() + 7), '60', '30');
+            $txt2 = "CCP.- Dr. Daniel Diego Ball; Coordinador Académico del LXIX Congreso 2024.";
+            $pdf->SetY(($pdf->GetY() + 50));
+            $pdf->WriteHTML(mb_convert_encoding($txt2, 'ISO-8859-1', 'UTF-8'));
+        }
+        $nombe_archivo = $profesor['profesor'] . ".pdf";
+        $nombre_carpeta = "public/cartas/" . $evento['nombre_evento'] . "/virtuales/";
+        $pdf->Output('F', $nombe_archivo);
+        if (!file_exists($nombre_carpeta)) {
+            mkdir($nombre_carpeta, 0777, true);
+        }
+        $nuevaRuta = $nombre_carpeta . '/' . $nombe_archivo;
+        if (rename($nombe_archivo, $nuevaRuta)) {
+            $this->enviarCartaIndividualIngles($profesor, $evento, $nuevaRuta, 'Virtual');
         } else {
             echo "Error al mover la carta virtual de:" . $nombe_archivo;
         }
@@ -804,6 +1337,143 @@ class Cartas extends ControllerBase
             echo "Error Exception:" . $e->getMessage(); //Boring error messages from anything else!
         }
     }
+    function enviarCartaIndividualIngles($profesor, $evento, $archivo, $modalidad)
+    {
+        $mail = new PHPMailer(true); // defaults to using php "mail()"
+        $html = '
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Registro para Evento Médico</title>
+        <link href="https://cdn.jsdelivr.net/npm/font-awesome@5.15.3/css/all.min.css" rel="stylesheet">
+        <style>
+            body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            }
+            img {
+            max-width: 100%;
+            height: auto;
+            }
+            .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            }
+            .event-info {
+            border: 2px solid #244f84;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            }
+            h1 {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: #406dae;
+            text-align: center;
+            }
+            p {
+            margin-bottom: 15px;
+            text-align: justify;
+            }
+            ul {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            }
+            li {
+            list-style: none;
+            margin-bottom: 10px;
+            }
+            i {
+            margin-right: 10px;
+            }
+            address {
+            font-style: normal;
+            margin-top: 30px;
+            }
+            .text-muted {
+            color: #888;
+            }
+            @media screen and (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 24px;
+            }
+            }
+        </style>
+        </head>
+        <body>
+        <div class="container">
+            <br>
+            <img src="' . constant("URL") . 'public/img/cintillo-correo.jpeg" alt="Cabezera del Correo">
+            <br>
+            <br>
+            <div class="event-info">
+            <p class="lead">Dear ' . $profesor['profesor'] . '</p>
+            <p>Nice to greet you, attached we send you the letter with the details of your participation in the <b>' . $evento['nombre_evento'] . '</b>.</p>
+            <p>If you have any questions or comments, we will be happy to resolve them.</p>
+            <p>Best regards.</p>
+            </div>
+        </div>
+        </body>
+        </html>';
+        try {
+            $mail->IsSMTP();
+            $mail->isHTML(true);
+            $mail->SMTPDebug = 0;
+            $mail->SMTPAuth = true;
+            $mail->SMTPSecure = "ssl";
+            /* $mail->Host       = "smtp.gmail.com"; */
+            $mail->Host = 'mail.lahe.mx'; //mail.grupolahe.com
+            $mail->Port = '465'; //465
+            /* $mail->Username   ="francisco.arenal@grupolahe.com"; */
+            $mail->Username = 'masivos@lahe.mx';
+            /* $mail->Password   ="fag1912..."; */
+            $mail->Password = 'Masivos.129';
+            $mail->SetFrom(trim('masivos@lahe.mx'), 'COLEGIO MEXICANO DE ORTOPEDIA Y TRAUMATOLOGÍA'); //Correo del emisor
+            //$mail->addCC('ameg@endoscopia.org.mx');//Con copia
+            /* $mail->addCC('ameg@endoscopia.org.mx');//Con copia */
+            /* if ($datosCampania['correo_respuesta'] != "" && $datosCampania['correo_respuesta'] != null) {
+                $mail->AddReplyTo(trim($datosCampania['correo_respuesta']));//Correo de respuesta
+            } */
+            if ($modalidad == "Virtual") {
+                $modalidad = "Virtual";
+            } else {
+                $modalidad = "presential";
+            }
+            
+            $mail->AddAddress(trim($profesor['correo_profesor'])); //Correo del receptor
+            $mail->AddAttachment($archivo); //Adds an attachment from a path on the filesystem
+            $mail->Subject = 'Topic assignment letter - ' . $modalidad; //Asunto del correo
+            $mail->Body = $html;
+            $mail->AltBody = $html;
+            $mail->CharSet = 'UTF-8';
+            $mail->Encoding = 'base64';
+            /* if($datosDestinatario['archivo_constancia'] != "" && $datosDestinatario['archivo_constancia'] != null){ */
+            if ($mail->Send()) {
+                /* $resp = CartasModel::actualizarCorreoEnviado($profesor['id_profesor'], 'programa','cartapresencial','cartavirtual'); */
+                return true;
+            } else {
+                /* $resp = AdminModel::actualizarCorreoEnviado($datosDestinatario['id_detalle_lista'], $datosCampania['id_campania'], 0); */
+                return false;
+            }
+            /* }else{
+                return false;
+            } */
+
+        } catch (phpmailerException $e) {
+            echo "Error phpmailerexception:" . $e->errorMessage(); //Pretty error messages from PHPMailer
+        } catch (Exception $e) {
+            echo "Error Exception:" . $e->getMessage(); //Boring error messages from anything else!
+        }
+    }
     function fechaEs($fecha)
     {
         $fecha = substr($fecha, 0, 10);
@@ -819,6 +1489,22 @@ class Cartas extends ControllerBase
         $nombreMes = str_replace($meses_EN, $meses_ES, $mes);
         /* return $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio; */
         return $numeroDia . " de " . $nombreMes . " de " . $anio;
+    }
+    function fechaEn($fecha)
+    {
+        $fecha = substr($fecha, 0, 10);
+        $numeroDia = date('d', strtotime($fecha));
+        $dia = date('l', strtotime($fecha));
+        $mes = date('F', strtotime($fecha));
+        $anio = date('Y', strtotime($fecha));
+        $dias_ES = array("Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo");
+        $dias_EN = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday");
+        $nombredia = str_replace($dias_EN, $dias_ES, $dia);
+        $meses_ES = array("Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre");
+        $meses_EN = array("January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December");
+        $nombreMes = $mes;
+        /* return $nombredia." ".$numeroDia." de ".$nombreMes." de ".$anio; */
+        return $mes. " ".$numeroDia . ", " . $anio;
     }
     function calcularTiempoDuracion($horainicial, $horafinal)
     {

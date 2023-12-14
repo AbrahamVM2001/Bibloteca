@@ -40,7 +40,7 @@ class CartasModel extends ModelBase
     public static function temasAsignadosProfesores($idprograma){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_profesor,atp.fk_id_programa,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,(SELECT COUNT(*) FROM asignacion_temas_programa atp2 WHERE atp2.fk_id_profesor = cp.id_profesor) AS asignaciones,cpa.nombre_programa,ce.nombre_evento FROM asignacion_temas_programa atp INNER JOIN cat_profesores cp ON cp.id_profesor = atp.fk_id_profesor INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN cat_programa cpa ON cpa.id_programa = atp.fk_id_programa INNER JOIN cat_eventos ce ON ce.id_evento = cpa.fk_id_evento WHERE atp.fk_id_programa = :idPrograma GROUP BY atp.fk_id_profesor;");
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,atp.fk_id_programa,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,(SELECT COUNT(*) FROM asignacion_temas_programa atp2 WHERE atp2.fk_id_profesor = cp.id_profesor) AS asignaciones,cpa.nombre_programa,ce.nombre_evento,cp.idioma_cartas,cp.correo_profesor FROM asignacion_temas_programa atp INNER JOIN cat_profesores cp ON cp.id_profesor = atp.fk_id_profesor INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN cat_programa cpa ON cpa.id_programa = atp.fk_id_programa INNER JOIN cat_eventos ce ON ce.id_evento = cpa.fk_id_evento WHERE atp.fk_id_programa = :idPrograma GROUP BY atp.fk_id_profesor;");
             $query->execute([
                 ':idPrograma' => base64_decode(base64_decode($idprograma))
             ]);
@@ -102,7 +102,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT cfp.fecha_programa,cs.nombre_salon,cp.nombre_capitulo,ca.nombre_actividad, cm.nombre_tema,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad,atp.fk_id_programa 
+                SELECT cfp.fecha_programa,cs.nombre_salon,cs.nombre_salon_ingles,cp.nombre_capitulo,cp.nombre_capitulo_ingles,ca.nombre_actividad,ca.nombre_actividad_ingles,cm.nombre_tema,cm.nombre_tema_ingles,atp.hora_inicial,atp.hora_final,cmo.nombre_modalidad,atp.fk_id_programa 
                 FROM asignacion_temas_programa atp 
                 INNER JOIN cat_temas cm ON cm.id_tema = atp.fk_id_tema 
                 INNER JOIN cat_actividades ca ON ca.id_actividad = atp.fk_id_actividad 
@@ -126,7 +126,7 @@ class CartasModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("
-                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cp.correo_profesor,cp.id_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
+                SELECT concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,cp.correo_profesor,cp.id_profesor,cp.idioma_cartas FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo WHERE cp.id_profesor = :idProfesor AND cp.estatus_profesor = 1;
             ");
             $query->execute([
                 ':idProfesor' => base64_decode(base64_decode($idprofesor))

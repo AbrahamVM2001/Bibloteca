@@ -68,25 +68,21 @@ $(function () {
           <small><i class="fa-solid fa-user"></i> ${item.profesor}</small>
         </div>
         <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
-        <i class="fa-solid fa-calendar-day fa-beat"></i>
+        ${item.hora_inicial} - ${item.hora_final} hrs
         </div>
         `;
         content2 = `
-        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
-        <h3>${fecha(item.fecha_programa)}</h3>
-        <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
-        </div>
-        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
-          <small class="text-end">${item.nombre_salon}</small><br>
-          <small class="text-end">${item.nombre_capitulo}</small><br>
-          <small class="text-end">${item.nombre_actividad}</small><br>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+          <small class="text-end">Salon: ${item.nombre_salon}</small><br>
+          <small class="text-end">Capítulo: ${item.nombre_capitulo}</small><br>
+          <small class="text-end">Actividad: ${item.nombre_actividad}</small><br>
         </div>
         `;
       } else {
         animacion = "items-left";
         content = `
       <div class="col-sm-2 col-md-2 col-lg-2 col-xl-2 text-center">
-      <i class="fa-solid fa-calendar-day fa-beat"></i>
+      ${item.hora_inicial} - ${item.hora_final} hrs
       </div>
       <div class="col-sm-10 col-md-10 col-lg-10 col-xl-10 text-end">
         <h4 class="lh-base">
@@ -96,14 +92,10 @@ $(function () {
       </div>
       `;
         content2 = `
-        <div class="col-sm-8 col-md-8 col-lg-8 col-xl-8 text-center">
-          <small class="text-end">${item.nombre_salon}</small><br>
-          <small class="text-end">${item.nombre_capitulo}</small><br>
-          <small class="text-end">${item.nombre_actividad}</small><br>
-        </div>
-        <div class="col-sm-4 col-md-4 col-lg-4 col-xl-4 text-center">
-          <h3>${fecha(item.fecha_programa)}</h3>
-          <h5>${item.hora_inicial} - ${item.hora_final} hrs</h5>
+        <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
+          <small class="text-end">Salon: ${item.nombre_salon}</small><br>
+          <small class="text-end">Capítulo: ${item.nombre_capitulo}</small><br>
+          <small class="text-end">Actividad: ${item.nombre_actividad}</small><br>
         </div>
         `;
       }
@@ -112,7 +104,6 @@ $(function () {
           <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-between align-items-center">
             ${content}
           </div>
-          <hr>
           ${content2}
         </div>
       <hr class="mb-3">

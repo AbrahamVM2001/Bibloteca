@@ -42,7 +42,7 @@ class CatalogosModel extends ModelBase
     {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,cp.correo_profesor,cp.telefono_profesor,p.pais,e.estado,cp.rol_profesor FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado;");
+            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) AS profesor,cp.correo_profesor,cp.telefono_profesor,p.pais,e.estado,cp.rol_profesor,cp.idioma_cartas FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado;");
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
@@ -187,7 +187,7 @@ class CatalogosModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE cat_profesores SET  fk_id_prefijo = :fkPrefijo,nombre_profesor = :nombreProfesor,apellidop_profesor = :apellidoPaterno,apellidom_profesor = :apellidoMaterno,fk_id_pais = :fkPais,fk_id_estado = :fkEstado,fk_id_lada = :fkLada,telefono_profesor = :telefono,correo_profesor = :correoProfesor,rol_profesor = :rolProfesor WHERE id_profesor = :idProfesor");
+            $query = $con->pdo->prepare("UPDATE cat_profesores SET  fk_id_prefijo = :fkPrefijo,nombre_profesor = :nombreProfesor,apellidop_profesor = :apellidoPaterno,apellidom_profesor = :apellidoMaterno,fk_id_pais = :fkPais,fk_id_estado = :fkEstado,fk_id_lada = :fkLada,telefono_profesor = :telefono,correo_profesor = :correoProfesor,rol_profesor = :rolProfesor, idioma_cartas = :idiomaCartas WHERE id_profesor = :idProfesor");
             $query->execute([
 
                 ':idProfesor' => $datos['idprofesor'],
@@ -200,7 +200,8 @@ class CatalogosModel extends ModelBase
                 ':fkLada' => $datos['lada'],
                 ':telefono' => trim($datos['telefono_profesor']),
                 ':correoProfesor' => trim($datos['correo_profesor']),
-                ':rolProfesor' => $datos['rol_profesor']
+                ':rolProfesor' => $datos['rol_profesor'],
+                ':idiomaCartas' => $datos['idioma_cartas']
             ]);
             $con->pdo->commit();
             return true ;

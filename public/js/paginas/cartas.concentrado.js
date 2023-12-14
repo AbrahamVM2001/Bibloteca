@@ -10,7 +10,7 @@ $(function () {
             }
             jQuery(`<table class="table align-items-center mb-0 table table-striped table-bordered" style="width:100%" id="info-table-result">
             <thead><tr>
-            <th class="text-uppercase">Profesor</th><th class="text-uppercase">Evento</th><th class="text-uppercase">Programa</th><th class="text-uppercase">Asignaciones</th><th class="text-uppercase">Acciones</th>
+            <th class="text-uppercase">Profesor</th><th class="text-uppercase">Correo profesor</th><th class="text-uppercase">Idioma cartas</th><th class="text-uppercase">Evento</th><th class="text-uppercase">Programa</th><th class="text-uppercase">Asignaciones</th><th class="text-uppercase">Acciones</th>
             </tr></thead>
             </table>`).appendTo("#container-concentrado").removeClass('text-danger');
 
@@ -34,6 +34,20 @@ $(function () {
                 data: response,
                 "columns": [
                     { "data": "profesor", className: 'text-vertical text-center' },
+                    { "data": "correo_profesor", className: 'text-vertical text-center' },
+                    {
+                        data: null,
+                        render: function (data) {
+                            let idioma = '';
+                            switch (data.idioma_cartas) {
+                                case 1: idioma = 'Español'; break;
+                                case 2: idioma = 'Inglés'; break;
+                                default: idioma = 'Sin idioma seleccionado'; break;
+                            }
+                            return idioma;
+                        },
+                        className: 'text-vertical text-center'
+                    },
                     { "data": "nombre_evento", className: 'text-vertical text-center' },
                     { "data": "nombre_programa", className: 'text-vertical text-center' },
                     { "data": "asignaciones", className: 'text-vertical text-center' },
@@ -56,7 +70,7 @@ $(function () {
         }
     }
     tablaConcentradoCartas();
-    async function buscarTemasAsignados(idprof,idprog){
+    async function buscarTemasAsignados(idprof, idprog) {
         let peticion = await fetch(servidor + `cartas/buscarTemasAsignados/${idprof}/${idprog}`);
         let response = await peticion.json();
         console.log(response);
@@ -112,14 +126,14 @@ $(function () {
                 { "data": "nombre_actividad", className: 'text-vertical text-center' },
                 { "data": "nombre_tema", className: 'text-vertical text-center' },
                 { "data": "nombre_modalidad", className: 'text-vertical text-center' },
-                
+
             ]
         });
     }
     $('#container-concentrado').on('click', '.temas-asignados', function () {
         $('#modalListaTemas').modal('show');
         $('#profesor-seleccionado').text($(this).data('prof'));
-        buscarTemasAsignados($(this).data('id'),$(this).data('programa'));
+        buscarTemasAsignados($(this).data('id'), $(this).data('programa'));
     })
     $('#container-concentrado').on('click', '.visualizar-cartas', function () {
         verificarBloqueadorVentanasEmergentes();
@@ -132,7 +146,7 @@ $(function () {
         var ventanaEmergente = window.open('', '', 'width=1,height=1');
         var bloqueadorActivo = ventanaEmergente === null || typeof ventanaEmergente === 'undefined';
         ventanaEmergente.close();
-      }
+    }
     /*$('.visualizar-cartas').click(function () {
         console.log("Click Preview de carta");
     })

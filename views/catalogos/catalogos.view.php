@@ -199,6 +199,17 @@
                 Ingrese un correo, por favor.
               </div>
             </div>
+            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+              <label for="">Idioma cartas</label>
+              <select class="form-control" name="idioma_cartas" id="idioma_cartas" required>
+                <option value="">Seleccionar idioma...</option>
+                <option value="1">Español</option>
+                <option value="2">Inglés</option>
+              </select>
+              <div class="invalid-feedback">
+                Seleccione una opción, por favor.
+              </div>
+            </div>
           </div>
         </div>
         <div class="modal-footer d-flex justify-content-between">
@@ -270,7 +281,8 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Capítulo <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_capitulo_ingles" id="nombre_capitulo_ingles" required>
+              <input type="text" class="form-control" name="nombre_capitulo_ingles" id="nombre_capitulo_ingles"
+                required>
               <div class="invalid-feedback">
                 Ingrese un nombre de capítulo, por favor.
               </div>
@@ -308,7 +320,8 @@
             </div>
             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
               <label for="">Actividad <small>(inglés)</small></label>
-              <input type="text" class="form-control" name="nombre_actividad_ingles" id="nombre_actividad_ingles" required>
+              <input type="text" class="form-control" name="nombre_actividad_ingles" id="nombre_actividad_ingles"
+                required>
               <div class="invalid-feedback">
                 Ingrese un nombre de actividad, por favor.
               </div>

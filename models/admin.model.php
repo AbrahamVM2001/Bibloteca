@@ -746,7 +746,7 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_profesores (fk_id_prefijo,nombre_profesor,apellidop_profesor,apellidom_profesor,fk_id_pais,fk_id_estado,fk_id_lada,telefono_profesor,correo_profesor,rol_profesor,creado_por) VALUES (:prefijo,:nombre,:apellidop,:apellidom,:pais,:estado,:lada,:telefono,:correo,:rolProfesor,:creadoPor)");
+            $query = $con->pdo->prepare("INSERT INTO cat_profesores (fk_id_prefijo,nombre_profesor,apellidop_profesor,apellidom_profesor,fk_id_pais,fk_id_estado,fk_id_lada,telefono_profesor,correo_profesor,rol_profesor,idioma_cartas,creado_por) VALUES (:prefijo,:nombre,:apellidop,:apellidom,:pais,:estado,:lada,:telefono,:correo,:rolProfesor,:idiomaCartas,:creadoPor)");
             $query->execute([
 
                 ':prefijo' => $datos['prefijo'],
@@ -759,6 +759,7 @@ class AdminModel extends ModelBase
                 ':telefono' => $datos['telefono_profesor'],
                 ':rolProfesor' => $datos['rol_profesor'],
                 ':correo' => $datos['correo_profesor'],
+                ':idiomaCartas' => $datos['idioma_cartas'],
                 ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
             ]);
             $idtema_resp = $con->pdo->lastInsertId();
