@@ -22,3 +22,8 @@
     <link rel="stylesheet" href="<?php echo constant("URL");?>public/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.9-1/crypto-js.js"></script>
+  <!-- Diseño de la pagina de error -->
+  <link rel="stylesheet" href="<?=constant('URL')?>public/css/error.css">
+
+  <!-- Estilos de los libros -->
+  <link rel="stylesheet" href="<?=constant('URL')?>public/css/libros.css">

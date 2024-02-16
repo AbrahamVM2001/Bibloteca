@@ -1,21 +1,49 @@
 <?php
 
+use function GuzzleHttp\Promise\queue;
+
 /**
  *
  */
 class AdminModel extends ModelBase
 {
 
-    public function __construct()
-    {
+    public function __construct(){
         parent::__construct();
     }
-    /* Eventos */
-    public static function eventos()
-    {
+    /* Inicio */
+    
+    public static function MostrarLibrosView() {
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_eventos WHERE estatus_evento = 1");
+            $query = $con->pdo->prepare("SELECT
+                cl.id_libro,
+                cl.Titulo,
+                cl.Numero_paginas,
+                cl.Fecha_subir_sistema,
+                cl.Fecha_publicacion,
+                cl.Descripcion,
+                cl.Palabra_clave,
+                cl.Estatus,
+                cl.Imagen,
+                cl.documento,
+                cl.Token_documento,
+                cl.Token,
+                cl.id_fk_usuario,
+                MAX(ac.Puntaje) AS PuntajeMaximo
+            FROM
+                cat_libro cl
+            LEFT JOIN
+                asignacion_comentarios ac ON cl.id_libro = ac.id_fk_libro
+            WHERE
+                cl.Estatus = 1
+            GROUP BY
+                cl.id_libro, cl.Titulo, cl.Numero_paginas, cl.Fecha_subir_sistema, cl.Fecha_publicacion,
+                cl.Descripcion, cl.Palabra_clave, cl.Estatus, cl.Imagen, cl.documento,
+                cl.Token_documento, cl.Token, cl.id_fk_usuario
+            ORDER BY
+                PuntajeMaximo DESC, cl.id_libro;
+            ");
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
@@ -23,826 +51,923 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function buscarEvento($idevento)
-    {
+    public static function buscarLibros($datos){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_eventos WHERE id_evento = :idEvento");
+            $query = $con->pdo->prepare("SELECT cl.*
+                FROM cat_libro cl
+                INNER JOIN asignacion_libro al ON cl.id_libro = al.id_fk_libro
+                WHERE al.id_fk_autor = :id_autor and cl.Estatus = 1
+                    OR al.id_fk_editorial = :id_editorial
+                    OR al.id_fk_categoria = :id_categoria
+                    OR al.id_fk_idioma = :id_idioma
+                    OR cl.Titulo LIKE :busqueda_titulo
+                    OR cl.Palabra_clave LIKE :busqueda_palabra_clave
+            ");
+
             $query->execute([
-                ':idEvento' => base64_decode(base64_decode($idevento))
+                ':id_autor' => $datos['buscar'],
+                ':id_editorial' => $datos['buscar'],
+                ':id_categoria' => $datos['buscar'],
+                ':id_idioma' => $datos['buscar'],
+                ':busqueda_titulo' => '%' . $datos['buscar'] . '%',
+                ':busqueda_palabra_clave' => '%' . $datos['buscar'] . '%'
+            ]);
+    
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Libros encontrados', 'libros' => $result];
+        } catch (PDOException $e) {
+            return ['estatus' => 'error', 'mensaje' => 'Libros no encontrados', 'error' => $e->getMessage()];
+        }
+    }
+    public static function buscarLibrosEnTiempoReal($datos) {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT cl.* FROM cat_libro cl INNER JOIN
+                asignacion_libro al ON cl.id_libro = al.id_fk_libro
+            WHERE
+                (al.id_fk_autor = :id_autor OR al.id_fk_editorial = :id_editorial OR al.id_fk_categoria = :id_categoria OR al.id_fk_idioma = :id_idioma OR cl.Titulo LIKE :busqueda_titulo OR cl.Palabra_clave LIKE :busqueda_palabra_clave)
+            AND cl.Estatus = 1;
+            ");
+    
+            $query->execute([
+                ':id_autor' => $datos['buscar'],
+                ':id_editorial' => $datos['buscar'],
+                ':id_categoria' => $datos['buscar'],
+                ':id_idioma' => $datos['buscar'],
+                ':busqueda_titulo' => '%' . $datos['buscar'] . '%',
+                ':busqueda_palabra_clave' => '%' . $datos['buscar'] . '%'
+            ]);
+    
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Libros encontrados', 'libros' => $result];
+        } catch (PDOException $e) {
+            return ['estatus' => 'error', 'mensaje' => 'Libros no encontrados', 'error' => $e->getMessage()];
+        }
+    }
+     /* FIN INICIO */
+    /* Autores */
+    public static function MostrarAutorTabla(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_autor");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function RegistroAutores($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO cat_autor (Nombre, Apellido_paterno, Apellido_materno, Resumen_biblografia, Foto, Token, Estatus) VALUES (:nombre, :apellido_paterno, :apellido_materno, :biblografia, :foto, :token, :estatus)");
+    
+            $query->execute([
+                ':nombre' => $datos['nombre'],
+                ':apellido_paterno' => $datos['APaterno'],
+                ':apellido_materno' => $datos['AMaterno'],
+                ':biblografia' => $datos['biblografia'],
+                ':foto' => $datos['foto'],
+                'token' => $datos['token'],
+                ':estatus' => $datos['estatus']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Usuario insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
+        }
+    }
+    public static function buscarToken($token) {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_autor WHERE Token = :token");
+            $query->execute([
+                ':token' => $token
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error en el modelo eventos: " . $e->getMessage();
+            return [];
+        }
+    }
+    public static function eliminarAutor($id_autor){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $query = $con->pdo->prepare("DELETE FROM cat_autor  WHERE id_autor = :id_autor;");
+            $query->execute([
+                ':id_autor' => base64_decode(base64_decode($id_autor))
+            ]);
+            
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Autor en uso');
+            }
+            echo "Error recopilado model eliminar autor: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarAutor($id_autor){
+        try { 
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_autor WHERE id_autor = :id_autor;");
+            $query->execute([
+                ':id_autor' => base64_decode(base64_decode($id_autor))
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model buscarEvento: " . $e->getMessage();
+            echo "Error recopilado model buscarEditorial: " . $e->getMessage();
+            return;
+        }        
+    }
+    public static function actualizarAutor($datos, $fotoActualizada){
+        try {
+            $con = new Database;
+    
+            if ($fotoActualizada) {
+                $query = $con->pdo->prepare("UPDATE cat_autor SET 
+                    Nombre = :nombre, 
+                    Apellido_paterno = :apaterno,
+                    Apellido_materno = :amaterno,
+                    Resumen_biblografia = :biblografia,
+                    Estatus = :estatus,
+                    Foto = :foto,
+                    Token = :token
+                    WHERE id_autor = :id_autor");
+                $query->bindParam(':foto', $datos['foto']);
+                $query->bindParam(':token', $datos['token']);
+            } else {
+                $query = $con->pdo->prepare("UPDATE cat_autor SET 
+                    Nombre = :nombre, 
+                    Apellido_paterno = :apaterno,
+                    Apellido_materno = :amaterno,
+                    Resumen_biblografia = :biblografia,
+                    Estatus = :estatus
+                    WHERE id_autor = :id_autor");
+            }
+    
+            $query->bindParam(':id_autor', $datos['id_autor']);
+            $query->bindParam(':nombre', $datos['nombre']);
+            $query->bindParam(':apaterno', $datos['APaterno']);
+            $query->bindParam(':amaterno', $datos['AMaterno']);
+            $query->bindParam(':biblografia', $datos['biblografia']);
+            $query->bindParam(':estatus', $datos['estatus']);
+    
+            $query->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarAutor: $error_message";
+            return false;
+        }
+    }
+    
+    /* FIN AUTORES*/
+
+    /* EDITORIAL */
+    public static function MostrarEditorialTabla(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_editorial");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model editorial: " . $e->getMessage();
             return;
         }
     }
-    public static function guardarEvento($datos)
-    {
+    public static function ResgistroEditorial($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO cat_editorial (Nombre, Estatus) VALUES (:nombre,:estatus)");
+    
+            $query->execute([
+                ':nombre' => $datos['editorial'],
+                ':estatus' => $datos['estatus']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Editorial insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
+        }
+    }
+    public static function eliminarEditorial($id_editorial){
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_eventos (nombre_evento,descripcion_evento,fecha_inicio_evento,fecha_fin_evento,creado_por) VALUES (:nombreEvento,:descripcionEvento,:fechaInicio,:fechaFin,:creadoPor)");
+    
+            $query = $con->pdo->prepare("DELETE FROM cat_editorial  WHERE id_editorial = :id_editorial;");
             $query->execute([
-
-                ':nombreEvento' => $datos['nombre_evento'],
-                ':descripcionEvento' => $datos['descripcion_evento'],
-                ':fechaInicio' => $datos['fecha_inicio'],
-                ':fechaFin' => $datos['fecha_fin'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+                ':id_editorial' => base64_decode(base64_decode($id_editorial))
             ]);
+            
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model guardarEvento: " . $e->getMessage();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Editorial en uso');
+            }
+            echo "Error recopilado model eliminar editorial: " . $e->getMessage();
             return false;
         }
     }
-    public static function actualizarEvento($datos)
-    {
-        try {
+    public static function buscarEditorial($id_editorial){
+        try { 
             $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE cat_eventos SET nombre_evento = :nombreEvento,descripcion_evento=:descripcionEvento,fecha_inicio_evento=:fechaInicio,fecha_fin_evento=:fechaFin  WHERE id_evento = :idEvento;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_editorial WHERE id_editorial = :id_editorial;");
             $query->execute([
-
-                ':nombreEvento' => $datos['nombre_evento'],
-                ':descripcionEvento' => $datos['descripcion_evento'],
-                ':fechaInicio' => $datos['fecha_inicio'],
-                ':fechaFin' => $datos['fecha_fin'],
-                ':idEvento' => $datos['id_evento']
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model actualizarEvento: " . $e->getMessage();
-            return false;
-        }
-    }
-    /* Programas */
-    public static function guardarPrograma($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_programa (fk_id_evento,nombre_programa,creado_por,responsable_programa,correo_responsable) VALUES (:fkEvento,:nombrePrograma,:creadoPor,:responsable,:correoResp)");
-            $query->execute([
-
-                ':fkEvento' => base64_decode(base64_decode($datos['evento'])),
-                ':nombrePrograma' => $datos['nombre_programa'],
-                ':responsable' => $datos['responsable'],
-                ':correoResp' => $datos['correo_responsable'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function actualizarPrograma($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE cat_programa SET nombre_programa=:nombrePrograma,responsable_programa = :responsable,correo_responsable=:correoResp WHERE id_programa = :idPrograma");
-            $query->execute([
-
-                ':idPrograma' => $datos['id_programa'],
-                ':nombrePrograma' => $datos['nombre_programa'],
-                ':responsable' => $datos['responsable'],
-                ':correoResp' => $datos['correo_responsable']
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function buscarPrograma($idprograma)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_programa WHERE id_programa = :idPrograma");
-            $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma))
+                ':id_editorial' => $id_editorial
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            echo "Error recopilado model buscarEditorial: " . $e->getMessage();
             return;
-        }
+        }        
     }
-    public static function infoProgramas($evento)
-    {
+    public static function actualizarEditorial($datos){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_programa WHERE fk_id_evento = :idEvento AND estatus_programa = 1");
-            $query->execute([
-                ':idEvento' => base64_decode(base64_decode($evento))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model revistas: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Fechas */
-    public static function guardarFechas($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_fechas_programa (fk_id_programa,fecha_programa,creado_por) VALUES (:fkPrograma,:fechaPrograma,:creadoPor)");
-            $query->execute([
+            $query = $con->pdo->prepare("UPDATE cat_editorial SET 
+                Nombre = :editorial, 
+                Estatus = :estatus 
+                WHERE id_editorial = :id_editorial");
 
-                ':fkPrograma' => base64_decode(base64_decode($datos['programa'])),
-                ':fechaPrograma' => $datos['fecha'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarFechas: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function eliminarFecha($idfecha)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            /* $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
-            $check->execute(); */
-            $query = $con->pdo->prepare("DELETE FROM cat_fechas_programa WHERE id_fecha_programa = :idFecha;");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($idfecha))
-            ]);
-            /* $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
-            $check2->execute(); */
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model eliminarFecha: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function infoFechas($modulo)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_fechas_programa WHERE fk_id_programa = :idPrograma AND estatus_fecha_programa = 1");
-            $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($modulo))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoFechas: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Salones */
-    public static function guardarSalones($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_salones (fk_id_fechas,fk_id_programa,nombre_salon,creado_por) VALUES (:fkFechas,:fkPrograma,:nombreSalon,:creadoPor)");
-            $query->execute([
+            $query->bindParam(':id_editorial', $datos['id_editorial']);
+            $query->bindParam(':editorial', $datos['editorial']);
+            $query->bindParam(':estatus', $datos['estatus']);
 
-                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
-                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
-                ':nombreSalon' => $datos['nuevo_salon'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idsalon_resp = $con->pdo->lastInsertId();
-            $con->pdo->commit();
-            return $idsalon_resp;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarSalones: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function reasignarSalon($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE asignacion_salones_programa SET fk_id_salon = :fkSalon, estatus_asignacion = 0 WHERE id_asignacion_salon = :idAsignacionSalon");
-            $query->execute([
-                ':fkSalon' => $datos['reasignar_salon'],
-                ':idAsignacionSalon' => base64_decode(base64_decode($datos['id_asignacion_salon']))
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function buscarAsignacionSalon($idsalon)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_salones_programa WHERE fk_id_salon = :idSalon AND estatus_asignacion = 1");
-            $query->execute([
-                ':idSalon' => $idsalon
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function eliminarAsignacionesSalonesInactivas()
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
-            $check->execute();
-            $query = $con->pdo->prepare("DELETE FROM asignacion_salones_programa WHERE estatus_asignacion = 0");
             $query->execute();
-            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
-            $check2->execute();
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model eliminarAsignacionesInactivas: " . $e->getMessage();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarEditorial: $error_message";
             return false;
         }
     }
-    public static function buscarSalon($idsalon)
-    {
+
+    /* FIN EDITORIAL */
+
+    /* IDIOMA */
+
+    public static function MostrarIdiomaTabla(){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_salones WHERE id_salon = :idSalon");
+            $query = $con->pdo->prepare("SELECT * FROM cat_idioma");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function RegistroIdioma($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO cat_idioma (Idioma, Estatus) VALUES (:idioma,:estatus)");
+    
             $query->execute([
-                ':idSalon' => base64_decode(base64_decode($idsalon))
+                ':idioma' => $datos['idioma'],
+                ':estatus' => $datos['estatus']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Idioma insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
+        }
+    }
+    public static function eliminarIdioma($id_idioma){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $query = $con->pdo->prepare("DELETE FROM cat_idioma  WHERE id_idioma = :id_idioma;");
+            $query->execute([
+                ':id_idioma' => base64_decode(base64_decode($id_idioma))
+            ]);
+            
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Idioma en uso');
+            }
+            echo "Error recopilado model eliminar Idioma: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarIdioma($id_idioma){
+        try { 
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_idioma WHERE id_idioma = :id_idioma;");
+            $query->execute([
+                ':id_idioma' => $id_idioma
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            echo "Error recopilado model buscarUsuario: " . $e->getMessage();
             return;
-        }
+        }        
     }
-    public static function asignarSalonPrograma($idfecha, $idprograma, $idsalon)
-    {
+    public static function actualizarIdioma($datos){
         try {
             $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO asignacion_salones_programa (fk_id_fechas,fk_id_programa,fk_id_salon,creado_por) VALUES (:fkFechas,:fkPrograma,:idSalon,:creadoPor)");
-            $query->execute([
+            $query = $con->pdo->prepare("UPDATE cat_idioma SET 
+                Idioma = :idioma, 
+                Estatus = :estatus
+                WHERE id_idioma = :id_idioma;");
 
-                ':fkFechas' => base64_decode(base64_decode($idfecha)),
-                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idSalon' => $idsalon,
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model asignarSalonPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function cat_salones($idfecha, $idprograma)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT cs.*,(CASE WHEN (SELECT asp.id_asignacion_salon FROM asignacion_salones_programa asp WHERE asp.fk_id_fechas = :idFechas AND asp.fk_id_salon = cs.id_salon AND asp.estatus_asignacion = 1) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_salones cs WHERE cs.fk_id_programa = :idPrograma AND cs.estatus_salon = 1 ORDER BY cs.nombre_salon ASC;");
-            $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_salones: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function infoSalones($modulo)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT asp.id_asignacion_salon,cs.id_salon,cs.nombre_salon,asp.* FROM asignacion_salones_programa asp INNER JOIN cat_salones cs ON cs.id_salon = asp.fk_id_salon WHERE asp.fk_id_fechas = :idFecha AND estatus_salon = 1 AND asp.estatus_asignacion = 1");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($modulo))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoSalones: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Capitulos */
-    public static function guardarCapitulos($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_capitulos (fk_id_salon,fk_id_fechas,fk_id_programa,nombre_capitulo,creado_por) VALUES (:fkSalon,:fkFechas,:fkPrograma,:nombreCapitulo,:creadoPor)");
-            $query->execute([
+            $query->bindParam(':id_idioma', $datos['id_idioma']);
+            $query->bindParam(':idioma', $datos['idioma']);
+            $query->bindParam(':estatus', $datos['estatus']);
 
-                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
-                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
-                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
-                ':nombreCapitulo' => $datos['nuevo_capitulo'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idcapitulo_resp = $con->pdo->lastInsertId();
-            $con->pdo->commit();
-            return $idcapitulo_resp;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarSalones: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function reasignarCapitulo($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE asignacion_capitulos_programa SET fk_id_capitulo = :fkCapitulo, estatus_asignacion = 0 WHERE id_asignacion_capitulo = :idAsignacionCapitulo");
-            $query->execute([
-                ':fkCapitulo' => $datos['reasignar_capitulo'],
-                ':idAsignacionCapitulo' => base64_decode(base64_decode($datos['id_asignacion_capitulo']))
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function buscarAsignacionCapitulo($idCapitulo)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_capitulos_programa WHERE fk_id_capitulo = :idCapitulo AND estatus_asignacion = 1");
-            $query->execute([
-                ':idCapitulo' => $idCapitulo
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function eliminarAsignacionesCapitulosInactivos()
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
-            $check->execute();
-            $query = $con->pdo->prepare("DELETE FROM asignacion_capitulos_programa WHERE estatus_asignacion = 0");
             $query->execute();
-            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
-            $check2->execute();
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model eliminarAsignacionesInactivas: " . $e->getMessage();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarIdioma: $error_message";
             return false;
         }
     }
-    public static function asignarCapituloPrograma($idsalon, $idfecha, $idprograma, $idcapitulo)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO asignacion_capitulos_programa (fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_capitulo,creado_por) VALUES (:fkSalon,:fkFechas,:fkPrograma,:idCapitulo,:creadoPor)");
-            $query->execute([
 
-                ':fkSalon' => base64_decode(base64_decode($idsalon)),
-                ':fkFechas' => base64_decode(base64_decode($idfecha)),
-                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idCapitulo' => $idcapitulo,
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model asignarSalonPrograma: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function cat_capitulos($idsalon, $idfecha, $idprograma)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.*,(CASE WHEN (SELECT cpp.id_asignacion_capitulo FROM asignacion_capitulos_programa cpp WHERE cpp.fk_id_fechas = :idFechas AND cpp.fk_id_salon = :idSalon AND cpp.fk_id_capitulo = cp.id_capitulo AND cpp.estatus_asignacion = 1 GROUP BY cpp.fk_id_capitulo) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_capitulos cp WHERE cp.fk_id_programa = :idPrograma AND cp.estatus_capitulo = 1 ORDER BY cp.nombre_capitulo;");
-            $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha)),
-                ':idSalon' => base64_decode(base64_decode($idsalon)),
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_salones: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function infoCapitulos($idfecha, $idsalon)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_capitulo,cp.nombre_capitulo,acp.* FROM asignacion_capitulos_programa acp INNER JOIN cat_capitulos cp ON cp.id_capitulo = acp.fk_id_capitulo WHERE acp.fk_id_fechas = :idFecha AND acp.fk_id_salon = :idSalon AND cp.estatus_capitulo = 1 AND acp.estatus_asignacion = 1;");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($idfecha)),
-                ':idSalon' => base64_decode(base64_decode($idsalon))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoSalones: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Actividades */
-    public static function guardarActividades($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_actividades (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreActividad,:creadoPor)");
-            $query->execute([
+    /* FIN IDIOMA */
 
-                ':fkCapitulo' => base64_decode(base64_decode($datos['idcapitulo'])),
-                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
-                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
-                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
-                ':nombreActividad' => $datos['nueva_actividad'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idactividad_resp = $con->pdo->lastInsertId();
-            $con->pdo->commit();
-            return $idactividad_resp;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarSalones: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function reasignarActividad($datos)
-    {
+    /* USUARIO */
+
+    public static function MostrarUsuarioTabla(){
         try {
             $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("UPDATE asignacion_actividades_programa SET fk_id_actividad = :fkActividad, estatus_asignacion = 0 WHERE id_asignacion_actividad = :idAsignacionActividad");
-            $query->execute([
-                ':fkActividad' => $datos['reasignar_actividad'],
-                ':idAsignacionActividad' => base64_decode(base64_decode($datos['id_asignacion_actividad']))
-            ]);
-            $con->pdo->commit();
-            return true;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model reasignarActividad: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function buscarAsignacionActividad($idActividad)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_actividades_programa WHERE fk_id_actividad = :idActividad AND estatus_asignacion = 1");
-            $query->execute([
-                ':idActividad' => $idActividad
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model buscarAsignacionActividad: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function eliminarAsignacionesActividadesInactivas()
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $check = $con->pdo->prepare("SET foreign_key_checks = 0;");
-            $check->execute();
-            $query = $con->pdo->prepare("DELETE FROM asignacion_actividades_programa WHERE estatus_asignacion = 0");
+            $query = $con->pdo->prepare("SELECT * FROM cat_usuario");
             $query->execute();
-            $check2 = $con->pdo->prepare("SET foreign_key_checks = 1;");
-            $check2->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function eliminarUsuario($id_usuario){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $query = $con->pdo->prepare("DELETE FROM cat_usuario  WHERE id_usuario = :id_usuario;");
+            $query->execute([
+                ':id_usuario' => base64_decode(base64_decode($id_usuario))
+            ]);
+    
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model eliminarAsignacionesActividadesInactivas: " . $e->getMessage();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Usuario en uso');
+            }
+    
+            echo "No podemos eliminar usuario: " . $e->getMessage();
             return false;
         }
     }
-    public static function asignarActividadPrograma($idcapitulo, $idsalon, $idfecha, $idprograma, $idactividad)
-    {
+    
+    public static function RegistroUsuario($datos){
         try {
             $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO asignacion_actividades_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:idActividad,:creadoPor)");
+            $query = $con->pdo->prepare("INSERT INTO cat_usuario (Nombre, Apellido_paterno, Apellido_materno, Genero, Tipo_usuario, Estatus, correo, pass) VALUES (:nombre, :apellido_paterno, :apellido_materno, :genero, '2', '1', :correo, :pass)");
+    
             $query->execute([
-
-                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
-                ':fkSalon' => base64_decode(base64_decode($idsalon)),
-                ':fkFechas' => base64_decode(base64_decode($idfecha)),
-                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idActividad' => $idactividad,
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
+                ':nombre' => $datos['nombre'],
+                ':apellido_paterno' => $datos['APaterno'],
+                ':apellido_materno' => $datos['AMaterno'],
+                ':genero' => $datos['genero'],
+                ':correo' => $datos['email'],
+                ':pass' => $datos['password']
             ]);
-            $con->pdo->commit();
-            return true;
+    
+            return ['estatus' => 'success', 'mensaje' => 'Usuario insertado correctamente'];
         } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model asignarActividadPrograma: " . $e->getMessage();
-            return false;
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
         }
     }
-    public static function cat_actividades($idsalon, $idfecha, $idprograma, $idcapitulo)
-    {
-        try {
+    public static function buscarUsuario($id_usuario){
+        try { 
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT ca.*,(CASE WHEN (SELECT aap.id_asignacion_actividad FROM asignacion_actividades_programa aap WHERE aap.fk_id_fechas = :idFechas AND aap.fk_id_actividad = ca.id_actividad AND aap.fk_id_capitulo = :fkCapitulo AND aap.fk_id_salon = :fkSalon) IS NULL THEN 0 ELSE 1 END) AS asignado FROM cat_actividades ca WHERE ca.fk_id_programa = :idPrograma AND ca.estatus_actividad = 1 ORDER BY ca.nombre_actividad;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_usuario WHERE id_usuario = :id_usuario;");
             $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma)),
-                ':idFechas' => base64_decode(base64_decode($idfecha)),
-                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
-                ':fkSalon' => base64_decode(base64_decode($idsalon)),
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_actividades: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function infoActividades($idfecha, $idsalon, $idcapitulo)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT ca.id_actividad,ca.nombre_actividad,aap.* FROM asignacion_actividades_programa aap INNER JOIN cat_actividades ca ON ca.id_actividad = aap.fk_id_actividad WHERE aap.fk_id_fechas = :idFecha AND aap.fk_id_salon = :idSalon AND aap.fk_id_capitulo = :idCapitulo AND ca.estatus_actividad = 1;");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($idfecha)),
-                ':idSalon' => base64_decode(base64_decode($idsalon)),
-                ':idCapitulo' => base64_decode(base64_decode($idcapitulo))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoActividades: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Temas */
-    public static function guardarTemas($datos)
-    {
-        try {
-            $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_temas (fk_id_actividad,fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,nombre_tema,creado_por) VALUES (:fkActividad,:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:nombreTema,:creadoPor)");
-            $query->execute([
-
-                ':fkActividad' => base64_decode(base64_decode($datos['idactividad'])),
-                ':fkCapitulo' => base64_decode(base64_decode($datos['idcapitulo'])),
-                ':fkSalon' => base64_decode(base64_decode($datos['idsalon'])),
-                ':fkFechas' => base64_decode(base64_decode($datos['idfecha'])),
-                ':fkPrograma' => base64_decode(base64_decode($datos['idprograma'])),
-                ':nombreTema' => $datos['nuevo_tema'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idtema_resp = $con->pdo->lastInsertId();
-            $con->pdo->commit();
-            return $idtema_resp;
-        } catch (PDOException $e) {
-            $con->pdo->rollBack();
-            echo "Error recopilado model guardarTemas: " . $e->getMessage();
-            return false;
-        }
-    }
-    public static function buscarTema($idtemaasignado)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa atp WHERE atp.id_asignacion_tema = :idAsignacionTema");
-            $query->execute([
-                ':idAsignacionTema' => $idtemaasignado
+                ':id_usuario' => $id_usuario
             ]);
             return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model buscarPrograma: " . $e->getMessage();
+            echo "Error recopilado model buscarUsuario: " . $e->getMessage();
             return;
         }
     }
-    public static function eliminarAsignacionTema($idtemaasignado)
-    {
+    public static function actualizarUsuario($datos){
         try {
             $con = new Database;
-            $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("DELETE FROM asignacion_temas_programa WHERE id_asignacion_tema = :idAsignacion");
-            $query->execute([
-                ':idAsignacion' => $idtemaasignado
-            ]);
+            $query = $con->pdo->prepare("UPDATE cat_usuario SET 
+                Nombre = :nombre, 
+                Apellido_paterno = :apellido_paterno, 
+                Apellido_materno = :apellido_materno, 
+                correo = :correo, 
+                pass = :pass, 
+                Tipo_usuario = :tipo_usuario, 
+                Genero = :genero, 
+                Estatus = :estatus 
+            WHERE id_usuario = :id_usuario;");
+
+            $query->bindParam(':id_usuario', $datos['ac_id_usuario']);
+            $query->bindParam(':nombre', $datos['ac_nombre']);
+            $query->bindParam(':apellido_paterno', $datos['ac_apellido_paterno']);
+            $query->bindParam(':apellido_materno', $datos['ac_apellido_materno']);
+            $query->bindParam(':correo', $datos['ac_correo']);
+            $query->bindParam(':pass', $datos['ac_password']);
+            $query->bindParam(':tipo_usuario', $datos['ac_tipo_usuario']);
+            $query->bindParam(':genero', $datos['ac_genero']);
+            $query->bindParam(':estatus', $datos['ac_estatus']);
+
+            $query->execute();
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model eliminarAsignacionTema: " . $e->getMessage();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarUsuario: $error_message";
             return false;
         }
     }
-    public static function verificarAsignacion($idprofesor, $idfechas, $idprograma, $horainicial, $horafinal)
-    {
+    /* LIBRO */
+
+    public static function MostrarLibroTabla(){
         try {
             $con = new Database;
-            /* $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa WHERE fk_id_profesor = :fkProfesor AND fk_id_fechas = :fkFechas AND fk_id_programa = :fkPrograma AND ((hora_inicial BETWEEN '$horainicial' AND '$horafinal') OR (hora_final > '$horainicial'))"); */
-            $query = $con->pdo->prepare("SELECT * FROM asignacion_temas_programa atp INNER JOIN cat_profesores cp ON cp.id_profesor = atp.fk_id_profesor  WHERE atp.fk_id_profesor = :fkProfesor AND atp.fk_id_fechas = :fkFechas AND atp.fk_id_programa = :fkPrograma AND cp.rol_profesor IN (0) AND ((atp.hora_inicial BETWEEN '$horainicial' AND '$horafinal'))");
-            $query->execute([
-                ':fkProfesor' => $idprofesor,
-                ':fkFechas' => base64_decode(base64_decode($idfechas)),
-                ':fkPrograma' => base64_decode(base64_decode($idprograma))
-            ]);
+            $query = $con->pdo->prepare("SELECT * FROM cat_libro");
+            $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
-            echo "Error recopilado model verificarAsignacion: " . $e->getMessage();
+            echo "Error recopilado model eventos: " . $e->getMessage();
             return;
         }
     }
-    public static function asignarTemaPrograma($idcapitulo, $idsalon, $idfecha, $idprograma, $idactividad, $idtema, $datos)
-    {
+    public static function mostrarCategoriaLibros(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_categoria WHERE Estatus = '1';");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function mostrarEditorialLibros(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_editorial WHERE Estatus = '1';");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function mostrarAutorLibros(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_autor WHERE Estatus = '1';");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function mostrarIdiomalibros(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_idioma WHERE Estatus = '1';");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function RegistroLibros($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO cat_libro (Titulo, Numero_paginas, Fecha_subir_sistema, Fecha_publicacion, Descripcion, Palabra_clave, Estatus, Imagen, Token, documento, Token_documento) VALUES (:titulo, :numero_paginas, :fecha_subir_sistema, :fecha_publicacion, :descripcion, :palabra_clave, :estatus, :portada, :token, :documento, :token_documento)");
+            $fecha_actual = date("Y-m-d H:i:s");
+            $query->execute([
+                ':titulo' => $datos['titulo'],
+                ':numero_paginas' => $datos['Numero_pagina'],
+                ':fecha_subir_sistema' => $fecha_actual,
+                ':fecha_publicacion' => $datos['fecha_publicacion'],
+                ':descripcion' => $datos['descripcion'],
+                ':palabra_clave' => $datos['palabra_clave'],
+                ':estatus' => $datos['estatus'],
+                ':portada' => $datos['portada'],
+                ':token' => $datos['token'],
+                ':documento' => $datos['documento'],
+                ':token_documento' => $datos['token_documento']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'libro insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el libro en la base de datos'];
+        }
+    }
+    public static function obtenerUltimoIdLibro(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT MAX(id_libro) AS id_libro FROM cat_libro");
+            $query->execute();
+            $result = $query->fetch();
+            return $result['id_libro'];
+        } catch (PDOException $e) {
+            echo "Error en el modelo eventos: " . $e->getMessage();
+            return null;
+        }
+    }
+    public static function asignarLibro($id_libro, $datos) {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO asignacion_libro (id_fk_libro, id_fk_categoria, id_fk_idioma, id_fk_editorial, id_fk_autor) VALUES (:id_libro, :id_categoria, :id_idioma, :id_editorial, :id_autor)");
+    
+            $query->execute([
+                ':id_libro' => $id_libro,
+                ':id_categoria' => $datos['categoria'],
+                ':id_idioma' => $datos['idioma'],
+                ':id_editorial' => $datos['editorial'],
+                ':id_autor' => $datos['autor']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Asignación de libro exitosa'];
+        } catch (PDOException $e) {
+            echo "Error en el modelo asignarLibro: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al asignar el libro en la base de datos'];
+        }
+    }
+    public static function buscarTokenImagen($token) {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE Token = :token");
+            $query->execute([
+                ':token' => $token
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error en el modelo eventos: " . $e->getMessage();
+            return [];
+        }
+    }
+    public static function buscarTokenDocumento($token_documento) {
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE Token_documento = :token");
+            $query->execute([
+                ':token' => $token_documento
+            ]);
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error en el modelo eventos: " . $e->getMessage();
+            return [];
+        }
+    }
+    public static function eliminarLibro($id_libro){
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO asignacion_temas_programa (fk_id_capitulo,fk_id_salon,fk_id_fechas,fk_id_programa,fk_id_actividad,fk_id_tema,hora_inicial,hora_final,fk_id_profesor,fk_id_modalidad,creado_por) VALUES (:fkCapitulo,:fkSalon,:fkFechas,:fkPrograma,:fkActividad,:idTema,:horaInicial,:horaFinal,:fkProfesor,:fkModalidad,:creadoPor)");
-            $query->execute([
-
-                ':fkCapitulo' => base64_decode(base64_decode($idcapitulo)),
-                ':fkSalon' => base64_decode(base64_decode($idsalon)),
-                ':fkFechas' => base64_decode(base64_decode($idfecha)),
-                ':fkPrograma' => base64_decode(base64_decode($idprograma)),
-                ':fkActividad' => base64_decode(base64_decode($idactividad)),
-                ':idTema' => $idtema,
-                ':horaInicial' => $datos['hora_inicial'],
-                ':horaFinal' => $datos['hora_final'],
-                ':fkProfesor' => $datos['profesor'],
-                ':fkModalidad' => $datos['modalidad'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
+            $idLibro = base64_decode(base64_decode($id_libro));
+            $queryAsignacion = $con->pdo->prepare("DELETE FROM asignacion_libro WHERE id_fk_libro = :id_libro;");
+            $queryAsignacion->execute([':id_libro' => $idLibro]);
+            $queryLibro = $con->pdo->prepare("DELETE FROM cat_libro WHERE id_libro = :id_libro;");
+            $queryLibro->execute([':id_libro' => $idLibro]);
+    
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model asignarActividadPrograma: " . $e->getMessage();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Libro en uso');
+            }
+            echo "Error en el modelo eliminar Libro: " . $e->getMessage();
             return false;
         }
     }
-    public static function cat_temas($idfecha, $idsalon, $idcapitulo, $idactividad, $idprograma)
-    {
-        try {
+    public static function buscarLibro($id_libro){
+        try { 
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_temas ct WHERE fk_id_programa = :idPrograma AND estatus_tema = 1 ORDER BY ct.nombre_tema;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_libro,asignacion_libro WHERE id_libro = :id_libro and id_fk_libro = :id_fk_libro;");
             $query->execute([
-                ':idPrograma' => base64_decode(base64_decode($idprograma))
+                ':id_libro' => base64_decode(base64_decode($id_libro)),
+                ':id_fk_libro' => base64_decode(base64_decode($id_libro))
+
             ]);
-            return $query->fetchAll();
+            return $query->fetch();
         } catch (PDOException $e) {
-            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            echo "Error recopilado model buscarLibro: " . $e->getMessage();
             return;
         }
     }
-    public static function infoTemas($idfecha, $idsalon, $idcapitulo, $idactividad)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT ct.id_tema,ct.nombre_tema,atp.*,concat_ws(' ',cprr.siglas_prefijo,cpr.nombre_profesor,cpr.apellidop_profesor,cpr.apellidom_profesor) AS nombreprofesor,cm.nombre_modalidad FROM asignacion_temas_programa atp INNER JOIN cat_temas ct ON ct.id_tema = atp.fk_id_tema INNER JOIN cat_profesores cpr ON cpr.id_profesor = atp.fk_id_profesor INNER JOIN cat_modalida cm ON cm.id_modalidad = atp.fk_id_modalidad INNER JOIN cat_prefijos cprr ON cprr.id_prefijo = cpr.fk_id_prefijo WHERE atp.fk_id_fechas = :idFecha AND atp.fk_id_salon = :idSalon AND atp.fk_id_capitulo = :idCapitulo AND atp.fk_id_actividad = :idActividad AND ct.estatus_tema =1;");
-            $query->execute([
-                ':idFecha' => base64_decode(base64_decode($idfecha)),
-                ':idSalon' => base64_decode(base64_decode($idsalon)),
-                ':idCapitulo' => base64_decode(base64_decode($idcapitulo)),
-                ':idActividad' => base64_decode(base64_decode($idactividad))
-            ]);
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model infoActividades: " . $e->getMessage();
-            return;
-        }
-    }
-    /* Catalogos Generales*/
-    public static function guardarProfesor($datos)
-    {
+    public static function actualizarLibro($datos, $portadaActualizada, $documentoActualizado) {
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-            $query = $con->pdo->prepare("INSERT INTO cat_profesores (fk_id_prefijo,nombre_profesor,apellidop_profesor,apellidom_profesor,fk_id_pais,fk_id_estado,fk_id_lada,telefono_profesor,correo_profesor,rol_profesor,idioma_cartas,creado_por) VALUES (:prefijo,:nombre,:apellidop,:apellidom,:pais,:estado,:lada,:telefono,:correo,:rolProfesor,:idiomaCartas,:creadoPor)");
-            $query->execute([
 
-                ':prefijo' => $datos['prefijo'],
-                ':nombre' => $datos['nombre_profesor'],
-                ':apellidop' => $datos['apellidop_profesor'],
-                ':apellidom' => $datos['apellidom_profesor'],
-                ':pais' => $datos['pais'],
-                ':estado' => $datos['estado'],
-                ':lada' => (empty($datos['lada'])) ? '310' : $datos['lada'],
-                ':telefono' => $datos['telefono_profesor'],
-                ':rolProfesor' => $datos['rol_profesor'],
-                ':correo' => $datos['correo_profesor'],
-                ':idiomaCartas' => $datos['idioma_cartas'],
-                ':creadoPor' => $_SESSION['id_usuario-' . constant('Sistema')]
-            ]);
-            $idtema_resp = $con->pdo->lastInsertId();
+            $queryLibro = $con->pdo->prepare("UPDATE cat_libro SET 
+                Titulo = :titulo, 
+                Numero_paginas = :numero_pagina,
+                Fecha_publicacion = :fecha_publicacion,
+                Descripcion = :descripcion,
+                Palabra_clave = :palabra_clave,
+                Estatus = :estatus" . ($portadaActualizada ? ", Imagen = :portada, Token = :token_portada" : "") . ($documentoActualizado ? ", Documento = :documento, Token_documento = :token_documento" : "") . "
+                WHERE id_libro = :id_libro");
+
+            if ($portadaActualizada) {
+                $queryLibro->bindParam(':portada', $datos['portada']);
+                $queryLibro->bindParam(':token_portada', $datos['token_portada']);
+            }
+
+            if ($documentoActualizado) {
+                $queryLibro->bindParam(':documento', $datos['documento']);
+                $queryLibro->bindParam(':token_documento', $datos['token_documento']);
+            }
+
+            $queryLibro->bindParam(':id_libro', $datos['id_libro']);
+            $queryLibro->bindParam(':titulo', $datos['titulo']);
+            $queryLibro->bindParam(':numero_pagina', $datos['Numero_pagina']);
+            $queryLibro->bindParam(':fecha_publicacion', $datos['fecha_publicacion']);
+            $queryLibro->bindParam(':descripcion', $datos['descripcion']);
+            $queryLibro->bindParam(':palabra_clave', $datos['palabra_clave']);
+            $queryLibro->bindParam(':estatus', $datos['estatus']);
+
+            $queryLibro->execute();
+
+            if ($queryLibro->errorCode() != 0) {
+                $errorInfo = $queryLibro->errorInfo();
+                throw new PDOException("Query Libro Error: " . $errorInfo[2]);
+            }
+
+            $queryAsignacion = $con->pdo->prepare("UPDATE asignacion_libro SET 
+                id_fk_autor = :autor, 
+                id_fk_editorial = :editorial,
+                id_fk_categoria = :categoria,
+                id_fk_idioma = :idioma
+            WHERE id_fk_libro = :id_libro");
+
+            $queryAsignacion->bindParam(':id_libro', $datos['id_libro']);
+            $queryAsignacion->bindParam(':autor', $datos['autor']);
+            $queryAsignacion->bindParam(':categoria', $datos['categoria']);
+            $queryAsignacion->bindParam(':idioma', $datos['idioma']);
+            $queryAsignacion->bindParam(':editorial', $datos['editorial']);
+
+            $queryAsignacion->execute();
+
+            if ($queryAsignacion->errorCode() != 0) {
+                $errorInfo = $queryAsignacion->errorInfo();
+                throw new PDOException("Query Asignacion Error: " . $errorInfo[2]);
+            }
+
             $con->pdo->commit();
-            return $idtema_resp;
+            return true;
+
         } catch (PDOException $e) {
             $con->pdo->rollBack();
-            echo "Error recopilado model guardarTemas: " . $e->getMessage();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarLibro: $error_message";
             return false;
         }
     }
-    public static function cat_profesores()
-    {
+    
+    /* Categoria */
+
+    public static function MostrarCategoriaTabla(){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT cp.id_profesor,concat_ws(' ',cpr.siglas_prefijo,cp.nombre_profesor,cp.apellidop_profesor,cp.apellidom_profesor) as profesor,p.pais,e.estado FROM cat_profesores cp INNER JOIN cat_prefijos cpr ON cpr.id_prefijo = cp.fk_id_prefijo INNER JOIN paises p ON p.id_pais = cp.fk_id_pais INNER JOIN estados e ON e.id_estado = cp.fk_id_estado WHERE cp.estatus_profesor = 1 ORDER BY profesor;");
+            $query = $con->pdo->prepare("SELECT * FROM cat_categoria");
             $query->execute();
             return $query->fetchAll();
         } catch (PDOException $e) {
-            echo "Error recopilado model cat_actividades: " . $e->getMessage();
+            echo "Error recopilado model eventos: " . $e->getMessage();
             return;
         }
     }
-    public static function cat_modalidades()
-    {
+    public static function RegistroCategoria($datos){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_modalida WHERE estatus_modalidad = 1 ;");
-            $query->execute();
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_actividades: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function cat_prefijos()
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_prefijos WHERE estatus_prefijo = 1 ;");
-            $query->execute();
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_prefijos: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function cat_ladas()
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_ladas WHERE estatus_lada = 1 ;");
-            $query->execute();
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_prefijos: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function cat_paises()
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM paises");
-            $query->execute();
-            return $query->fetchAll();
-        } catch (PDOException $e) {
-            echo "Error recopilado model cat_paises: " . $e->getMessage();
-            return;
-        }
-    }
-    public static function cat_estados($id)
-    {
-        try {
-            $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM estados WHERE id_pais = :idPais;");
+            $query = $con->pdo->prepare("INSERT INTO cat_categoria (Categoria, Estatus) VALUES (:categoria,:estatus)");
+    
             $query->execute([
-                ':idPais' => $id
+                ':categoria' => $datos['categoria'],
+                ':estatus' => $datos['estatus']
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Categoria insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
+        }
+    }
+    public static function eliminarCategoria($id_categoria){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $query = $con->pdo->prepare("DELETE FROM cat_categoria  WHERE id_categoria = :id_categoria;");
+            $query->execute([
+                ':id_categoria' => base64_decode(base64_decode($id_categoria))
+            ]);
+            
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            if ($e->getCode() == '23000') {
+                throw new Exception('Categoria en uso');
+            }
+            echo "Error recopilado model eliminar categoria: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function buscarCategoria($id_categoria){
+        try { 
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_categoria WHERE id_categoria = :id_categoria;");
+            $query->execute([
+                ':id_categoria' => $id_categoria
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarCategoria: " . $e->getMessage();
+            return;
+        }        
+    }
+    public static function actualizarCategoria($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("UPDATE cat_categoria SET 
+                Categoria = :categoria, 
+                Estatus = :estatus
+            WHERE id_categoria = :id_categoria;");
+
+            $query->bindParam(':id_categoria', $datos['id_categoria']);
+            $query->bindParam(':categoria', $datos['categoria']);
+            $query->bindParam(':estatus', $datos['estatus']);
+
+            $query->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarCategoria: $error_message";
+            return false;
+        }
+    }
+    /* FIN DE LA CATEGORIA */
+
+    /* visualizacion del pdf*/
+    public static function viewComentario($id_libro){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT ac.Puntaje, cu.id_usuario, ac.id_comentario, cu.Nombre, cu.Apellido_paterno, cu.Apellido_materno, ac.id_fk_libro, ac.Comentario, ac.Fecha_publicacion, ac.Estatus FROM asignacion_comentarios ac LEFT JOIN cat_usuario cu ON ac.id_fk_usuario = cu.id_usuario WHERE ac.id_fk_libro = :id_libro ORDER BY ac.Fecha_publicacion DESC;");
+            $query->execute([
+                'id_libro' => base64_decode(base64_decode($id_libro))
+            ]);
+            return $query->fetchAll(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function mostrarInfoLibro($id_libro){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE id_libro = :id_libro;");
+            $query->execute([
+                'id_libro' => base64_decode(base64_decode($id_libro))
             ]);
             return $query->fetchAll();
         } catch (PDOException $e) {
-            echo "Error recopilado model cat_estados: " . $e->getMessage();
+            echo "Error recopilado model eventos: " . $e->getMessage();
             return;
         }
     }
+    public static function buscarIdLibro($id_libro){
+        try { 
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT id_libro FROM cat_libro WHERE id_libro = :id_libro;");
+            $query->execute([
+                ':id_libro' => base64_decode(base64_decode($id_libro))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarUsuario: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function RegistroComentario($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO asignacion_comentarios (id_fk_usuario, id_fk_libro, Comentario, Puntaje, Fecha_publicacion, Estatus) VALUES (:id_fk_usuario, :id_fk_libro, :comentario, :puntaje, :fecha_publicacion, '1')");
+            
+            $fecha_actual = date("Y-m-d H:i:s");
+    
+            $query->execute([
+                ':id_fk_usuario' => $datos['id_usuario'],
+                ':id_fk_libro' => base64_decode(base64_decode($datos['id_libro'])),
+                ':comentario' => $datos['comentario'],
+                ':puntaje' => $datos['estrellas'],
+                ':fecha_publicacion' => $fecha_actual
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Comentario insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el comentario en la base de datos'];
+        }
+    }
+    
+    public static function buscarComentarioEdicion($id_comentario){
+        try { 
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_comentarios WHERE id_comentario = :id_comentario and Estatus = 1;");
+            $query->execute([
+                ':id_comentario' => base64_decode(base64_decode($id_comentario))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error en el modelo buscarComentarioEdicion: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function editarComentario($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $fecha_actual = date("Y-m-d H:i:s");
+            $query = $con->pdo->prepare("UPDATE asignacion_comentarios SET 
+                Comentario = :Comentario,
+                Puntaje = :puntaje,
+                Fecha_publicacion = :fecha_actual
+            WHERE id_comentario = :id_comentario;");
+        
+            $query->bindParam(':id_comentario', $datos['id_comentario']);
+            $query->bindParam(':Comentario', $datos['comentario']);
+            $query->bindParam(':puntaje', $datos['estrellas']);
+            $query->bindParam(':fecha_actual', $fecha_actual);
+        
+            $success = $query->execute();
+    
+            if ($success) {
+                $con->pdo->commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            $error_message = $e->getMessage();
+            echo "Error en el modelo editarComentario: $error_message";
+            return false;
+        }
+    }
+    public static function eliminarComentario($id_comentario){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+    
+            $query = $con->pdo->prepare("DELETE FROM asignacion_comentarios WHERE  id_comentario = :id_comentario;");
+            $query->execute([
+                ':id_comentario' => base64_decode(base64_decode($id_comentario))
+            ]);
+            
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            echo "Error recopilado model eliminar categoria: " . $e->getMessage();
+            return false;
+        }
+    }
+    /*FIN DE VISUALIZACION DEL PDF */
 }

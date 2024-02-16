@@ -19,71 +19,105 @@
     <link href="<?= constant('URL') ?>public/css/nucleo-svg.css" rel="stylesheet" />
     <!-- CSS Files -->
     <link id="pagestyle" href="<?= constant('URL') ?>public/css/soft-ui-dashboard.css?v=1.0.5" rel="stylesheet" />
+    <!-- Exclusivo del login -->
+    <link rel="stylesheet" href="public/css/style.css" type="text/css">
 </head>
 
 <body class="bg-gray-100">
-    <main class="main-content  mt-0">
-        <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg"
-            style="background-image: url('<?= constant('URL') ?>public/img/fondo-grupolahe.png');background-size: cover;z-index: -1;">
-            <span class="mask bg-gradient-dark opacity-6"></span>
-            <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-5 text-center mx-auto">
-                        <h1 class="text-white mb-2 mt-5">Bienvenido!</h1>
-                        <p class="text-lead text-white">
-                            <?= constant('DESCRIPCIONSISTEMA') ?>
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="container">
-            <div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
-                <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-                    <div class="card z-index-0">
-                        <div class="card-header text-center pt-4">
-                            <h5>Iniciar Sesión</h5>
-                        </div>
-                        <div class="card-body">
-                            <form id="form-login" role="form" method="post" action="javascript:;"
-                                class='text-start needs-validation' novalidate>
-                                <div class="mb-3">
-                                    <input name="user-login-masivos" type="text" class="form-control"
-                                        placeholder="Usuario..." aria-label="Usuario" value="">
-                                </div>
-                                <div class="mb-3">
-                                    <input name="password-login-masivos" type="password" class="form-control"
-                                        placeholder="Contraseña..." aria-label="Password" value="">
-                                </div>
-                                <div class="text-center">
-                                    <button id="btn-login" type="button"
-                                        class="btn bg-gradient-info w-100 my-4 mb-2">Iniciar</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
-    <!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-    <footer class="footer py-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-8 mx-auto text-center mt-1">
-                    <p class="mb-0 text-secondary">
-                        Copyright ©
-                        <script>
-                            document.write(new Date().getFullYear())
-                        </script> <a href="https://grupolahe.com/" target="_blank">Grupo Lahe</a> | <a
-                            href="https://www.linkedin.com/in/francisco-arenal-g" target="_blank">Francisco Arenal</a>.
+    <section class="background-radial-gradient overflow-hidden" style="height: 100vh;">
+        <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+            <div class="row gx-lg-5 align-items-center mb-5">
+                <div class="col-lg-12 mb-5 mb-lg-0 text-center" style="z-index: 10">
+                    <h1 class="text-white mb-2 mt-5">Bienvenido!</h1>
+                    <p class="text-lead text-white">
+                        <?= constant('DESCRIPCIONSISTEMA') ?>
                     </p>
                 </div>
             </div>
+
+            <div class="row gx-lg-5 align-items-center mb-5">
+                <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                    <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
+
+                    <div class="card bg-glass">
+                        <div class="card-body px-4 py-5 px-md-5">
+                            <div class="tab-content">
+                                <!-- Pestaña de inicio de sesión -->
+                                <div class="tab-pane fade show active" id="pills-login" role="tabpanel" aria-labelledby="tab-login">
+                                    <h4>Iniciar sesión</h4>
+                                    <form id="form-new-iniciar" action="javascript:;" class="needs-validation" novalidate method="post">
+                                        <div class="form-outline mb-4">
+                                            <input type="email" name="correo" id="correo" class="form-control" placeholder="Correo..." aria-label="Usuario" value="" required>
+                                        </div>
+                                        <div class="form-outline mb-4">
+                                            <input type="password" name="pass" id="pass" class="form-control" placeholder="Contraseña..." aria-label="Password" value="" required>
+                                        </div>
+                                        <center><button id="btn-acceso" type="button" class="btn btn-lg btn-block btn-primary">Iniciar</button></center>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+                    <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
+
+                    <div class="card bg-glass">
+                        <div class="card-body px-4 py-5 px-md-5">
+                            <div class="tab-content">
+                                <!-- Pestaña de inicio de registro -->
+                                <div class="tab-pane fade show active" id="pills-registro" role="tabpanel" aria-labelledby="tab-login" required>
+                                    <h4>Iniciar tu proceso de registro</h4>
+                                    <form id="form-new-registro" action="javascript:;" class="needs-validation" novalidate method="post">
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline mb-4">
+                                                    <input type="text" name="nombre" id="nombre" class="form-control" placeholder="Ingresa tu nombre" aria-label="Nombre" value="" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline mb-4">
+                                                    <input type="text" name="apellido_paterno" id="apellido-paterno" class="form-control" placeholder="Ingresa tu apellido paterno" value="" required>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline mb-4">
+                                                    <input type="text" name="apellido_materno" id="apellido_materno" class="form-control" placeholder="Ingresa tu apellido materno" value="">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline mb-4">
+                                                    <select title="Ingresa tu genero con el cual te identifiques." class="form-select" aria-label="Default select example" name="genero" id="genero">
+                                                        <option>Sin genero</option>
+                                                        <option>Hombre</option>
+                                                        <option>Mujer</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-4">
+                                                <div class="form-outline mb-4">
+                                                    <input type="email" name="correo" id="r_correo" class="form-control" placeholder="Ingresa tu correo electronicos" value="" required>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6 mb-4">
+                                                <input type="password" name="pass" id="r_pass" class="form-control" placeholder="Ingresa tu contraseña" value="" required> 
+                                            </div>
+                                        </div>
+                                        <center><button id="btn-registro" type="button" class="btn btn-lg btn-block btn-primary">Registrar</button></center>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </footer>
-    <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
-    <!--   Core JS Files   -->
+    </section>
     <script>
         let servidor = '<?=constant('URL')?>';
     </script>

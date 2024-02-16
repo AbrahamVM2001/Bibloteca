@@ -13,7 +13,7 @@
 <!-- Kanban scripts -->
 <script src="<?= constant('URL') ?>public/js/plugins/dragula/dragula.min.js"></script>
 <script src="<?= constant('URL') ?>public/js/plugins/jkanban/jkanban.js"></script>
-<script src="<?= constant('URL') ?>public/js/plugins/multistep-form.js"></script>
+
 <script src="<?= constant('URL') ?>public/js/plugins/choices.min.js"></script>
 <!-- Select2 -->
 <script src="<?php echo constant("URL");?>public/plugins/select2/js/select2.full.min.js"></script>

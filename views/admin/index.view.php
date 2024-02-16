@@ -2,67 +2,44 @@
 <div class="container">
   <div class="card">
     <div class="card-header d-flex justify-content-between flex-wrap">
-      <h3>Eventos</h3>
-      <button class="btn btn-success btn-agregar-evento" data-bs-target="#modalEventos" data-bs-toggle="modal">Agregar <i
-          class="fa-solid fa-circle-plus"></i></button>
+      <img src="public\img\encabezado.jpg" style="width: 100%;">
+      <h3>Sistema de bibloteca LAHE</h3>
+      <h4>Buen día administrador</h4>
+      <p>¡Bienvenido(a) a nuestra biblioteca digital! Aquí, el conocimiento y las historias se entrelazan para llevarte a un fascinante 
+        viaje literario. Explora nuestra colección, sumérgete en mundos imaginarios y descubre un universo de lectura a tu alcance. ¡Tu 
+        aventura literaria comienza ahora!. Si quieres conocer el resumen del libro solo pasa raton sobre la imagen</p>
     </div>
-    <div class="card-body">
-      <div class="row" id="container-eventos"></div>
-    </div>
-  </div>
-</div>
-<?php require('views/footer.view.php'); ?>
-<script src="<?= constant('URL') ?>public/js/paginas/home.eventos.js"></script>
-<div class="modal fade" id="modalEventos" aria-hidden="true" aria-labelledby="modalEventosLabel"
-  tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="modalEventosLabel">Crear nuevo evento</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form id="form-new-event" action="javascript:;" class="needs-validation" novalidate method="post">
-          <input type="hidden" name="tipo" id="tipo" value="nuevo">
-          <input type="hidden" name="id_evento" id="id_evento">
+    <form id="form-new-event" action="javascript:;" name="form-usuario" class="needs-validation" novalidate method="post">
           <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Nombre evento</label>
-              <input type="text" class="form-control" name="nombre_evento" id="nombre_evento"
-                placeholder="Nombre evento..." required>
-              <div class="invalid-feedback">
-                Ingrese un nombre de evento, por favor.
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-              <label for="">Lugar del evento</label>
-              <input type="text" class="form-control" name="descripcion_evento" id="descripcion_evento"
-                placeholder="Lugar..." required>
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <label for="buscar">Si no logras ver tu libro favorito solo busca con su titulo </label>
+                <input type="text" class="form-control w-100" id="buscar" name="buscar">
                 <div class="invalid-feedback">
-                Ingrese dónde será el evento, por favor.
+                    Ingresa tu búsqueda.
+                </div>
               </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-              <label for="">Fecha inicial</label>
-              <input type="date" class="form-control" name="fecha_inicio" id="fecha_inicio" required>
-              <div class="invalid-feedback">
-                Ingrese una fecha inicial, por favor.
-              </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-              <label for="">Fecha final</label>
-              <input type="date" class="form-control" name="fecha_fin" id="fecha_fin" required>
-              <div class="invalid-feedback">
-                Ingrese una fecha final, por favor.
+              <div class="col-sm-12 col-md-6"><br>
+                <button data-formulario="form-new-event" type="button" class="btn btn-primary btn-buscar"><i class="fa-solid fa-search"></i></button>
               </div>
             </div>
           </div>
         </form>
+        <div class="card-body">
+          <div class="row table-responsive" id="container-eventos"></div>
+        </div>
+        <div class="card-body">
+          <div class="row table-responsive" id="container-libros"></div>
+        </div>
+        <div class="esteCategorias">
+          <div class="card-body">
+            <div class="row table-responsive" id="container-romance"></div>
+          </div>
+        </div>
+        <h1>ksklslsk</h1>
       </div>
-      <div class="modal-footer d-flex justify-content-between">
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancelar</button>
-        <button data-formulario="form-new-event" type="button" class="btn btn-primary btn-evento">Guardar</button>
-      </div>
+    </form>
     </div>
   </div>
-</div>
+<?php require('views/footer.view.php'); ?>
+<script src="<?= constant('URL') ?>public/js/paginas/admin/home.index.js"></script>

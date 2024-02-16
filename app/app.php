@@ -1,7 +1,7 @@
 <?php
 session_start();
 require_once "controllers/error.controller.php";
-class App
+class App extends ControllerBase
 {
     private $alertLogin;
     private $url;
@@ -13,12 +13,22 @@ class App
         $this->url = trim($this->url ?? '', "/");
         $this->url = explode("/", $this->url);
         // Cuando se ingresa sin definir el controlador
-        if (isset($_SESSION['id_usuario-' . constant('Sistema')]) && !empty($_SESSION['id_usuario-' . constant('Sistema')])) {
+        if (isset($_SESSION['id_usuario-' . constant('Sistema')]) && !empty($_SESSION['id_usuario-' . constant('Sistema')]) && $this->verificarAdmin()) {
             if (empty($this->url[0])) {
                 $archivoController = "controllers/admin.controller.php";
                 require_once $archivoController;
                 $controller = new Admin();
                 $controller->loadModel("admin");
+                $controller->render();
+                return false;
+            }
+            $this->general($this->url);
+        } else if (isset($_SESSION['id_usuario-' . constant('Sistema')]) && !empty($_SESSION['id_usuario-' . constant('Sistema')])  && $this->verificarUser()) {
+            if (empty($this->url[0])) {
+                $archivoController = "controllers/usuario.controller.php";
+                require_once $archivoController;
+                $controller = new Usuario();
+                $controller->loadModel("usuario");
                 $controller->render();
                 return false;
             }

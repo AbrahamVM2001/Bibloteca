@@ -1,0 +1,206 @@
+.este {
+    height: 30vh;
+    line-height: 1em;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    width: 100%;
+    border: 0px solid;
+}
+.Libro-card-admin {
+    max-width: 300px;
+    background-color: #FFF;
+    border-radius: 5px;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    margin: 0px;
+    cursor: pointer;
+}
+
+.Libro-card-admin img {
+    transition: all 0.25s linear;
+}
+
+.Libro-card-admin .profile-content {
+    position: relative;
+    padding: 15px;
+    background-color: #FFF;
+}
+
+.Libro-card-admin .profile-name {
+    font-weight: bold;
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    top: -70px;
+    background-color: rgba(0, 0, 0, 0.516);
+    color: #FFF;
+    font-size: 17px;
+}
+
+.Libro-card-admin .profile-name p {
+    font-weight: 600;
+    font-size: 8px;
+    letter-spacing: 1.5px;
+}
+
+.Libro-card-admin .profile-description {
+    color: #777;
+    font-size: 8px;
+    padding: 10px;
+}
+
+.Libro-card-admin .profile-overview {
+    padding: 15px 0px;
+}
+
+.Libro-card-admin .profile-overview p {
+    font-size: 10px;
+    font-weight: 600;
+    color: #777;
+}
+
+.Libro-card-admin .profile-overview h4 {
+    color: #273751;
+    font-weight: bold;
+}
+
+.Libro-card-admin .profile-content::before {
+    content: "";
+    position: absolute;
+    height: 20px;
+    top: -10px;
+    left: 0px;
+    right: 0px;
+    background-color: #FFF;
+    z-index: 0;
+    transform: skewY(3deg);
+}
+
+.Libro-card-admin:hover img {
+    transform: rotate(5deg) scale(1.1, 1.1);
+    filter: brightness(110%);
+}
+
+.Libro-card-view {
+    max-width: 300px;
+    background-color: #FFF;
+    border-radius: 5px;
+    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    position: relative;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.Libro-card-view img {
+    transition: all 0.15s linear;
+    width: 12000px;
+    height: auto;
+}
+
+.Libro-card-view .profile-name {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 10px;
+    font-weight: bold;
+    color: #FFF;
+    padding: 15px 20px;
+    background: linear-gradient(140deg, rgba(0, 0, 0, 0.4) 50%, rgba(255, 255, 0, 0) 50%);
+    transition: all 0.15s linear;
+}
+
+.libro-titulo {
+    font-size: 19px;
+    color: #fff;
+    font-weight: bold;
+}
+
+.Libro-card-view .profile-position {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.4);
+    left: 30px;
+    top: 100px;
+    transition: all 0.15s linear;
+}
+
+.Libro-card-view .profile-overview {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    right: 0px;
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.138) 50%, rgba(255, 255, 0, 0));
+    color: #FFF;
+    padding: 50px 0px 20px 0px;
+    transition: all 0.15s linear;
+}
+
+.Libro-card-view .profile-overview h3 {
+    font-weight: bold;
+}
+
+.Libro-card-view .profile-overview p {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.Libro-card-view:hover img {
+    filter: brightness(20%);
+}
+
+.Libro-card-view:hover .profile-name {
+    padding-left: 25px;
+    padding-top: 20px;
+}
+
+.Libro-card-view:hover .profile-name h1, p{
+    font-size: 14px;
+}
+
+.Libro-card-view:hover .profile-position {
+    left: 40px;
+}
+
+.Libro-card-view:hover .profile-overview {
+    padding-bottom: 25px;
+}
+.Libro-card-view .profile-name,
+.Libro-card-view .libro-des {
+    opacity: 0;
+    transition: opacity 0.30s linear;
+}
+
+.Libro-card-view:hover .profile-name,
+.Libro-card-view:hover .libro-des {
+    opacity: 1;
+}
+
+.Libro-card-view img {
+    transition: all 0.15s linear;
+    width: 100%;
+    height: auto;
+}
+/* Assuming the toolbar has a class like "toolbar" */
+.toolbar {
+    display: none;
+}
+/* CARRUSEL */
+.horizontal-scrollable {
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.horizontal-scrollable .d-flex {
+    flex-wrap: nowrap;
+}
+
+/* Decoraciones */
+
+.esteCategorias {
+    height: 43vh;
+    line-height: 1em;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 100%;
+    border: 0px solid;
+}
