@@ -5,15 +5,132 @@ use function GuzzleHttp\Promise\queue;
 /**
  *
  */
-class AdminModel extends ModelBase
-{
+class AdminModel extends ModelBase{
 
     public function __construct(){
         parent::__construct();
     }
+
+    /* CONFIGURACION */
+
+    public static function actualizarUsuarioGeneralSinPass($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("UPDATE cat_usuario SET
+                Nombre = :nombre,
+                Apellido_paterno = :apellido_paterno,
+                Apellido_materno = :apellido_materno,
+                Tipo_usuario = :tipo_usuario,
+                Genero = :genero,
+                Estatus = :estatus
+            WHERE id_usuario = :id_usuario;");
+
+            $query->bindParam(':id_usuario', $datos['id_usuario']);
+            $query->bindParam(':nombre', $datos['nombre']);
+            $query->bindParam(':apellido_paterno', $datos['lastname']);
+            $query->bindParam(':apellido_materno', $datos['AMaterno']);
+            $query->bindParam(':genero', $datos['genero']);
+
+            $query->execute();
+            $con->pdo->commit();
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            $error_message = $e->getMessage();
+            echo "Error recopilado model actualizarUsuario: $error_message";
+            return false;
+        }
+    }
+    public static function ConfiguracionActualizarDatos($datos){
+        $con = new Database;
+
+        try {
+            $con->pdo->beginTransaction();
+
+            $query = $con->pdo->prepare("UPDATE cat_usuario
+                SET Nombre = :nombre
+                WHERE id_usuario = :id_usuario;");
+            $query->bindParam(':id_usuario', $datos['id_usuario']);
+            $query->bindParam(':nombre', $datos['nombre']);
+
+            $query->execute();
+            $con->pdo->commit();
+
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+
+            $error_message = $e->getMessage();
+            echo "Error in model actualizarUsuario: $error_message";
+
+            return false;
+        }
+    }
+    public static function ConfiguracionActualizarPass($datos){
+        $con = new Database;
+
+        try {
+            $con->pdo->beginTransaction();
+
+            $query = $con->pdo->prepare("UPDATE cat_usuario
+                SET pass = :password
+                WHERE id_usuario = :id_usuario;");
+            $query->bindParam(':id_usuario', $datos['id_usuario']);
+            $query->bindParam(':password', $datos['passwordNewRepit']);
+
+            $query->execute();
+            $con->pdo->commit();
+
+            return true;
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+
+            $error_message = $e->getMessage();
+            echo "Error in model actualizarUsuario: $error_message";
+
+            return false;
+        }
+    }
+    public static function VerificarPasswordGeneral($id_usuario, $passwordNewRepit){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM cat_usuario WHERE id_usuario = :id_usuario; && pass = :password");
+            $query->execute([
+                ':id_usuario' => base64_decode(base64_decode($id_usuario)),
+                ':password' => base64_decode(base64_decode($passwordNewRepit))
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarEditorial: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function mostrarDispositivos($id_usuario){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT
+                id_fk_usuario,
+                infoModelo,
+                Direccion,
+                MAX(FechaTiempo) AS FechaMasReciente,
+                COUNT(*) AS VecesRepetido
+                FROM asignacion_dispositivo
+                WHERE id_fk_usuario = :id_usuario
+                GROUP BY id_fk_usuario, infoModelo, Direccion;
+            ");
+            $query->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }    
+    /* FIN CONFIGURACION */
+
     /* Inicio */
-    
-    public static function MostrarLibrosView() {
+
+    public static function MostrarLibrosView(){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT
@@ -73,15 +190,15 @@ class AdminModel extends ModelBase
                 ':busqueda_titulo' => '%' . $datos['buscar'] . '%',
                 ':busqueda_palabra_clave' => '%' . $datos['buscar'] . '%'
             ]);
-    
+
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Libros encontrados', 'libros' => $result];
         } catch (PDOException $e) {
             return ['estatus' => 'error', 'mensaje' => 'Libros no encontrados', 'error' => $e->getMessage()];
         }
     }
-    public static function buscarLibrosEnTiempoReal($datos) {
+    public static function buscarLibrosEnTiempoReal($datos){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT cl.* FROM cat_libro cl INNER JOIN
@@ -90,7 +207,7 @@ class AdminModel extends ModelBase
                 (al.id_fk_autor = :id_autor OR al.id_fk_editorial = :id_editorial OR al.id_fk_categoria = :id_categoria OR al.id_fk_idioma = :id_idioma OR cl.Titulo LIKE :busqueda_titulo OR cl.Palabra_clave LIKE :busqueda_palabra_clave)
             AND cl.Estatus = 1;
             ");
-    
+
             $query->execute([
                 ':id_autor' => $datos['buscar'],
                 ':id_editorial' => $datos['buscar'],
@@ -99,15 +216,74 @@ class AdminModel extends ModelBase
                 ':busqueda_titulo' => '%' . $datos['buscar'] . '%',
                 ':busqueda_palabra_clave' => '%' . $datos['buscar'] . '%'
             ]);
-    
+
             $result = $query->fetchAll(PDO::FETCH_ASSOC);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Libros encontrados', 'libros' => $result];
         } catch (PDOException $e) {
             return ['estatus' => 'error', 'mensaje' => 'Libros no encontrados', 'error' => $e->getMessage()];
         }
     }
-     /* FIN INICIO */
+    public static function MostrarLibrosViewHarry(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT 
+                cl.id_libro,
+                cl.Titulo,
+                cl.Numero_paginas,
+                cl.Fecha_subir_sistema,
+                cl.Fecha_publicacion,
+                cl.Descripcion,
+                cl.Palabra_clave,
+                cl.Estatus,
+                cl.Imagen,
+                cl.documento,
+                cl.Token_documento,
+                cl.Token,
+                cl.id_fk_usuario
+            FROM cat_libro cl
+            INNER JOIN asignacion_libro al ON cl.id_libro = al.id_fk_libro
+            INNER JOIN cat_autor a ON al.id_fk_autor = a.id_autor
+            WHERE a.Nombre = 'J. K.';        
+            ");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function MostrarLibrosViewACII(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT 
+                cl.id_libro,
+                cl.Titulo,
+                cl.Numero_paginas,
+                cl.Fecha_subir_sistema,
+                cl.Fecha_publicacion,
+                cl.Descripcion,
+                cl.Palabra_clave,
+                cl.Estatus,
+                cl.Imagen,
+                cl.documento,
+                cl.Token_documento,
+                cl.Token,
+                cl.id_fk_usuario
+            FROM cat_libro cl
+            INNER JOIN asignacion_libro al ON cl.id_libro = al.id_fk_libro
+            INNER JOIN cat_autor a ON al.id_fk_autor = a.id_autor
+            INNER JOIN cat_editorial e ON al.id_fk_editorial = e.id_editorial
+            WHERE e.Nombre = 'ASCII Media Works';
+            ");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    /* FIN INICIO */
     /* Autores */
     public static function MostrarAutorTabla(){
         try {
@@ -124,7 +300,7 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO cat_autor (Nombre, Apellido_paterno, Apellido_materno, Resumen_biblografia, Foto, Token, Estatus) VALUES (:nombre, :apellido_paterno, :apellido_materno, :biblografia, :foto, :token, :estatus)");
-    
+
             $query->execute([
                 ':nombre' => $datos['nombre'],
                 ':apellido_paterno' => $datos['APaterno'],
@@ -134,14 +310,14 @@ class AdminModel extends ModelBase
                 'token' => $datos['token'],
                 ':estatus' => $datos['estatus']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Usuario insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
             return ['estatus' => 'error', 'mensaje' => 'Error al insertar el usuario en la base de datos'];
         }
     }
-    public static function buscarToken($token) {
+    public static function buscarToken($token){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_autor WHERE Token = :token");
@@ -158,12 +334,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM cat_autor  WHERE id_autor = :id_autor;");
             $query->execute([
                 ':id_autor' => base64_decode(base64_decode($id_autor))
             ]);
-            
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -176,7 +352,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarAutor($id_autor){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_autor WHERE id_autor = :id_autor;");
             $query->execute([
@@ -186,12 +362,12 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model buscarEditorial: " . $e->getMessage();
             return;
-        }        
+        }
     }
     public static function actualizarAutor($datos, $fotoActualizada){
         try {
             $con = new Database;
-    
+
             if ($fotoActualizada) {
                 $query = $con->pdo->prepare("UPDATE cat_autor SET 
                     Nombre = :nombre, 
@@ -213,14 +389,14 @@ class AdminModel extends ModelBase
                     Estatus = :estatus
                     WHERE id_autor = :id_autor");
             }
-    
+
             $query->bindParam(':id_autor', $datos['id_autor']);
             $query->bindParam(':nombre', $datos['nombre']);
             $query->bindParam(':apaterno', $datos['APaterno']);
             $query->bindParam(':amaterno', $datos['AMaterno']);
             $query->bindParam(':biblografia', $datos['biblografia']);
             $query->bindParam(':estatus', $datos['estatus']);
-    
+
             $query->execute();
             $con->pdo->commit();
             return true;
@@ -231,7 +407,7 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    
+
     /* FIN AUTORES*/
 
     /* EDITORIAL */
@@ -250,12 +426,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO cat_editorial (Nombre, Estatus) VALUES (:nombre,:estatus)");
-    
+
             $query->execute([
                 ':nombre' => $datos['editorial'],
                 ':estatus' => $datos['estatus']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Editorial insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
@@ -266,12 +442,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM cat_editorial  WHERE id_editorial = :id_editorial;");
             $query->execute([
                 ':id_editorial' => base64_decode(base64_decode($id_editorial))
             ]);
-            
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -284,7 +460,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarEditorial($id_editorial){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_editorial WHERE id_editorial = :id_editorial;");
             $query->execute([
@@ -294,7 +470,7 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model buscarEditorial: " . $e->getMessage();
             return;
-        }        
+        }
     }
     public static function actualizarEditorial($datos){
         try {
@@ -338,12 +514,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO cat_idioma (Idioma, Estatus) VALUES (:idioma,:estatus)");
-    
+
             $query->execute([
                 ':idioma' => $datos['idioma'],
                 ':estatus' => $datos['estatus']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Idioma insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
@@ -354,12 +530,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM cat_idioma  WHERE id_idioma = :id_idioma;");
             $query->execute([
                 ':id_idioma' => base64_decode(base64_decode($id_idioma))
             ]);
-            
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -372,7 +548,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarIdioma($id_idioma){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_idioma WHERE id_idioma = :id_idioma;");
             $query->execute([
@@ -382,7 +558,7 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model buscarUsuario: " . $e->getMessage();
             return;
-        }        
+        }
     }
     public static function actualizarIdioma($datos){
         try {
@@ -426,12 +602,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM cat_usuario  WHERE id_usuario = :id_usuario;");
             $query->execute([
                 ':id_usuario' => base64_decode(base64_decode($id_usuario))
             ]);
-    
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -439,17 +615,17 @@ class AdminModel extends ModelBase
             if ($e->getCode() == '23000') {
                 throw new Exception('Usuario en uso');
             }
-    
+
             echo "No podemos eliminar usuario: " . $e->getMessage();
             return false;
         }
     }
-    
+
     public static function RegistroUsuario($datos){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO cat_usuario (Nombre, Apellido_paterno, Apellido_materno, Genero, Tipo_usuario, Estatus, correo, pass) VALUES (:nombre, :apellido_paterno, :apellido_materno, :genero, '2', '1', :correo, :pass)");
-    
+
             $query->execute([
                 ':nombre' => $datos['nombre'],
                 ':apellido_paterno' => $datos['APaterno'],
@@ -458,7 +634,7 @@ class AdminModel extends ModelBase
                 ':correo' => $datos['email'],
                 ':pass' => $datos['password']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Usuario insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
@@ -466,7 +642,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarUsuario($id_usuario){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_usuario WHERE id_usuario = :id_usuario;");
             $query->execute([
@@ -587,7 +763,7 @@ class AdminModel extends ModelBase
                 ':documento' => $datos['documento'],
                 ':token_documento' => $datos['token_documento']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'libro insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
@@ -606,11 +782,11 @@ class AdminModel extends ModelBase
             return null;
         }
     }
-    public static function asignarLibro($id_libro, $datos) {
+    public static function asignarLibro($id_libro, $datos){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO asignacion_libro (id_fk_libro, id_fk_categoria, id_fk_idioma, id_fk_editorial, id_fk_autor) VALUES (:id_libro, :id_categoria, :id_idioma, :id_editorial, :id_autor)");
-    
+
             $query->execute([
                 ':id_libro' => $id_libro,
                 ':id_categoria' => $datos['categoria'],
@@ -618,14 +794,14 @@ class AdminModel extends ModelBase
                 ':id_editorial' => $datos['editorial'],
                 ':id_autor' => $datos['autor']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Asignación de libro exitosa'];
         } catch (PDOException $e) {
             echo "Error en el modelo asignarLibro: " . $e->getMessage();
             return ['estatus' => 'error', 'mensaje' => 'Error al asignar el libro en la base de datos'];
         }
     }
-    public static function buscarTokenImagen($token) {
+    public static function buscarTokenImagen($token){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE Token = :token");
@@ -638,7 +814,7 @@ class AdminModel extends ModelBase
             return [];
         }
     }
-    public static function buscarTokenDocumento($token_documento) {
+    public static function buscarTokenDocumento($token_documento){
         try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE Token_documento = :token");
@@ -660,7 +836,7 @@ class AdminModel extends ModelBase
             $queryAsignacion->execute([':id_libro' => $idLibro]);
             $queryLibro = $con->pdo->prepare("DELETE FROM cat_libro WHERE id_libro = :id_libro;");
             $queryLibro->execute([':id_libro' => $idLibro]);
-    
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -673,7 +849,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarLibro($id_libro){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_libro,asignacion_libro WHERE id_libro = :id_libro and id_fk_libro = :id_fk_libro;");
             $query->execute([
@@ -687,7 +863,7 @@ class AdminModel extends ModelBase
             return;
         }
     }
-    public static function actualizarLibro($datos, $portadaActualizada, $documentoActualizado) {
+    public static function actualizarLibro($datos, $portadaActualizada, $documentoActualizado){
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
@@ -748,7 +924,6 @@ class AdminModel extends ModelBase
 
             $con->pdo->commit();
             return true;
-
         } catch (PDOException $e) {
             $con->pdo->rollBack();
             $error_message = $e->getMessage();
@@ -756,7 +931,7 @@ class AdminModel extends ModelBase
             return false;
         }
     }
-    
+
     /* Categoria */
 
     public static function MostrarCategoriaTabla(){
@@ -774,12 +949,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO cat_categoria (Categoria, Estatus) VALUES (:categoria,:estatus)");
-    
+
             $query->execute([
                 ':categoria' => $datos['categoria'],
                 ':estatus' => $datos['estatus']
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Categoria insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
@@ -790,12 +965,12 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM cat_categoria  WHERE id_categoria = :id_categoria;");
             $query->execute([
                 ':id_categoria' => base64_decode(base64_decode($id_categoria))
             ]);
-            
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
@@ -808,7 +983,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarCategoria($id_categoria){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM cat_categoria WHERE id_categoria = :id_categoria;");
             $query->execute([
@@ -818,7 +993,7 @@ class AdminModel extends ModelBase
         } catch (PDOException $e) {
             echo "Error recopilado model buscarCategoria: " . $e->getMessage();
             return;
-        }        
+        }
     }
     public static function actualizarCategoria($datos){
         try {
@@ -861,7 +1036,26 @@ class AdminModel extends ModelBase
     public static function mostrarInfoLibro($id_libro){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE id_libro = :id_libro;");
+            $query = $con->pdo->prepare("SELECT 
+            cl.*,
+            al.id_asignacion_libro,
+            al.id_fk_autor,
+            a.Nombre AS NombreAutor,
+            a.Apellido_paterno AS ApellidoPaternoAutor,
+            a.Apellido_materno AS ApellidoMaternoAutor,
+            al.id_fk_editorial,
+            e.Nombre AS NombreEditorial,
+            al.id_fk_categoria,
+            al.id_fk_idioma,
+            al.id_fk_usuario AS id_fk_usuario_asignacion
+        FROM 
+            cat_libro cl
+        LEFT JOIN 
+            asignacion_libro al ON cl.id_libro = al.id_fk_libro
+        LEFT JOIN 
+            cat_autor a ON al.id_fk_autor = a.id_autor
+        LEFT JOIN 
+            cat_editorial e ON al.id_fk_editorial = e.id_editorial WHERE id_libro = :id_libro;");
             $query->execute([
                 'id_libro' => base64_decode(base64_decode($id_libro))
             ]);
@@ -872,7 +1066,7 @@ class AdminModel extends ModelBase
         }
     }
     public static function buscarIdLibro($id_libro){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT id_libro FROM cat_libro WHERE id_libro = :id_libro;");
             $query->execute([
@@ -888,9 +1082,9 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $query = $con->pdo->prepare("INSERT INTO asignacion_comentarios (id_fk_usuario, id_fk_libro, Comentario, Puntaje, Fecha_publicacion, Estatus) VALUES (:id_fk_usuario, :id_fk_libro, :comentario, :puntaje, :fecha_publicacion, '1')");
-            
+
             $fecha_actual = date("Y-m-d H:i:s");
-    
+
             $query->execute([
                 ':id_fk_usuario' => $datos['id_usuario'],
                 ':id_fk_libro' => base64_decode(base64_decode($datos['id_libro'])),
@@ -898,16 +1092,16 @@ class AdminModel extends ModelBase
                 ':puntaje' => $datos['estrellas'],
                 ':fecha_publicacion' => $fecha_actual
             ]);
-    
+
             return ['estatus' => 'success', 'mensaje' => 'Comentario insertado correctamente'];
         } catch (PDOException $e) {
             echo "Error recopilacion model user: " . $e->getMessage();
             return ['estatus' => 'error', 'mensaje' => 'Error al insertar el comentario en la base de datos'];
         }
     }
-    
+
     public static function buscarComentarioEdicion($id_comentario){
-        try { 
+        try {
             $con = new Database;
             $query = $con->pdo->prepare("SELECT * FROM asignacion_comentarios WHERE id_comentario = :id_comentario and Estatus = 1;");
             $query->execute([
@@ -923,21 +1117,21 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $fecha_actual = date("Y-m-d H:i:s");
             $query = $con->pdo->prepare("UPDATE asignacion_comentarios SET 
                 Comentario = :Comentario,
                 Puntaje = :puntaje,
                 Fecha_publicacion = :fecha_actual
             WHERE id_comentario = :id_comentario;");
-        
+
             $query->bindParam(':id_comentario', $datos['id_comentario']);
             $query->bindParam(':Comentario', $datos['comentario']);
             $query->bindParam(':puntaje', $datos['estrellas']);
             $query->bindParam(':fecha_actual', $fecha_actual);
-        
+
             $success = $query->execute();
-    
+
             if ($success) {
                 $con->pdo->commit();
                 return true;
@@ -955,17 +1149,82 @@ class AdminModel extends ModelBase
         try {
             $con = new Database;
             $con->pdo->beginTransaction();
-    
+
             $query = $con->pdo->prepare("DELETE FROM asignacion_comentarios WHERE  id_comentario = :id_comentario;");
             $query->execute([
                 ':id_comentario' => base64_decode(base64_decode($id_comentario))
             ]);
-            
+
             $con->pdo->commit();
             return true;
         } catch (PDOException $e) {
             $con->pdo->rollBack();
             echo "Error recopilado model eliminar categoria: " . $e->getMessage();
+            return false;
+        }
+    }
+    public static function guardarProgresso($datos){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO asignacion_progreso (id_fk_usuario, id_fk_libro, Fecha, progreso) VALUES (:id_fk_usuario, :id_fk_libro, :fecha_real, :progreso)");
+
+            $fecha_actual = date("Y-m-d H:i:s");
+
+            $query->execute([
+                ':id_fk_usuario' => $datos['id_usuario'],
+                ':id_fk_libro' => base64_decode(base64_decode($datos['id_libro'])),
+                ':progreso' => $datos['progreso'],
+                ':fecha_real' => $fecha_actual
+            ]);
+
+            return ['estatus' => 'success', 'mensaje' => 'Comentario insertado correctamente'];
+        } catch (PDOException $e) {
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el comentario en la base de datos'];
+        }
+    }
+    public static function buscarProgreso($id_usuario, $id_libro){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT * FROM asignacion_progreso WHERE id_fk_usuario = :idUsuario and id_fk_libro = idLibro;");
+            $query->execute([
+                ':idUsuario' => $id_usuario,
+                'idLibro' => $id_libro
+            ]);
+            return $query->fetch();
+        } catch (PDOException $e) {
+            echo "Error recopilado model buscarCategoria: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function actualizarProgreso($datos){
+        try {
+            $con = new Database;
+            $con->pdo->beginTransaction();
+
+            $fecha_actual = date("Y-m-d H:i:s");
+            $query = $con->pdo->prepare("UPDATE asignacion_progreso SET
+                progreso = :progreso,
+                Fecha_publicacion = :fecha_actual
+            WHERE id_fk_usuario = :idUsuario and id_fk_libro = :idLibro;");
+
+            $query->bindParam(':idUsuario', $datos['id_usuario']);
+            $query->bindParam(':idLibro', $datos['id_libro']);
+            $query->bindParam(':progreso', $datos['progreso']);
+            $query->bindParam(':fecha_actual', $fecha_actual);
+
+            $success = $query->execute();
+
+            if ($success) {
+                $con->pdo->commit();
+                return true;
+            } else {
+                return false;
+            }
+        } catch (PDOException $e) {
+            $con->pdo->rollBack();
+            $error_message = $e->getMessage();
+            echo "Error en el modelo editarComentario: $error_message";
             return false;
         }
     }

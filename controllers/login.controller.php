@@ -9,33 +9,47 @@ use PHPMailer\PHPMailer\Exception;
 class Login extends ControllerBase
 {
 
-    function __construct()
-    {
+    function __construct(){
         parent::__construct();
     }
-    function render()
-    {
+    function render(){
         $this->view->render('login/index');
     }
-    function acceso()
-    {
+    function acceso(){
         try {
             $user = LoginModel::user($_POST);
-
             if ($user != false) {
                 if ($user['correo'] == $_POST['correo'] && $user['pass'] == $_POST['pass']) {
                     if ($user['Estatus'] == 1) {
                         $_SESSION['id_usuario-' . constant('Sistema')] = $user['id_usuario'];
                         $_SESSION['nombre_usuario-' . constant('Sistema')] = $user['nombre'];
+                        $_SESSION['ApellidoPaterno-' . constant('Sistema')] = $user['Apellido_paterno'];
+                        $_SESSION['ApellidoMaterno-' . constant('Sistema')] = $user['Apellido_materno'];
+                        $_SESSION['Genero-' . constant('Sistema')] = $user['Genero'];
                         $_SESSION['correo-' . constant('Sistema')] = $user['correo'];
                         $_SESSION['tipo_usuario-' . constant('Sistema')] = $user['tipo_usuario'];
+                        $datos = $_POST;
+                        $userDispositivo = LoginModel::RegistroDispositivo($datos);
 
+                        if ($userDispositivo['estatus'] == 'success') {
+                            $data = [
+                                'estatus' => $userDispositivo['estatus'],
+                                'titulo' => 'Registro exitoso',
+                                'respuesta' => $userDispositivo['mensaje']
+                            ];
+                        } else {
+                            $data = [
+                                'estatus' => 'error',
+                                'titulo' => 'Error de registro',
+                                'respuesta' => $userDispositivo['mensaje']
+                            ];
+                        }
                         $data = [
                             'estatus' => 'success',
                             'titulo' => 'Bienvenido',
                             'respuesta' => ''
                         ];
-
+    
                     } else {
                         $data = [
                             'estatus' => 'error',
@@ -366,8 +380,7 @@ class Login extends ControllerBase
             echo "Error Exception:" . $e->getMessage();
         }
     }
-    function salir()
-    {
+    function salir(){
         unset($_SESSION['id_usuario-' . constant('Sistema')]);
         unset($_SESSION['nombre_usuario-' . constant('Sistema')]);
         unset($_SESSION['usuario-' . constant('Sistema')]);

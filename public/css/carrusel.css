@@ -1,0 +1,242 @@
+.wrapper{
+  display: flex;
+  max-width: 1200px;
+  position: relative;
+}
+.wrapper i{
+  top: 50%;
+  height: 44px;
+  width: 44px;
+  color: #343F4F;
+  cursor: pointer;
+  font-size: 1.15rem;
+  position: absolute;
+  text-align: center;
+  line-height: 44px;
+  background: #000000;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.1s linear;
+}
+.wrapper i:active{
+  transform: translateY(-50%) scale(0.9);
+}
+.wrapper i:hover{
+  background: #f2f2f2;
+}
+.wrapper i:first-child{
+  left: -22px;
+  display: none;
+}
+.wrapper i:last-child{
+  right: -22px;
+}
+.wrapper .carousel{
+  font-size: 0px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+.carousel.dragging{
+  cursor: grab;
+  scroll-behavior: auto;
+}
+.carousel.dragging img{
+  pointer-events: none;
+}
+.carousel img{
+  height: 410px;
+  object-fit: cover;
+  user-select: none;
+  margin-left: 14px;
+  width: 270px;
+}
+.carousel img:first-child{
+  margin-left: 0px;
+}
+
+@media screen and (max-width: 900px) {
+  .carousel img{
+    height: 300px;
+    width: 100px;
+  }
+  .wrapper{
+    max-width: 100vh;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .carousel img{
+    width: 100%;
+  }
+}
+
+/* CSS específico para el segundo carrusel (categoría JK) */
+.wrapper-J-K {
+  display: flex;
+  max-width: 1200px;
+  position: relative;
+}
+
+.wrapper-J-K i {
+  top: 50%;
+  height: 100px;
+  width: 44px;
+  color: #343F4F;
+  cursor: pointer;
+  font-size: 1.15rem;
+  position: absolute;
+  text-align: center;
+  line-height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.1s linear;
+}
+
+.wrapper-J-K i:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.wrapper-J-K i:hover {
+  background: #f2f2f2;
+}
+
+.wrapper-J-K i:first-child {
+  left: -22px;
+  display: none;
+}
+
+.wrapper-J-K i:last-child {
+  right: -22px;
+}
+
+.wrapper-J-K .carousel-J-K {
+  font-size: 0px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+
+.carousel-J-K.dragging {
+  cursor: grab;
+  scroll-behavior: auto;
+}
+
+.carousel-J-K.dragging img {
+  pointer-events: none;
+}
+
+.carousel-J-K img {
+  height: 410px;
+  object-fit: cover;
+  user-select: none;
+  margin-left: 14px;
+  width: 270px;
+}
+
+.carousel-J-K img:first-child {
+  margin-left: 0px;
+}
+
+@media screen and (max-width: 900px) {
+  .carousel-J-K img {
+    height: 300px;
+    width: 100px;
+  }
+  .wrapper-J-K {
+    max-width: 100vh;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .carousel-J-K img {
+    width: 100%;
+  }
+}
+
+.wrapper-ASCII-Media-Works {
+  display: flex;
+  max-width: 1200px;
+  position: relative;
+}
+
+.wrapper-ASCII-Media-Works i {
+  top: 50%;
+  height: 100px;
+  width: 44px;
+  color: #343F4F;
+  cursor: pointer;
+  font-size: 1.15rem;
+  position: absolute;
+  text-align: center;
+  line-height: 44px;
+  background: #fff;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  transition: transform 0.1s linear;
+}
+
+.wrapper-ASCII-Media-Works i:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.wrapper-ASCII-Media-Works i:hover {
+  background: #f2f2f2;
+}
+
+.wrapper-ASCII-Media-Works i:first-child {
+  left: -22px;
+  display: none;
+}
+
+.wrapper-ASCII-Media-Works i:last-child {
+  right: -22px;
+}
+
+.wrapper-ASCII-Media-Works .carousel-ASCII-Media-Works {
+  font-size: 0px;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
+  scroll-behavior: smooth;
+}
+
+.carousel-ASCII-Media-Works.dragging {
+  cursor: grab;
+  scroll-behavior: auto;
+}
+
+.carousel-ASCII-Media-Works.dragging img {
+  pointer-events: none;
+}
+
+.carousel-ASCII-Media-Works img {
+  height: 410px;
+  object-fit: cover;
+  user-select: none;
+  margin-left: 14px;
+  width: 270px;
+}
+
+.carousel-ASCII-Media-Works img:first-child {
+  margin-left: 0px;
+}
+
+@media screen and (max-width: 900px) {
+  .carousel-ASCII-Media-Works img {
+    height: 300px;
+    width: 100px;
+  }
+  .wrapper-ASCII-Media-Works {
+    max-width: 100vh;
+  }
+}
+
+@media screen and (max-width: 550px) {
+  .carousel-ASCII-Media-Works img {
+    width: 100%;
+  }
+}

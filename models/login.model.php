@@ -2,17 +2,14 @@
 /**
  *
  */
-class LoginModel extends ModelBase
-{
-    public function __construct()
-    {
+class LoginModel extends ModelBase{
+    public function __construct(){
         parent::__construct();
     }
-    public static function user($datos)
-    {
+    public static function user($datos){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT id_usuario, nombre, correo, tipo_usuario, pass, Estatus from cat_usuario where correo = :correo and pass = :pass");
+            $query = $con->pdo->prepare("SELECT id_usuario, nombre, correo, tipo_usuario, pass, Estatus, Apellido_paterno, Apellido_materno, Genero from cat_usuario where correo = :correo and pass = :pass");
             $query->execute([
                 ':correo' => $datos['correo'],
                 ':pass' => $datos['pass']
@@ -30,6 +27,25 @@ class LoginModel extends ModelBase
             return false;
         }
     }
+    public static function RegistroDispositivo($datos){
+        try{
+            $con = new Database;
+            $query = $con->pdo->prepare("INSERT INTO asignacion_dispositivo (infoModelo, Direccion, FechaTiempo, id_fk_usuario) VALUES (:info, :Dir, :FechaYTiempo, :id_usuario)");
+    
+            $fecha_actual = date("Y-m-d H:i:s");
+            $query->execute([
+                ':info' => $datos['modelo'],
+                ':Dir' => $datos['ip'],
+                ':FechaYTiempo' => $fecha_actual,
+                ':id_usuario' => $_SESSION['id_usuario-' . constant('Sistema')]
+            ]);
+    
+            return ['estatus' => 'success', 'mensaje' => 'Comentario insertado correctamente'];
+        } catch (PDOException $e){
+            echo "Error recopilacion model user: " . $e->getMessage();
+            return ['estatus' => 'error', 'mensaje' => 'Error al insertar el comentario en la base de datos'];
+        }
+    }    
     public static function registro($datos){
         try {
             $con = new Database;

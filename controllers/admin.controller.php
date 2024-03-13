@@ -10,13 +10,11 @@ use PHPMailer\PHPMailer\Exception;
 
 class Admin extends ControllerBase
 {
-    function __construct()
-    {
+    function __construct(){
         parent::__construct();
     }
     /* Vistas */
-    function render()
-    {
+    function render(){
         if ($this->verificarAdmin()) {
             $this->view->render("admin/index");
         } else {
@@ -24,6 +22,82 @@ class Admin extends ControllerBase
         }
     }
     
+    /* CONFIGURACION */
+    function general(){
+        if ($this->verificarGeneral()) {
+            $this->view->render("general/index");
+        } else {
+            $this->recargar();
+        }
+    }
+    function ConfiguracionActualizarDatos(){
+        try {
+            $datos = $_POST;
+            $resp = adminModel::ConfiguracionActualizarDatos($datos);
+            if ($resp == true) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Registro actualizado',
+                    'respuesta' => 'Se actualizó correctamente el registro.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Registro no actualizado',
+                    'respuesta' => 'No se actualizó correctamente el registro.'
+                ];
+            }
+    
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Algo salio mal',
+                'respuesta' => 'Por favor, contacte al área de sistemas.'
+            ];
+            echo "".$th;
+        }
+        echo json_encode($data);
+    }
+    function ConfiguracionActualizarPass(){
+        try {
+            $datos = $_POST;
+            $resp = adminModel::ConfiguracionActualizarPass($datos);
+            if ($resp == true) {
+                $data = [
+                    'estatus' => 'success',
+                    'titulo' => 'Registro actualizado',
+                    'respuesta' => 'Se actualizó correctamente el registro.'
+                ];
+            } else {
+                $data = [
+                    'estatus' => 'warning',
+                    'titulo' => 'Registro no actualizado',
+                    'respuesta' => 'No se actualizó correctamente el registro.'
+                ];
+            }
+    
+        } catch (\Throwable $th) {
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Algo salio mal',
+                'respuesta' => 'Por favor, contacte al área de sistemas.'
+            ];
+            echo "".$th;
+        }
+        echo json_encode($data);
+    }
+    function mostrarDispositivos() {
+        try {
+            $id_usuario = isset($_SESSION['id_usuario-' . constant('Sistema')]) ? $_SESSION['id_usuario-' . constant('Sistema')] : 0;
+            $mostrarDispositivos = AdminModel::mostrarDispositivos($id_usuario);
+            echo json_encode($mostrarDispositivos);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }    
+    /* FIN DE CONFIGURACION */
+
     /* Inicio */
     function MostrarLibrosView() {
         try {
@@ -76,6 +150,27 @@ class Admin extends ControllerBase
     
         echo json_encode($data);
     }
+
+    /* Carruseles por categoria */
+    function MostrarLibrosViewHarry() {
+        try {
+            $buscarPalabraClave = AdminModel::MostrarLibrosViewHarry();
+            echo json_encode($buscarPalabraClave);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function MostrarLibrosViewACII() {
+        try {
+            $buscarPalabraClave = AdminModel::MostrarLibrosViewACII();
+            echo json_encode($buscarPalabraClave);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    /* FIN DE CARRUSELES */
     /* FIN INICIO*/
     /* Vista autores */
     function autor(){
@@ -1222,6 +1317,33 @@ class Admin extends ControllerBase
         } catch (\Throwable $th) {
             echo json_encode(['eliminar' => false]);
         }
+    }
+    function guardarProgresso($param = null){
+        try {
+            $datos = $_POST;
+            $result = adminModel::guardarProgresso($datos);
+                if ($result == true) {
+                    $data = [
+                        'estatus' => 'success',
+                        'titulo' => 'Registro actualizado',
+                        'respuesta' => 'Se actualizó correctamente el registro.'
+                    ];
+                } else {
+                    $data = [
+                        'estatus' => 'warning',
+                        'titulo' => 'Registro no actualizado',
+                        'respuesta' => 'No se actualizó correctamente el registro.'
+                    ];
+                }
+        } catch (\Throwable $th) {
+            echo "error controlador registro: " . $th->getMessage();
+            $data = [
+                'estatus' => 'error',
+                'titulo' => 'Error de servidor',
+                'respuesta' => 'Contacte al área de sistemas'
+            ];
+        }
+        echo json_encode($data);
     }
     
     /* FIN DEL VISUALIZADOR DE PDF */

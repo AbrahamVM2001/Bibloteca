@@ -128,8 +128,11 @@ $(function () {
                 jQuery(`<h3 class="mt-4 text-center text-uppercase">Error al encontrar el libro</h3>`).appendTo("#container-info").addClass('text-danger');
                 return false;
             }
-            response.forEach((item, index) => {
-                jQuery(`
+            let container = jQuery("#container-info");
+            let totalPages = response.reduce((total, item) => total + item.numero_de_paginas, 0);
+            let currentPage = 0;
+            for (const item of response) {
+                let cardElement = jQuery(`
                     <div class="clic card mb-3" style="max-width: 100%;">
                         <div class="row g-0">
                             <div class="col-md-4">
@@ -141,15 +144,56 @@ $(function () {
                                     <p class="card-text">${item.Descripcion}</p>
                                     <p class="card-text">Fecha de publicacion</p>
                                     <p class="card-text"><small class="text-muted">${item.Fecha_publicacion}</small></p>
+                                    <p id="generadorApa">
+                                    Fuente apa: ${item.NombreAutor} ${item.ApellidoPaternoAutor} ${item.ApellidoMaternoAutor},${item.Fecha_publicacion},${item.Titulo},${item.NombreEditorial}
+                                    </p>
+                                    <a href="#" onclick="copiarTexto()" class="btn-burbujas btn-burbujas-bubble" styele="color: #fff;">Copiar apa</a>
                                 </div>
                             </div>
                         </div>
+                        <script>
+                            var animateButton = function(e) {
+
+                                e.preventDefault;
+                                //reset animation
+                                e.target.classList.remove('animate');
+                    
+                                e.target.classList.add('animate');
+                                setTimeout(function(){
+                                    e.target.classList.remove('animate');
+                                },700);
+                            };
+                    
+                            var bubblyButtons = document.getElementsByClassName("bubbly-button");
+                    
+                            for (var i = 0; i < bubblyButtons.length; i++) {
+                                bubblyButtons[i].addEventListener('click', animateButton, false);
+                            }
+                            function copiarTexto() {
+                                var textoParaCopiar = document.getElementById("generadorApa");
+                                var seleccion = document.createRange();
+                                seleccion.selectNodeContents(textoParaCopiar);
+                                window.getSelection().removeAllRanges();
+                                window.getSelection().addRange(seleccion);
+                                document.execCommand("copy");
+                                window.getSelection().removeAllRanges();
+                            }
+                        </script>
                         <div class="row g-0">
-                            <embed src="${servidor}${item.documento}#toolbar=0" type="application/pdf" width="100%" height="600px" />
+                            <div class="progress orange">
+                                <div class="progress-bar" style="width:0%; background:#fe3b3b;">
+                                </div>
+                            </div>
+                            <embed id="pdf-embed-${item.id}" src="${servidor}${item.documento}#toolbar=0" type="application/pdf" width="100%" height="600px" />
                         </div>
                     </div>
-                `).appendTo("#container-info");
-            });
+                `).appendTo(container);
+                await loadPdfWithProgress(item.documento, `#pdf-embed-${item.id}`, (progress) => {
+                    let progressBar = cardElement.find('.progress-bar');
+                    progressBar.width(progress + '%');
+                });
+                currentPage += item.numero_de_paginas;
+            }
         } catch (error) {
             if (error.name == 'AbortError') { } else { throw error; }
         }

@@ -114,6 +114,67 @@ class usuarioModel extends ModelBase
             return ['estatus' => 'error', 'mensaje' => 'Libros no encontrados', 'error' => $e->getMessage()];
         }
     }
+
+    // categoria
+    public static function MostrarLibrosViewHarry(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT 
+                cl.id_libro,
+                cl.Titulo,
+                cl.Numero_paginas,
+                cl.Fecha_subir_sistema,
+                cl.Fecha_publicacion,
+                cl.Descripcion,
+                cl.Palabra_clave,
+                cl.Estatus,
+                cl.Imagen,
+                cl.documento,
+                cl.Token_documento,
+                cl.Token,
+                cl.id_fk_usuario
+            FROM cat_libro cl
+            INNER JOIN asignacion_libro al ON cl.id_libro = al.id_fk_libro
+            INNER JOIN cat_autor a ON al.id_fk_autor = a.id_autor
+            WHERE a.Nombre = 'J. K.';        
+            ");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
+    public static function MostrarLibrosViewACII(){
+        try {
+            $con = new Database;
+            $query = $con->pdo->prepare("SELECT 
+                cl.id_libro,
+                cl.Titulo,
+                cl.Numero_paginas,
+                cl.Fecha_subir_sistema,
+                cl.Fecha_publicacion,
+                cl.Descripcion,
+                cl.Palabra_clave,
+                cl.Estatus,
+                cl.Imagen,
+                cl.documento,
+                cl.Token_documento,
+                cl.Token,
+                cl.id_fk_usuario
+            FROM cat_libro cl
+            INNER JOIN asignacion_libro al ON cl.id_libro = al.id_fk_libro
+            INNER JOIN cat_autor a ON al.id_fk_autor = a.id_autor
+            INNER JOIN cat_editorial e ON al.id_fk_editorial = e.id_editorial
+            WHERE e.Nombre = 'ASCII Media Works';
+            ");
+            $query->execute();
+            return $query->fetchAll();
+        } catch (PDOException $e) {
+            echo "Error recopilado model eventos: " . $e->getMessage();
+            return;
+        }
+    }
     /* Pagina de visualizacion de pdf y comentarios */
     public static function viewComentario($id_libro){
         try {
@@ -131,7 +192,26 @@ class usuarioModel extends ModelBase
     public static function mostrarInfoLibro($id_libro){
         try {
             $con = new Database;
-            $query = $con->pdo->prepare("SELECT * FROM cat_libro WHERE id_libro = :id_libro;");
+            $query = $con->pdo->prepare("SELECT 
+            cl.*,
+            al.id_asignacion_libro,
+            al.id_fk_autor,
+            a.Nombre AS NombreAutor,
+            a.Apellido_paterno AS ApellidoPaternoAutor,
+            a.Apellido_materno AS ApellidoMaternoAutor,
+            al.id_fk_editorial,
+            e.Nombre AS NombreEditorial,
+            al.id_fk_categoria,
+            al.id_fk_idioma,
+            al.id_fk_usuario AS id_fk_usuario_asignacion
+        FROM 
+            cat_libro cl
+        LEFT JOIN 
+            asignacion_libro al ON cl.id_libro = al.id_fk_libro
+        LEFT JOIN 
+            cat_autor a ON al.id_fk_autor = a.id_autor
+        LEFT JOIN 
+            cat_editorial e ON al.id_fk_editorial = e.id_editorial WHERE id_libro = :id_libro;");
             $query->execute([
                 'id_libro' => base64_decode(base64_decode($id_libro))
             ]);

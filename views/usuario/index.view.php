@@ -20,11 +20,46 @@
                 </div>
             </div>
         </form>
-        <div class="card-body">
+        <!-- <div class="card-body">
             <div class="row table-responsive" id="container-eventos"></div>
-        </div>
+        </div> -->
         <div class="card-body">
             <div class="row table-responsive" id="container-libros"></div>
+        </div>
+        <div class="card-body">
+            <div class="row table-responsive" id="container-categoria1">
+                <center>
+                    <h4>Libros más populares</h4>
+                </center>
+                <div class="wrapper">
+                    <!-- <i id="left" class="fa-solid fa-angle-left"></i> -->
+                    <div class="carousel">
+                    </div>
+                    <!-- <i id="right" class="fa-solid fa-angle-right"></i> -->
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row table-responsive" id="container-J-K">
+                <center>
+                    <h4>Libros de J. K. Rowling</h4>
+                </center>
+                <div class="wrapper-J-K">
+                    <div class="carousel-J-K">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row table-responsive" id="container-ASCII-Media-Works">
+                <center>
+                    <h4>Libros de ASCII Media Works</h4>
+                </center>
+                <div class="wrapper-ASCII-Media-Works">
+                    <div class="carousel-ASCII-Media-Works">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -32,4 +67,5 @@
 <script src="<?= constant('URL') ?>public/js/paginas/user/home.index.js"></script>
 <script src="<?= constant('URL') ?>public/js/paginas/admin/home.viewLibro.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/es.min.js"></script
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/es.min.js">
+    < /script

@@ -1,11 +1,19 @@
 <?php require('views/estilos.view.php');?>
-<body class="imagen">
-<div class="tarjeta mt-5 card-body">
-  <h1 class="text-center text-danger">Error 404</h1>
-  <h2 class="text-center text-danger">Ups! Página no encontrada</h2>
-  <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 text-center">
-    <button class="btn btn-info btn-block" type="button" onclick="window.history.back();">Regresar</button>
-  </div>
-</div>
+  <body class="body-error">
+    <div class="text">
+      <div>ERROR</div>
+        <h1 style="color:#fff;">404</h1>
+        <hr>
+        <div>
+          Ups, te haz perdido lo siento
+          regresa por donde vienes<br>
+          <button class="btn btn-info btn-block" type="button" onclick="window.history.back();">Regresar</button>
+        </div>
+      </div>
+    <div class="astronaut">
+      <img src="public/img/astronauta.png" alt="" class="src">
+    </div>
+  <script src="public/js/paginas/error.js">
+  </script>
 </body>
 <?php require "views/footer.view.php";?>

@@ -1,4 +1,46 @@
 <?php require('views/headervertical.view.php'); ?>
+<style>
+    .btn-burbujas-bubble {
+        color: #fff;
+        background-color: #001F3F;
+        background-repeat: no-repeat;
+    }
+    .btn-burbujas-bubble:hover, .btn-burbujas-bubble:focus {
+        -webkit-animation: bubbles 1s forwards ease-out;
+        animation: bubbles 1s forwards ease-out;
+        background: radial-gradient(circle at center, rgba(0, 31, 63, 1) 30%, #6E0B6E 60%, #eeeeff 65%, rgba(0, 31, 63, 1) 70%) 98% 138% / 0.77em 0.77em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 76% 130% / 0.86em 0.86em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 19% 142% / 0.54em 0.54em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 52% 102% / 0.88em 0.88em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 93% 128% / 0.54em 0.54em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 75% 86% / 0.92em 0.92em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 16% 104% / 0.95em 0.95em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 93% 116% / 1.15em 1.15em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 54% 149% / 0.68em 0.68em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) -10% 124% / 0.56em 0.56em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 80% 142% / 0.72em 0.72em;
+        background-color: #6E0B6E;
+        color: #fff;
+        background-repeat: no-repeat;
+    }
+
+    @-webkit-keyframes bubbles {
+        100% {
+            background-position: 106% -51%, 67% 55%, 16% -70%, 53% 3%, 94% -14%, 74% -8%, 10% -391%, 88% -132%, 59% -106%, -9% 20%, 87% -106%;
+            box-shadow: inset 0 -6.5em 0 #fff;
+            color: #6E0B6E;
+        }
+    }
+
+    @keyframes bubbles {
+        100% {
+            background-position: 106% -51%, 67% 55%, 16% -70%, 53% 3%, 94% -14%, 74% -8%, 10% -391%, 88% -132%, 59% -106%, -9% 20%, 87% -106%;
+            box-shadow: inset 0 -6.5em 0 #7305f1;
+            color: #fff;
+        }
+    }
+
+    .btn-burbujas {
+        color: #fff;
+        font-size: 12px;
+        display: inline-block;
+        text-decoration: none;
+        border-radius: 5px;
+        padding: 0.5em 1em;
+        width: 85px;
+        height: 35px;
+    }
+</style>
 <div class="container">
     <div class="card">
         <div class="card-header d-flex justify-content-between flex-wrap">

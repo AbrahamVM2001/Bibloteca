@@ -74,6 +74,26 @@ class usuario extends ControllerBase
     
         echo json_encode($data);
     }
+
+    // categoria libros
+    function MostrarLibrosViewHarry() {
+        try {
+            $buscarPalabraClave = usuarioModel::MostrarLibrosViewHarry();
+            echo json_encode($buscarPalabraClave);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
+    function MostrarLibrosViewACII() {
+        try {
+            $buscarPalabraClave = usuarioModel::MostrarLibrosViewACII();
+            echo json_encode($buscarPalabraClave);
+        } catch (\Throwable $th) {
+            echo "Error recopilado controlador eventos: " . $th->getMessage();
+            return;
+        }
+    }
     /* Vistas */
     function render()
     {

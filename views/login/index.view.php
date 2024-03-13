@@ -52,6 +52,10 @@
                                         <div class="form-outline mb-4">
                                             <input type="password" name="pass" id="pass" class="form-control" placeholder="Contraseña..." aria-label="Password" value="" required>
                                         </div>
+                                        <div class="form-outline mb-4">
+                                            <input type="hidden" name="ip" id="ip" class="form-control" placeholder="Direccion" aria-label="Direccion" value="">
+                                            <input type="hidden" name="modelo" id="modelo" class="form-control" placeholder="Modelo" aria-label="Modelo" value="">
+                                        </div>
                                         <center><button id="btn-acceso" type="button" class="btn btn-lg btn-block btn-primary">Iniciar</button></center>
                                     </form>
                                 </div>
@@ -105,7 +109,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-6 mb-4">
-                                                <input type="password" name="pass" id="r_pass" class="form-control" placeholder="Ingresa tu contraseña" value="" required> 
+                                                <input type="password" name="pass" id="r_pass" class="form-control" placeholder="Ingresa tu contraseña" value="" required>
                                             </div>
                                         </div>
                                         <center><button id="btn-registro" type="button" class="btn btn-lg btn-block btn-primary">Registrar</button></center>
@@ -119,7 +123,79 @@
         </div>
     </section>
     <script>
-        let servidor = '<?=constant('URL')?>';
+        document.addEventListener("DOMContentLoaded", function() {
+            var infoDispositivo = obtener_info_dispositivo();
+            var infoUbicacion = obtener_info_ubicacion();
+            document.getElementById("modelo").value = infoDispositivo;
+        });
+
+        function obtener_info_dispositivo() {
+            return navigator.userAgent;
+        }
+
+        function obtener_info_ubicacion() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function (position) {
+                    var latitud = position.coords.latitude;
+                    var longitud = position.coords.longitude;
+                    obtener_direccion_completa(latitud, longitud);
+                },
+                function (error) {
+                    console.error('Error al obtener la ubicación:', error.message);
+                    document.getElementById("ip").value = 'Ubicación no disponible';
+                }
+            );
+        } else {
+            console.error('Geolocalización no soportada por el navegador.');
+            document.getElementById("ip").value = 'Ubicación no disponible';
+        }
+    }
+
+    function obtener_direccion_completa(latitud, longitud) {
+        obtener_direccion_completa_openstreetmap(latitud, longitud);
+    }
+    function obtener_direccion_completa_openstreetmap(latitud, longitud) {
+        const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitud}&lon=${longitud}&format=json`;
+
+        fetch(url)
+            .then((response) => response.json())
+            .then((data) => {
+                if (data.address) {
+                    let formattedAddress = "";
+
+                    if (data.address.road) {
+                        formattedAddress += data.address.road;
+                    }
+
+                    if (data.address.house_number) {
+                        formattedAddress += " " + data.address.house_number;
+                    } else {
+                        formattedAddress += " (sin número)";
+                    }
+
+                    if (data.address.city) {
+                        formattedAddress += ", " + data.address.city;
+                    }
+
+                    if (data.address.country_name) {
+                        formattedAddress += ", " + data.address.country_name;
+                    }
+
+                    document.getElementById("ip").value = formattedAddress.trim();
+                } else {
+                    console.error('Error al obtener la dirección:', data.error);
+                    document.getElementById("ip").value = 'Dirección no disponible';
+                }
+            })
+            .catch((error) => {
+                console.error('Error en la solicitud:', error);
+                document.getElementById("ip").value = 'Error en la solicitud';
+            });
+        }
+    </script>
+    <script>
+        let servidor = '<?= constant('URL') ?>';
     </script>
     <script src="<?= constant("URL") ?>public/js/plugins/jquery/jquery.min.js"></script>
     <script src="<?= constant('URL') ?>public/js/core/popper.min.js"></script>
