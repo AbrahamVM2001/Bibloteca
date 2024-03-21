@@ -28,4 +28,5 @@
   <!-- Estilos de los libros -->
   <link rel="stylesheet" href="<?=constant('URL')?>public/css/libros.css">
   <link rel="stylesheet" href="<?=constant('URL')?>public/css/carrusel.css">
+  <link rel="stylesheet" href="<?=constant('URL')?>public/css/style.css">
   

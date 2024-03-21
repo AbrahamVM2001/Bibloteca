@@ -9,6 +9,9 @@
                 Para eliminar un usuario, selecciona el botón rojo. ¡Gracias por tu labor administrativa!
             </p>
             <button title="Agregar nuveo usuario" class="btn btn-success btn-agregar-evento" data-bs-target="#modalEventos" data-bs-toggle="modal">Agregar <i class="fa-solid fa-circle-plus"></i></button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Campana">
+                <i class="fa-regular fa-bell"></i>
+            </button>
         </div>
         <div class="card-body">
             <div class="row table-responsive" id="container-eventos"></div>
@@ -180,5 +183,78 @@
                 </div>
             </div>
         </form>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Tutorial</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="carouselExampleCaptions" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="../../img/tutorial_model/8.jpg" class="d-block w-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Funciones para agregar, modificar y borrar.</p>
+                                <ul style="list-style-type: decimal; font-size: 12px;">
+                                    <li>Si necesitas agregar un usuario, simplemente haz clic en el botón verde 'Agregar'.</li>
+                                    <li>Para actualizar un usuario, simplemente haz clic en los campos que deseas modificar.</li>
+                                    <li>Puedes buscar a un usuario por su nombre, apellido, correo, contraseña, tipo de usuario y estatus.</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="${servidor}../../img/tutorial_model/8.jpg" class="d-block w-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Funciones de búsqueda.</p>
+                                <ul style="list-style-type: none; counter-reset: custom-counter 3;font-size: 12px;">
+                                    <li style="counter-increment: custom-counter; list-style-position: inside;">
+                                        <span style="counter-function: custom-counter;">4</span>
+                                        Para borrar un usuario, simplemente haz clic en el botón rojo.
+                                    </li>
+                                    <li style="counter-increment: custom-counter; list-style-position: inside;">
+                                        <span style="counter-function: custom-counter;">5</span>
+                                        Para navegar entre registros anteriores, simplemente haz clic en el botón 'Anterior'.
+                                    </li>
+                                    <li style="counter-increment: custom-counter; list-style-position: inside;">
+                                        <span style="counter-function: custom-counter;">6</span>
+                                        Para ver los demás registros, simplemente haz clic en el botón 'Siguiente'.
+                                    </li>
+                                    <li style="counter-increment: custom-counter; list-style-pisition: inside;">
+                                        <span style="counter-function: custom-counter;">7</span>
+                                        Puedes ver a otros usuarios también desplazándote a través de los números.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="${servidor}../../img/tutorial_model/8.jpg" class="d-block w-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Funciones para guardar datos o modificarlos.</p>
+                                <ul style="list-style-type: decimal; font-size: 12px;">
+                                    <li>Por favor, ingresa todos los datos requeridos del usuario (*).</li>
+                                    <li>Una vez que hayas completado el formulario, haz clic en 'Guardar'</li>
+                                    <li>Si has hecho clic en un usuario para actualizarlo, simplemente completa los nuevos datos del usuario y luego haz clic en 'Guardar'.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev" style="background-color: rgba(0, 0, 0, 0.293);">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next" style="background-color: rgba(0, 0, 0, 0.293);">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>

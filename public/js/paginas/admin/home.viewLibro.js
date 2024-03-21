@@ -148,6 +148,9 @@ $(function () {
                                     Fuente apa: ${item.NombreAutor} ${item.ApellidoPaternoAutor} ${item.ApellidoMaternoAutor},${item.Fecha_publicacion},${item.Titulo},${item.NombreEditorial}
                                     </p>
                                     <a href="#" onclick="copiarTexto()" class="btn-burbujas btn-burbujas-bubble" styele="color: #fff;">Copiar apa</a>
+                                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" title="Campana">
+                                        <i class="fa-regular fa-bell"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -5,7 +5,9 @@
         background-color: #001F3F;
         background-repeat: no-repeat;
     }
-    .btn-burbujas-bubble:hover, .btn-burbujas-bubble:focus {
+
+    .btn-burbujas-bubble:hover,
+    .btn-burbujas-bubble:focus {
         -webkit-animation: bubbles 1s forwards ease-out;
         animation: bubbles 1s forwards ease-out;
         background: radial-gradient(circle at center, rgba(0, 31, 63, 1) 30%, #6E0B6E 60%, #eeeeff 65%, rgba(0, 31, 63, 1) 70%) 98% 138% / 0.77em 0.77em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 76% 130% / 0.86em 0.86em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 19% 142% / 0.54em 0.54em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 52% 102% / 0.88em 0.88em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #6E0B6E 60%, #6E0B6E 65%, rgba(0, 0, 0, 0) 70%) 93% 128% / 0.54em 0.54em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 75% 86% / 0.92em 0.92em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 16% 104% / 0.95em 0.95em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 93% 116% / 1.15em 1.15em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 54% 149% / 0.68em 0.68em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) -10% 124% / 0.56em 0.56em, radial-gradient(circle at center, rgba(0, 0, 0, 0) 30%, #eeeeff 60%, #eeeeff 65%, rgba(0, 0, 0, 0) 70%) 80% 142% / 0.72em 0.72em;
@@ -103,4 +105,61 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/locale/es.min.js"></script>
     <script src="//mozilla.github.io/pdf.js/build/pdf.mjs" type="module"></script>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Tutorial</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div id="carouselExampleCaptions" class="carousel slide">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="../../../img/tutorial_model/5.jpg" class="d-block w-100 h-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Función de generar APA.</p>
+                                <p>Si necesitas el formato APA, simplemente haz clic en el botón APA.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="../../../img/tutorial_model/6.jpg" class="d-block w-100 h-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Función para desplazarme por el libro.</p>
+                                <p>Puedes leer los libros desplazándote hacia abajo o deslizando el icono de scroll.</p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="../../../img/tutorial_model/7.jpg" class="d-block w-100 h-100" alt="...">
+                            <div class="d-none d-md-block">
+                                <p>Función de opinión.</p>
+                                <ul style="font-size: 12px; list-style-type: decimal;">
+                                    <li>Agrega tu opinión sobre el libro escribiendo.</li>
+                                    <li>Para calificar el libro, simplemente haz clic en la estrella que consideres: 1 para malo, 5 para bueno.</li>
+                                    <li>Para publicar tu opinión, simplemente haz clic en guardar.</li>
+                                    <li>Puedes editar o borrar tus propios comentarios.</li>
+                                    <li>Para editar ese comentario, simplemente haz clic en 'Editar'. Toda la información se desplazará hacia el 
+                                        lado derecho, donde podrás editar el comentario o la calificación. Una vez que hayas terminado, solo haz 
+                                        clic en 'Guardar'.
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="prev" style="background-color: rgba(0, 0, 0, 0.293);">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide="next" style="background-color: rgba(0, 0, 0, 0.293);">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
 </div>
